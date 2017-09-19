@@ -1,3 +1,14 @@
+============================================
+``hypothesis`` strategies for ``SQLAlchemy``
+============================================
+
+.. image:: https://travis-ci.org/lycantropos/hypothesis_sqlalchemy.svg?branch=master
+  :target:  https://travis-ci.org/lycantropos/hypothesis_sqlalchemy.svg
+  :align: right
+
+.. image:: https://badge.fury.io/py/hypothesis_sqlalchemy
+    :target: https://badge.fury.io/py/hypothesis_sqlalchemy
+
 .. contents::
 
 
