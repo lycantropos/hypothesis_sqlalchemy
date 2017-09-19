@@ -4,10 +4,9 @@
 
 .. image:: https://travis-ci.org/lycantropos/hypothesis_sqlalchemy.svg?branch=master
   :target:  https://travis-ci.org/lycantropos/hypothesis_sqlalchemy.svg
-  :align: right
 
-.. image:: https://badge.fury.io/py/hypothesis_sqlalchemy
-    :target: https://badge.fury.io/py/hypothesis_sqlalchemy
+.. image:: https://badge.fury.io/py/hypothesis_sqlalchemy.svg
+    :target: https://badge.fury.io/py/hypothesis_sqlalchemy.svg
 
 .. contents::
 
