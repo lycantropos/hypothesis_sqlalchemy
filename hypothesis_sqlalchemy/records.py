@@ -14,7 +14,7 @@ from hypothesis import strategies
 from hypothesis.searchstrategy.collections import TupleStrategy
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.schema import Column
-from sqlalchemy.sql.sqltypes import String
+from sqlalchemy.sql.sqltypes import String, Enum
 
 from .types import (Strategy,
                     ColumnValueType)
@@ -103,9 +103,20 @@ ascii_not_null_characters = strategies.characters(min_codepoint=1,
 
 def column_values_factory(column: Column) -> Strategy:
     column_type = column.type
-    if isinstance(column_type, String):
+    if isinstance(column_type, Enum):
+        return enum_type_values_factory(column_type)
+    elif isinstance(column_type, String):
         return strategies.text(alphabet=ascii_not_null_characters,
                                max_size=column_type.length)
     elif isinstance(column_type, UUID):
         return strategies.uuids()
     return strategies_by_python_types[column_type.python_type]
+
+
+def enum_type_values_factory(enum_type: Enum) -> Strategy:
+    enum_class = enum_type.enum_class
+    if enum_class is None:
+        return strategies.one_of(*map(strategies.just,
+                                      enum_type.enums))
+    return strategies.one_of(*map(strategies.just,
+                                  enum_class))

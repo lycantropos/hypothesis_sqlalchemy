@@ -14,6 +14,7 @@ from sqlalchemy.sql.sqltypes import (SmallInteger,
                                      Date,
                                      DateTime)
 
+from . import enums
 from .types import Strategy
 from .utils import (identifiers,
                     is_column_unique)
@@ -27,7 +28,8 @@ def string_types_factory() -> Strategy:
     return strategies.one_of(strategies.builds(String,
                                                length=string_lengths),
                              strategies.builds(UUID,
-                                               as_uuid=strategies.booleans()))
+                                               as_uuid=strategies.booleans()),
+                             enums.types_factory())
 
 
 def primary_keys_types_factory() -> Strategy:
