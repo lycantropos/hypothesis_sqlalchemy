@@ -14,7 +14,7 @@ Install the latest ``pip`` & ``setuptools`` packages versions
 
 Release
 ~~~~~~~
-Download and install the latest stable version
+Download and install the latest stable version from ``PyPI`` repository
 
 .. code-block:: bash
 
@@ -22,6 +22,8 @@ Download and install the latest stable version
 
 Developer
 ~~~~~~~~~
+Download and install the latest version from ``GitHub`` repository
+
 .. code-block:: bash
 
   git clone https://github.com/lycantropos/hypothesis_sqlalchemy.git
@@ -31,11 +33,13 @@ Developer
 Running tests
 -------------
 Plain
+
 .. code-block:: bash
 
     python3 setup.py test
 
 Inside ``Docker`` container with remote debugger
+
 .. code-block:: bash
 
     ./set-dockerhost.sh docker-compose up
