@@ -3,13 +3,13 @@
 ============================================
 
 .. image:: https://travis-ci.org/lycantropos/hypothesis_sqlalchemy.svg?branch=master
-  :target:  https://travis-ci.org/lycantropos/hypothesis_sqlalchemy.svg
+  :target:  https://travis-ci.org/lycantropos/hypothesis_sqlalchemy
 
 .. image:: https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy/branch/master/graph/badge.svg
   :target: https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy
 
 .. image:: https://badge.fury.io/py/hypothesis_sqlalchemy.svg
-    :target: https://badge.fury.io/py/hypothesis_sqlalchemy.svg
+    :target: https://badge.fury.io/py/hypothesis_sqlalchemy
 
 In what follows ``python3`` is an alias for ``python3.5``
 or any later version (``python3.6`` and so on).
