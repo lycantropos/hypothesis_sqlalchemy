@@ -27,3 +27,15 @@ Developer
   git clone https://github.com/lycantropos/hypothesis_sqlalchemy.git
   cd hypothesis_sqlalchemy
   python3 setup.py install
+
+Running tests
+-------------
+Plain
+.. code-block:: bash
+
+    python3 setup.py test
+
+Inside ``Docker`` container with remote debugger
+.. code-block:: bash
+
+    ./set-dockerhost.sh docker-compose up
