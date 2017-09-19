@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  hypothesis_sqlalchemy:
+    build: .
+    image: lycantropos/hypothesis_sqlalchemy:latest
+    volumes:
+      - .:/opt/hypothesis_sqlalchemy/
+    extra_hosts:
+      - "dockerhost:$DOCKERHOST"  # for debugging
+    entrypoint: python3
+    command: setup.py test
