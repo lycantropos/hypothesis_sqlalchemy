@@ -2,14 +2,13 @@ from functools import partial
 from hypothesis.searchstrategy import SearchStrategy
 from sqlalchemy.schema import Table
 
-from hypothesis_sqlalchemy.records import (table_records_factory,
-                                           table_records_lists_factory)
+from hypothesis_sqlalchemy.tables import records
 from tests.utils import (example,
                          table_record_is_valid)
 
 
 def test_table_records_factory(table: Table) -> None:
-    table_records_strategy = table_records_factory(table)
+    table_records_strategy = records.factory(table)
     table_record = example(table_records_strategy)
 
     assert isinstance(table_records_strategy, SearchStrategy)
@@ -19,7 +18,7 @@ def test_table_records_factory(table: Table) -> None:
 
 
 def test_table_records_lists_factory(table: Table) -> None:
-    table_records_lists = table_records_lists_factory(table)
+    table_records_lists = records.lists_factory(table)
     table_records = example(table_records_lists)
 
     assert isinstance(table_records_lists, SearchStrategy)

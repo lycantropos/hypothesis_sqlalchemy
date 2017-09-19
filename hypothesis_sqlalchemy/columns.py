@@ -8,9 +8,10 @@ from sqlalchemy.sql.sqltypes import (SmallInteger,
                                      Integer,
                                      BigInteger,
                                      Boolean,
+                                     Float,
+                                     String,
                                      Date,
-                                     DateTime,
-                                     String)
+                                     DateTime)
 
 from .types import Strategy
 from .utils import (identifiers,
@@ -31,22 +32,25 @@ def primary_keys_types_factory() -> Strategy:
     return strategies.one_of(*map(strategies.just, types))
 
 
-def types_factory(string_types: Strategy = string_types_factory(),
+def types_factory(*,
+                  string_types: Strategy = string_types_factory(),
                   primary_keys_types: Strategy = primary_keys_types_factory()
                   ) -> Strategy:
-    extra_types = [Boolean, Date, DateTime]
+    extra_types = [Float(asdecimal=True), Boolean, Date, DateTime]
     return strategies.one_of(string_types,
                              primary_keys_types,
                              *map(strategies.just, extra_types))
 
 
-def non_primary_keys_factory(types: Strategy = types_factory(),
+def non_primary_keys_factory(*,
+                             names: Strategy = identifiers,
+                             types: Strategy = types_factory(),
                              are_unique: Strategy = strategies.booleans(),
                              are_nullable: Strategy = strategies.booleans(),
                              are_indexed: Strategy = strategies.booleans()
                              ) -> Strategy:
     return strategies.builds(Column,
-                             name=identifiers,
+                             name=names,
                              type_=types,
                              unique=are_unique,
                              nullable=are_nullable,
@@ -54,11 +58,13 @@ def non_primary_keys_factory(types: Strategy = types_factory(),
                              index=are_indexed)
 
 
-def primary_keys_factory(types: Strategy = primary_keys_types_factory(),
+def primary_keys_factory(*,
+                         names: Strategy = identifiers,
+                         types: Strategy = primary_keys_types_factory(),
                          are_auto_incremented: Strategy = strategies.just(True)
                          ) -> Strategy:
     return strategies.builds(Column,
-                             name=identifiers,
+                             name=names,
                              type_=types,
                              autoincrement=are_auto_incremented,
                              primary_key=strategies.just(True))
@@ -67,9 +73,11 @@ def primary_keys_factory(types: Strategy = primary_keys_types_factory(),
 def lists_factory(*,
                   primary_keys: Strategy = primary_keys_factory(),
                   non_primary_keys: Strategy = non_primary_keys_factory(),
-                  max_size: int = 10) -> Strategy:
-    @strategies.composite
-    def factory(draw: Callable[[Strategy], Any]) -> List[Column]:
+                  average_size: int = None,
+                  max_size: int = None) -> Strategy:
+    max_size = max_size - 1 if max_size is not None else max_size
+
+    def list_factory(draw: Callable[[Strategy], Any]) -> List[Column]:
         primary_key = draw(primary_keys)
 
         def names_are_unique(columns: List[Column]) -> int:
@@ -77,13 +85,15 @@ def lists_factory(*,
             names += [column.name for column in columns]
             return len(names) == len(set(names))
 
-        non_primary_keys_list = draw(strategies.lists(non_primary_keys,
-                                                      min_size=1,
-                                                      max_size=max_size - 1)
+        non_primary_keys_lists = strategies.lists(non_primary_keys,
+                                                  min_size=1,
+                                                  average_size=average_size,
+                                                  max_size=max_size)
+        non_primary_keys_list = draw(non_primary_keys_lists
                                      .filter(names_are_unique))
         return [primary_key] + non_primary_keys_list
 
-    return factory()
+    return strategies.composite(list_factory)()
 
 
 def non_all_unique_lists_factory(lists: Strategy = lists_factory()

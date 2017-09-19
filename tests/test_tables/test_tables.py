@@ -2,13 +2,13 @@ from hypothesis import strategies
 from sqlalchemy.schema import (MetaData,
                                Table)
 
-from hypothesis_sqlalchemy.tables import tables_factory
+from hypothesis_sqlalchemy.tables import factory
 from hypothesis_sqlalchemy.utils import is_column_unique
 from tests.utils import example
 
 
 def test_tables_factory(metadata: MetaData) -> None:
-    tables = tables_factory(metadatas=strategies.just(metadata))
+    tables = factory(metadatas=strategies.just(metadata))
     table = example(tables)
 
     assert isinstance(table, Table)

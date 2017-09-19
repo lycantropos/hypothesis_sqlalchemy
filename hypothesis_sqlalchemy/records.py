@@ -1,4 +1,3 @@
-import math
 from datetime import (date,
                       datetime)
 from decimal import Decimal
@@ -14,16 +13,14 @@ from collections import OrderedDict
 from functools import partial
 from hypothesis import strategies
 from hypothesis.searchstrategy.collections import TupleStrategy
-from sqlalchemy.schema import (Table,
-                               Column)
+from sqlalchemy.schema import Column
 from sqlalchemy.sql.sqltypes import String
 
 from .types import (Strategy,
                     ColumnValueType)
-from .utils import is_column_unique
-
-MIN_RECORDS_COUNT = 1
-MAX_RECORDS_COUNT = 100
+from .utils import (MIN_RECORDS_COUNT,
+                    MAX_RECORDS_COUNT,
+                    is_column_unique)
 
 # we're using integers as primary key values
 # which are usually positive
@@ -35,30 +32,27 @@ date_times = strategies.datetimes(min_value=MIN_DATE_TIME)
 dates = strategies.dates(min_value=MIN_DATE_TIME.date())
 
 
-def table_records_lists_factory(table: Table,
-                                min_size: int = MIN_RECORDS_COUNT,
-                                max_size: int = MAX_RECORDS_COUNT,
-                                **fixed_columns_values: Dict[str, Strategy]
-                                ) -> TupleStrategy:
-    return records_lists_factory(table.columns,
-                                 min_size=min_size,
-                                 max_size=max_size,
-                                 **fixed_columns_values)
+def factory(columns: Iterable[Column],
+            **fixed_columns_values: Strategy
+            ) -> TupleStrategy:
+    columns_values_strategies = OrderedDict(
+            (column.name,
+             strategies.one_of(
+                     column_values_factory(column),
+                     strategies.none())
+             if column.nullable
+             else column_values_factory(column))
+            for column in columns)
+    columns_values_strategies.update(fixed_columns_values)
+    return strategies.tuples(*columns_values_strategies.values())
 
 
-def table_records_factory(table: Table,
-                          **fixed_columns_values: Dict[str, Strategy]
-                          ) -> TupleStrategy:
-    return records_factory(table.columns,
-                           **fixed_columns_values)
-
-
-def records_lists_factory(columns: List[Column],
-                          *,
-                          min_size: int = MIN_RECORDS_COUNT,
-                          max_size: int = MAX_RECORDS_COUNT,
-                          **fixed_columns_values: Dict[str, Strategy]
-                          ) -> TupleStrategy:
+def lists_factory(columns: List[Column],
+                  *,
+                  min_size: int = MIN_RECORDS_COUNT,
+                  max_size: int = MAX_RECORDS_COUNT,
+                  **fixed_columns_values: Strategy
+                  ) -> TupleStrategy:
     values_lists = columns_values_lists(columns,
                                         min_size=min_size,
                                         max_size=max_size,
@@ -76,7 +70,7 @@ def columns_values_lists(columns: Iterable[Column],
                          *,
                          max_size: int,
                          min_size: int,
-                         **fixed_columns_values: Dict[str, Strategy]
+                         **fixed_columns_values: Strategy
                          ) -> Iterator[Strategy]:
     for column in columns:
         column_name = column.name
@@ -90,38 +84,21 @@ def columns_values_lists(columns: Iterable[Column],
                                unique=is_column_unique(column))
 
 
-def records_factory(columns: Iterable[Column],
-                    **fixed_columns_values: Dict[str, Strategy]
-                    ) -> TupleStrategy:
-    columns_values_strategies = OrderedDict(
-            (column.name,
-             strategies.one_of(
-                     column_values_factory(column),
-                     strategies.none())
-             if column.nullable
-             else column_values_factory(column))
-            for column in columns)
-    columns_values_strategies.update(fixed_columns_values)
-    return strategies.tuples(*columns_values_strategies.values())
-
-
-def is_valid_float(number: float) -> bool:
-    return not math.isnan(number) and math.isfinite(number)
-
-
 strategies_by_python_types = {
     bool: strategies.booleans(),
     int: strategies.integers(min_value=MIN_POSITIVE_INTEGER_VALUE,
                              max_value=MAX_SMALLINT_VALUE),
-    float: strategies.floats().filter(is_valid_float).map(Decimal),
+    float: strategies.floats(allow_nan=False,
+                             allow_infinity=False),
+    Decimal: strategies.decimals(allow_nan=False,
+                                 allow_infinity=False),
     datetime: date_times.map(partial(datetime.replace,
                                      microsecond=0)),
-    date: dates
+    date: dates,
 }
 
-ascii_not_null_characters = strategies.characters(
-        min_codepoint=1,
-        max_codepoint=127)
+ascii_not_null_characters = strategies.characters(min_codepoint=1,
+                                                  max_codepoint=127)
 
 
 def column_values_factory(column: Column) -> Strategy:

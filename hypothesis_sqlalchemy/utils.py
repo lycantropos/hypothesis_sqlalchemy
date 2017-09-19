@@ -19,3 +19,7 @@ identifiers = strategies.text(alphabet=identifiers_characters,
 
 def is_column_unique(column: Column) -> bool:
     return column.unique or column.primary_key
+
+
+MIN_RECORDS_COUNT = 1
+MAX_RECORDS_COUNT = 100

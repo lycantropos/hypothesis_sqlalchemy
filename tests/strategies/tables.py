@@ -1,7 +1,7 @@
 from hypothesis import strategies
 from sqlalchemy import MetaData
 
-from hypothesis_sqlalchemy.tables import tables_factory
+from hypothesis_sqlalchemy import tables
 
 metadata = MetaData()
-tables = tables_factory(metadatas=strategies.just(metadata))
+tables = tables.factory(metadatas=strategies.just(metadata))
