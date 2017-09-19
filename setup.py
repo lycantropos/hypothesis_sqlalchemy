@@ -12,6 +12,7 @@ setup(name=PROJECT_NAME,
       url=project_base_url,
       download_url=project_base_url + 'archive/master.tar.gz',
       description=hypothesis_sqlalchemy.__doc__,
+      long_description=open('README.rst').read(),
       license='MIT',
       classifiers=[
           'Development Status :: 3 - Alpha',
