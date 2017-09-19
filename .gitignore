@@ -1,0 +1,33 @@
+# logs
+*.log
+
+# Byte-compiled / optimized / DLL files
+.cache/
+**/__pycache__/
+*.py[cod]
+
+# C extensions
+*.so
+
+# Distribution / packaging
+bin/
+build/
+develop-eggs/
+dist/
+eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.eggs
+
+# tests
+.hypothesis/
+.coverage
+result.xml
+
+# IntelliJ IDEA
+.idea/
