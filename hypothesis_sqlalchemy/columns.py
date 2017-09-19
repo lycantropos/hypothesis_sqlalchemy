@@ -3,6 +3,7 @@ from typing import (Any,
                     List)
 
 from hypothesis import strategies
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.schema import Column
 from sqlalchemy.sql.sqltypes import (SmallInteger,
                                      Integer,
@@ -23,8 +24,10 @@ MAX_POSTGRES_VARCHAR_LENGTH = 10485760
 def string_types_factory() -> Strategy:
     string_lengths = strategies.integers(min_value=0,
                                          max_value=MAX_POSTGRES_VARCHAR_LENGTH)
-    return strategies.builds(String,
-                             length=string_lengths)
+    return strategies.one_of(strategies.builds(String,
+                                               length=string_lengths),
+                             strategies.builds(UUID,
+                                               as_uuid=strategies.booleans()))
 
 
 def primary_keys_types_factory() -> Strategy:

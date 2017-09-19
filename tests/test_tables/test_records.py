@@ -1,4 +1,5 @@
 from functools import partial
+
 from hypothesis.searchstrategy import SearchStrategy
 from sqlalchemy.schema import Table
 

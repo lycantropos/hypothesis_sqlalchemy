@@ -1,18 +1,18 @@
+from collections import OrderedDict
 from datetime import (date,
                       datetime)
 from decimal import Decimal
+from functools import partial
 from itertools import (product,
                        islice)
 from typing import (Iterable,
                     Iterator,
-                    Dict,
                     Tuple,
                     List)
 
-from collections import OrderedDict
-from functools import partial
 from hypothesis import strategies
 from hypothesis.searchstrategy.collections import TupleStrategy
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.schema import Column
 from sqlalchemy.sql.sqltypes import String
 
@@ -106,4 +106,6 @@ def column_values_factory(column: Column) -> Strategy:
     if isinstance(column_type, String):
         return strategies.text(alphabet=ascii_not_null_characters,
                                max_size=column_type.length)
+    elif isinstance(column_type, UUID):
+        return strategies.uuids()
     return strategies_by_python_types[column_type.python_type]
