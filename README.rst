@@ -5,6 +5,9 @@
 .. image:: https://travis-ci.org/lycantropos/hypothesis_sqlalchemy.svg?branch=master
   :target:  https://travis-ci.org/lycantropos/hypothesis_sqlalchemy.svg
 
+.. image:: https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy/branch/master/graph/badge.svg
+  :target: https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy
+
 .. image:: https://badge.fury.io/py/hypothesis_sqlalchemy.svg
     :target: https://badge.fury.io/py/hypothesis_sqlalchemy.svg
 
