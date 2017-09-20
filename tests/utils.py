@@ -16,7 +16,6 @@ def example(strategy: SearchStrategy) -> Any:
                 condition=lambda x: True,
                 settings=settings(max_shrinks=0,
                                   max_iterations=10000,
-                                  database=None,
                                   verbosity=Verbosity.quiet))
 
 
