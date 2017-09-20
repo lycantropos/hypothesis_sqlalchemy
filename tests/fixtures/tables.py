@@ -12,6 +12,6 @@ def metadata() -> MetaData:
     return raw_metadata
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='function')
 def table() -> Table:
     return example(strategies.tables)
