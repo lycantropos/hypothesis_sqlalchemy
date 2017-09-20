@@ -14,6 +14,7 @@ from typing import (Any,
 
 from hypothesis import strategies
 from hypothesis.searchstrategy.collections import TupleStrategy
+from hypothesis.strategies import none
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.schema import Column
 from sqlalchemy.sql.sqltypes import (String,
@@ -31,8 +32,6 @@ MIN_POSITIVE_INTEGER_VALUE = 1
 MAX_SMALLINT_VALUE = 32767
 
 MIN_DATE_TIME = datetime.utcfromtimestamp(0)
-date_times = strategies.datetimes(min_value=MIN_DATE_TIME)
-dates = strategies.dates(min_value=MIN_DATE_TIME.date())
 
 
 def factory(columns: Iterable[Column],
@@ -94,39 +93,104 @@ def columns_values_lists(columns: Iterable[Column],
                                unique=is_column_unique(column))
 
 
-strategies_by_python_types = {
-    bool: strategies.booleans(),
-    int: strategies.integers(min_value=MIN_POSITIVE_INTEGER_VALUE,
-                             max_value=MAX_SMALLINT_VALUE),
-    float: strategies.floats(allow_nan=False,
-                             allow_infinity=False),
-    Decimal: strategies.decimals(allow_nan=False,
-                                 allow_infinity=False),
-    datetime: date_times.map(partial(datetime.replace,
-                                     microsecond=0)),
-    date: dates,
+booleans_factory = strategies.booleans
+
+
+def integers_factory(min_value: int = MIN_POSITIVE_INTEGER_VALUE,
+                     max_value: int = MAX_SMALLINT_VALUE) -> Strategy:
+    return strategies.integers(min_value=min_value,
+                               max_value=max_value)
+
+
+def floats_factory(*,
+                   min_value: float = None,
+                   max_value: float = None,
+                   allow_nan: bool = False,
+                   allow_infinity: bool = False) -> Strategy:
+    return strategies.floats(min_value=min_value,
+                             max_value=max_value,
+                             allow_nan=allow_nan,
+                             allow_infinity=allow_infinity)
+
+
+def decimals_factory(*,
+                     min_value: float = None,
+                     max_value: float = None,
+                     allow_nan: bool = False,
+                     allow_infinity: bool = False,
+                     places: int = None) -> Strategy:
+    return strategies.decimals(min_value=min_value,
+                               max_value=max_value,
+                               allow_nan=allow_nan,
+                               allow_infinity=allow_infinity,
+                               places=places)
+
+
+def date_times_factory(*,
+                       min_value: datetime = MIN_DATE_TIME,
+                       max_value: datetime = datetime.max,
+                       timezones: Strategy = none()) -> Strategy:
+    date_times = strategies.datetimes(min_value=min_value,
+                                      max_value=max_value,
+                                      timezones=timezones)
+    return date_times.map(partial(datetime.replace,
+                                  microsecond=0))
+
+
+def dates_factory(min_value: date = MIN_DATE_TIME.date(),
+                  max_value: date = date.max) -> Strategy:
+    return strategies.dates(min_value=min_value,
+                            max_value=max_value)
+
+
+values_by_python_types = {
+    bool: booleans_factory(),
+    int: integers_factory(),
+    float: floats_factory(),
+    Decimal: decimals_factory(),
+    datetime: date_times_factory(),
+    date: dates_factory(),
 }
 
 ascii_not_null_characters = strategies.characters(min_codepoint=1,
                                                   max_codepoint=127)
 
 
-def column_values_factory(column: Column) -> Strategy:
-    column_type = column.type
-    if isinstance(column_type, Enum):
-        return enum_type_values_factory(column_type)
-    elif isinstance(column_type, String):
-        return strategies.text(alphabet=ascii_not_null_characters,
-                               max_size=column_type.length)
-    elif isinstance(column_type, UUID):
-        return strategies.uuids()
-    return strategies_by_python_types[column_type.python_type]
+def string_type_values_factory(string_type: String,
+                               *,
+                               alphabet: Strategy = ascii_not_null_characters
+                               ) -> Strategy:
+    return strategies.text(alphabet=alphabet,
+                           max_size=string_type.length)
 
 
 def enum_type_values_factory(enum_type: Enum) -> Strategy:
     enum_class = enum_type.enum_class
+    # The source of enumerated values may be a list of string values
     if enum_class is None:
         return strategies.one_of(*map(strategies.just,
                                       enum_type.enums))
+    # ... or a PEP-435-compliant enumerated class.
+    # More info at
+    # http://docs.sqlalchemy.org/en/latest/core/type_basics.html#sqlalchemy.types.Enum
     return strategies.one_of(*map(strategies.just,
                                   enum_class))
+
+
+def uuid_type_values_factory(uuid_type: UUID) -> Strategy:
+    return strategies.uuids()
+
+
+factories_by_sql_types = {
+    String: string_type_values_factory,
+    Enum: enum_type_values_factory,
+    UUID: uuid_type_values_factory,
+}
+
+
+def column_values_factory(column: Column) -> Strategy:
+    column_type = column.type
+    try:
+        return factories_by_sql_types[type(column_type)](column_type)
+    except KeyError:
+        return values_by_python_types[column_type.python_type]
