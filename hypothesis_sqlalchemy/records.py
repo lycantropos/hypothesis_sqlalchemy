@@ -5,16 +5,19 @@ from decimal import Decimal
 from functools import partial
 from itertools import (product,
                        islice)
-from typing import (Iterable,
+from math import ceil
+from typing import (Any,
+                    Callable,
+                    Iterable,
                     Iterator,
-                    Tuple,
                     List)
 
 from hypothesis import strategies
 from hypothesis.searchstrategy.collections import TupleStrategy
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.schema import Column
-from sqlalchemy.sql.sqltypes import String, Enum
+from sqlalchemy.sql.sqltypes import (String,
+                                     Enum)
 
 from .types import (Strategy,
                     ColumnValueType)
@@ -37,9 +40,8 @@ def factory(columns: Iterable[Column],
             ) -> TupleStrategy:
     columns_values_strategies = OrderedDict(
             (column.name,
-             strategies.one_of(
-                     column_values_factory(column),
-                     strategies.none())
+             strategies.one_of(column_values_factory(column),
+                               strategies.none())
              if column.nullable
              else column_values_factory(column))
             for column in columns)
@@ -53,23 +55,31 @@ def lists_factory(columns: List[Column],
                   max_size: int = MAX_RECORDS_COUNT,
                   **fixed_columns_values: Strategy
                   ) -> TupleStrategy:
+    columns_count = len(columns)
+
+    def list_size(lists_size: int) -> int:
+        return int(ceil(lists_size ** (1 / columns_count)))
+
     values_lists = columns_values_lists(columns,
-                                        min_size=min_size,
-                                        max_size=max_size,
+                                        min_size=list_size(max_size),
                                         **fixed_columns_values)
+    values_tuples = strategies.tuples(*values_lists)
+    sizes = strategies.integers(min_value=min_size,
+                                max_value=max_size)
 
-    def to_records(values: Tuple[List[ColumnValueType], ...]
-                   ) -> Iterator[Tuple[ColumnValueType]]:
-        return list(islice(product(*values), 0, MAX_RECORDS_COUNT))
+    def list_factory(draw: Callable[[Strategy], Any]
+                     ) -> List[ColumnValueType]:
+        values_tuple = draw(values_tuples)
+        size = draw(sizes)
+        return list(islice(product(*values_tuple), 0, size))
 
-    tuples = strategies.tuples(*values_lists)
-    return tuples.map(to_records)
+    return strategies.composite(list_factory)()
 
 
 def columns_values_lists(columns: Iterable[Column],
                          *,
-                         max_size: int,
-                         min_size: int,
+                         min_size: int = None,
+                         max_size: int = None,
                          **fixed_columns_values: Strategy
                          ) -> Iterator[Strategy]:
     for column in columns:
