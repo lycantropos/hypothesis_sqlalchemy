@@ -1,9 +1,10 @@
-import enum
+from enum import (EnumMeta,
+                  Enum)
 from typing import (Any,
                     Callable)
 
 from hypothesis import strategies
-from sqlalchemy.sql.sqltypes import Enum
+from sqlalchemy.sql.sqltypes import Enum as EnumType
 
 from .types import Strategy
 from .utils import identifiers
@@ -17,11 +18,11 @@ def factory(*,
             names: Strategy = identifiers,
             keys: Strategy = identifiers,
             values: Strategy = strategies.integers(),
-            bases: Strategy = strategies.tuples(strategies.just(enum.Enum)),
+            bases: Strategy = strategies.tuples(strategies.just(Enum)),
             value_to_string: Callable[[Any], str] = '{!r}'.format,
             **namespace: Any
             ) -> Strategy:
-    def enum_factory(draw: Callable[[Strategy], Any]) -> enum.EnumMeta:
+    def enum_factory(draw: Callable[[Strategy], Any]) -> EnumMeta:
         name = draw(names)
         enum_bases = draw(bases)
         contents = strategies.dictionaries(keys=keys,
@@ -32,8 +33,13 @@ def factory(*,
         indent = 4 * ' '
         lines = (key + '=' + value_to_string(value)
                  for key, value in content.items())
-        content_str = '\n'.join(indent + line
-                                for line in lines)
+        try:
+            content_str = '\n'.join(indent + line
+                                    for line in lines)
+        except TypeError as err:
+            err_msg = ('Invalid strategy: '
+                       '"keys" should generate "str" instances.')
+            raise ValueError(err_msg) from err
         exec(ENUM_TEMPLATE.format(name=name,
                                   content=content_str),
              namespace)
@@ -43,11 +49,11 @@ def factory(*,
 
 
 def types_factory(enums: Strategy = factory()) -> Strategy:
-    def enum_type_factory(draw: Callable[[Strategy], Any]) -> Enum:
+    def enum_type_factory(draw: Callable[[Strategy], Any]) -> EnumType:
         types_values = strategies.one_of(strategies.tuples(enums),
                                          strategies.lists(identifiers,
                                                           min_size=1))
         type_values = draw(types_values)
-        return Enum(*type_values)
+        return EnumType(*type_values)
 
     return strategies.composite(enum_type_factory)()
