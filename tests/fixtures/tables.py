@@ -1,6 +1,6 @@
 import pytest
-from sqlalchemy import MetaData
-from sqlalchemy.schema import Table
+from sqlalchemy.schema import (MetaData,
+                               Table)
 
 from tests import strategies
 from tests.strategies.tables import metadata as raw_metadata
