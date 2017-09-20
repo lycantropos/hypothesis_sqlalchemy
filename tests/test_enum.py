@@ -1,3 +1,4 @@
+import datetime
 from enum import (EnumMeta,
                   Enum,
                   IntEnum)
@@ -13,21 +14,34 @@ from tests.utils import example
 
 
 def test_enums_factory() -> None:
-    enums = factory()
-    enum = example(enums)
+    none_enums = factory(values=strategies.just(None))
+    none_enum = example(none_enums)
     int_enums = factory(bases=strategies.tuples(strategies.just(IntEnum)))
     int_enum = example(int_enums)
+    datetimes_enums = factory(bases=strategies.tuples(strategies.just(Enum)),
+                              values=strategies.datetimes(),
+                              datetime=datetime)
+    datetimes_enum = example(datetimes_enums)
     invalid_keys_enums = factory(keys=strategies.none())
     invalid_values_enums = factory(
-        bases=strategies.tuples(strategies.just(IntEnum)),
-        values=strategies.none())
+            bases=strategies.tuples(strategies.just(IntEnum)),
+            values=strategies.none())
 
-    assert isinstance(enums, SearchStrategy)
+    assert isinstance(none_enums, SearchStrategy)
     assert isinstance(int_enums, SearchStrategy)
-    assert isinstance(enum, EnumMeta)
+    assert isinstance(datetimes_enums, SearchStrategy)
+    assert isinstance(none_enum, EnumMeta)
     assert isinstance(int_enum, EnumMeta)
-    assert issubclass(enum, Enum)
+    assert isinstance(datetimes_enum, EnumMeta)
+    assert issubclass(none_enum, Enum)
     assert issubclass(int_enum, IntEnum)
+    assert issubclass(datetimes_enum, Enum)
+    assert all(member.value is None
+               for member in none_enum)
+    assert all(isinstance(member, int)
+               for member in int_enum)
+    assert all(isinstance(member.value, datetime.datetime)
+               for member in datetimes_enum)
 
     with pytest.raises(ValueError):
         example(invalid_keys_enums)
