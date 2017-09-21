@@ -81,6 +81,10 @@ def lists_factory(*,
                   average_size: int = None,
                   max_size: int = None) -> Strategy:
     max_size = max_size - 1 if max_size is not None else max_size
+    non_primary_keys_lists = strategies.lists(non_primary_keys,
+                                              min_size=1,
+                                              average_size=average_size,
+                                              max_size=max_size)
 
     def list_factory(draw: Callable[[Strategy], Any]) -> List[Column]:
         primary_key = draw(primary_keys)
@@ -90,10 +94,6 @@ def lists_factory(*,
             names += [column.name for column in columns]
             return len(names) == len(set(names))
 
-        non_primary_keys_lists = strategies.lists(non_primary_keys,
-                                                  min_size=1,
-                                                  average_size=average_size,
-                                                  max_size=max_size)
         non_primary_keys_list = draw(non_primary_keys_lists
                                      .filter(names_are_unique))
         return [primary_key] + non_primary_keys_list

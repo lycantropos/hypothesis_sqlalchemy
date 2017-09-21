@@ -1,8 +1,8 @@
-from enum import (EnumMeta,
-                  Enum)
 from typing import (Any,
                     Callable)
 
+from enum import (EnumMeta,
+                  Enum)
 from hypothesis import strategies
 from sqlalchemy.sql.sqltypes import Enum as EnumType
 
@@ -22,12 +22,13 @@ def factory(*,
             value_to_string: Callable[[Any], str] = '{!r}'.format,
             **namespace: Any
             ) -> Strategy:
+    contents = strategies.dictionaries(keys=keys,
+                                       values=values,
+                                       min_size=1)
+
     def enum_factory(draw: Callable[[Strategy], Any]) -> EnumMeta:
         name = draw(names)
         enum_bases = draw(bases)
-        contents = strategies.dictionaries(keys=keys,
-                                           values=values,
-                                           min_size=1)
         content = draw(contents)
         namespace['bases'] = enum_bases
         indent = 4 * ' '
@@ -49,10 +50,11 @@ def factory(*,
 
 
 def types_factory(enums: Strategy = factory()) -> Strategy:
+    types_values = strategies.one_of(strategies.tuples(enums),
+                                     strategies.lists(identifiers,
+                                                      min_size=1))
+
     def enum_type_factory(draw: Callable[[Strategy], Any]) -> EnumType:
-        types_values = strategies.one_of(strategies.tuples(enums),
-                                         strategies.lists(identifiers,
-                                                          min_size=1))
         type_values = draw(types_values)
         return EnumType(*type_values)
 
