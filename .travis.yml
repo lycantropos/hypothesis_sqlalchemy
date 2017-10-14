@@ -4,12 +4,16 @@ python:
   - "3.5"
   - "3.6"
 
+sudo: required
+
+services:
+  - docker
+
 install:
-  - pip install .
   - pip install codecov
 
 script:
-  - python setup.py test
+  - docker-compose up --build
 
 after_success:
   - codecov
