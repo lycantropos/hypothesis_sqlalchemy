@@ -36,8 +36,6 @@ setup(name=PROJECT_NAME,
       setup_requires=['pytest-runner>=2.11'],
       tests_require=[
           'pydevd>=1.0.0',  # debugging
-          'psycopg2>=2.7.3.1',  # PostgreSQL driver
-          'PyMySQL>=0.7.11',  # MySQL driver
           'sqlalchemy_helpers>=0.1.0',  # context managers
           'sqlalchemy_utils>=0.32.16',  # database creation/destruction
           'pytest>=3.0.5',
