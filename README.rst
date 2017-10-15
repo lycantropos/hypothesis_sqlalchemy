@@ -48,8 +48,14 @@ Plain
 
     python3 setup.py test
 
+Inside ``Docker`` container
+
+.. code-block:: bash
+
+    docker-compose up
+
 Inside ``Docker`` container with remote debugger
 
 .. code-block:: bash
 
-    ./set-dockerhost.sh docker-compose up
+    ./set-dockerhost.sh docker-compose -f docker-compose.debug.yml up
