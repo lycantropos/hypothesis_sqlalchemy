@@ -9,6 +9,10 @@ sudo: required
 services:
   - docker
 
+before_install:
+  - docker-compose -v
+  - docker -v
+
 install:
   - pip install codecov
 
