@@ -1,4 +1,6 @@
-FROM python:3.5
+ARG PYTHON3_VERSION="3"
+
+FROM python:${PYTHON3_VERSION}
 
 WORKDIR /opt/hypothesis_sqlalchemy
 
