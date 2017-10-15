@@ -1,4 +1,4 @@
-ARG PYTHON3_VERSION="3"
+ARG PYTHON3_VERSION
 
 FROM python:${PYTHON3_VERSION}
 
@@ -6,6 +6,7 @@ WORKDIR /opt/hypothesis_sqlalchemy
 
 COPY ./hypothesis_sqlalchemy hypothesis_sqlalchemy
 COPY ./tests tests
+COPY ./README.rst README.rst
 COPY ./setup.py setup.py
 COPY ./setup.cfg setup.cfg
 
