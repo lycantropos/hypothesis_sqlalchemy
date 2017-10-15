@@ -3,7 +3,7 @@ version: '3'
 services:
   hypothesis_sqlalchemy:
     build: .
-    image: lycantropos/hypothesis_sqlalchemy:latest
+    image: lycantropos/hypothesis_sqlalchemy:0.0.2
     volumes:
       - .:/opt/hypothesis_sqlalchemy/
     extra_hosts:
