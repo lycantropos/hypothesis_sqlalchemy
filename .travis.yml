@@ -11,6 +11,7 @@ services:
 before_install:
   - docker-compose -v
   - docker -v
+  - printenv
 
 install:
   - pip install codecov
