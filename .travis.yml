@@ -2,7 +2,6 @@ language: python
 
 python:
   - "3.5"
-  - "3.6"
 
 sudo: required
 
@@ -23,4 +22,5 @@ after_success:
   - codecov
 
 env:
-  - PYTHON3_VERSION=${TRAVIS_PYTHON_VERSION}
+  - PYTHON3_VERSION=3.5
+  - PYTHON3_VERSION=3.6
