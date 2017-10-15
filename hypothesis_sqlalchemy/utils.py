@@ -2,7 +2,7 @@ from hypothesis import strategies
 from sqlalchemy.schema import Column
 
 MIN_RECORDS_COUNT = 1
-MAX_RECORDS_COUNT = 100
+MAX_RECORDS_COUNT = 50
 
 # more info at:
 # for PostgreSQL
