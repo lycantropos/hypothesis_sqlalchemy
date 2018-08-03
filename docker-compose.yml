@@ -6,7 +6,7 @@ services:
       context: .
       args:
         - PYTHON3_VERSION=$PYTHON3_VERSION
-    image: lycantropos/hypothesis_sqlalchemy:0.0.2
+    image: lycantropos/hypothesis_sqlalchemy:0.0.3
     volumes:
       - ./hypothesis_sqlalchemy:/opt/hypothesis_sqlalchemy/hypothesis_sqlalchemy
       - ./tests:/opt/hypothesis_sqlalchemy/tests
