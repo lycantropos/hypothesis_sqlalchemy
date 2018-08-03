@@ -9,12 +9,12 @@ from hypothesis_sqlalchemy.types import Strategy
 from hypothesis_sqlalchemy.utils import identifiers
 
 
-def factory(
-        *,
-        tables_names: Strategy = identifiers,
-        metadatas: Strategy,
-        columns_lists: Strategy = columns.non_all_unique_lists_factory(),
-        extend_existing: Strategy = strategies.just(True)) -> Strategy:
+def factory(*,
+            tables_names: Strategy = identifiers,
+            metadatas: Strategy,
+            columns_lists: Strategy = columns.non_all_unique_lists_factory(),
+            extend_existing: Strategy = strategies.just(True)
+            ) -> Strategy:
     def table_factory(draw: Callable[[Strategy], Any]) -> Table:
         table_name = draw(tables_names)
         metadata = draw(metadatas)
