@@ -1,8 +1,8 @@
+from enum import (Enum,
+                  EnumMeta)
 from typing import (Any,
                     Callable)
 
-from enum import (EnumMeta,
-                  Enum)
 from hypothesis import strategies
 from sqlalchemy.sql.sqltypes import Enum as EnumType
 

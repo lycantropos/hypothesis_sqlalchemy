@@ -1,9 +1,9 @@
 from datetime import (date,
-                      timedelta,
-                      datetime)
+                      datetime,
+                      timedelta)
 from decimal import Decimal
-from typing import (Union,
-                    Tuple)
+from typing import (Tuple,
+                    Union)
 
 from hypothesis.searchstrategy import SearchStrategy
 

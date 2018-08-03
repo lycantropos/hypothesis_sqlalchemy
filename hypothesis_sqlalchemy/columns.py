@@ -5,14 +5,14 @@ from typing import (Any,
 from hypothesis import strategies
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.schema import Column
-from sqlalchemy.sql.sqltypes import (SmallInteger,
-                                     Integer,
-                                     BigInteger,
+from sqlalchemy.sql.sqltypes import (BigInteger,
                                      Boolean,
-                                     Float,
-                                     String,
                                      Date,
-                                     DateTime)
+                                     DateTime,
+                                     Float,
+                                     Integer,
+                                     SmallInteger,
+                                     String)
 
 from . import enums
 from .types import Strategy

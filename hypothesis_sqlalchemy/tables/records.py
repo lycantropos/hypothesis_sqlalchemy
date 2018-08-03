@@ -3,8 +3,8 @@ from sqlalchemy import Table
 
 from hypothesis_sqlalchemy import records
 from hypothesis_sqlalchemy.types import Strategy
-from hypothesis_sqlalchemy.utils import (MIN_RECORDS_COUNT,
-                                         MAX_RECORDS_COUNT)
+from hypothesis_sqlalchemy.utils import (MAX_RECORDS_COUNT,
+                                         MIN_RECORDS_COUNT)
 
 
 def factory(table: Table,

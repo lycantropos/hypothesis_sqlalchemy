@@ -3,8 +3,8 @@ from datetime import (date,
                       datetime)
 from decimal import Decimal
 from functools import partial
-from itertools import (product,
-                       islice)
+from itertools import (islice,
+                       product)
 from math import ceil
 from typing import (Any,
                     Callable,
@@ -17,13 +17,13 @@ from hypothesis.searchstrategy.collections import TupleStrategy
 from hypothesis.strategies import none
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.schema import Column
-from sqlalchemy.sql.sqltypes import (String,
-                                     Enum)
+from sqlalchemy.sql.sqltypes import (Enum,
+                                     String)
 
-from .types import (Strategy,
-                    ColumnValueType)
-from .utils import (MIN_RECORDS_COUNT,
-                    MAX_RECORDS_COUNT,
+from .types import (ColumnValueType,
+                    Strategy)
+from .utils import (MAX_RECORDS_COUNT,
+                    MIN_RECORDS_COUNT,
                     is_column_unique)
 
 # we're using integers as primary key values
