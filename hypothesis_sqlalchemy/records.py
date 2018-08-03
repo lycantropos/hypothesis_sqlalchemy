@@ -177,7 +177,7 @@ def enum_type_values_factory(enum_type: Enum) -> Strategy:
                                   enum_class))
 
 
-def uuid_type_values_factory(uuid_type: UUID) -> Strategy:
+def uuid_type_values_factory(_: UUID) -> Strategy:
     return strategies.uuids()
 
 
