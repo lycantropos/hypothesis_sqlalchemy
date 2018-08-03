@@ -30,6 +30,7 @@ setup(name=PROJECT_NAME,
       ],
       packages=find_packages(exclude=('tests',)),
       keywords=['SQLAlchemy', 'hypothesis'],
+      python_requires='>=3.5',
       install_requires=[
           'sqlalchemy>=1.1.14',
           'hypothesis>=3.28.0',
