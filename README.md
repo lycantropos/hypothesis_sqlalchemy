@@ -14,7 +14,6 @@ Installation
 ============
 
 Install the latest `pip` & `setuptools` packages versions
-
 ```bash
 python3 -m pip install --upgrade pip setuptools
 ```
@@ -23,7 +22,6 @@ Release
 -------
 
 Download and install the latest stable version from `PyPI` repository
-
 ```bash
 python3 -m pip install --upgrade hypothesis_sqlalchemy
 ```
@@ -32,7 +30,6 @@ Developer
 ---------
 
 Download and install the latest version from `GitHub` repository
-
 ```bash
 git clone https://github.com/lycantropos/hypothesis_sqlalchemy.git
 cd hypothesis_sqlalchemy
@@ -43,13 +40,11 @@ Running tests
 =============
 
 Plain
-
 ```bash
 python3 setup.py test
 ```
 
 Inside `Docker` container
-
 ```bash
 docker-compose up
 ```
