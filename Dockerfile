@@ -6,7 +6,7 @@ WORKDIR /opt/hypothesis_sqlalchemy
 
 COPY ./hypothesis_sqlalchemy hypothesis_sqlalchemy
 COPY ./tests tests
-COPY ./README.rst README.rst
+COPY ./README.md README.md
 COPY ./setup.py setup.py
 COPY ./setup.cfg setup.cfg
 
