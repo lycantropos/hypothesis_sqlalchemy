@@ -2,7 +2,8 @@ from collections import OrderedDict
 from datetime import (date,
                       datetime)
 from decimal import Decimal
-from functools import partial
+from functools import (partial,
+                       singledispatch)
 from itertools import (islice,
                        product)
 from math import ceil
@@ -19,6 +20,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.schema import Column
 from sqlalchemy.sql.sqltypes import (Enum,
                                      String)
+from sqlalchemy.sql.type_api import TypeEngine
 
 from .types import (ColumnValueType,
                     Strategy)
@@ -152,10 +154,17 @@ values_by_python_types = {
     date: dates_factory(),
 }
 
+
+@singledispatch
+def from_column_type(column_type: TypeEngine) -> Strategy:
+    return values_by_python_types[column_type.python_type]
+
+
 ascii_not_null_characters = strategies.characters(min_codepoint=1,
                                                   max_codepoint=127)
 
 
+@from_column_type.register(String)
 def string_type_values_factory(string_type: String,
                                *,
                                alphabet: Strategy = ascii_not_null_characters
@@ -164,6 +173,7 @@ def string_type_values_factory(string_type: String,
                            max_size=string_type.length)
 
 
+@from_column_type.register(Enum)
 def enum_type_values_factory(enum_type: Enum) -> Strategy:
     enum_class = enum_type.enum_class
     # The source of enumerated values may be a list of string values
@@ -177,6 +187,7 @@ def enum_type_values_factory(enum_type: Enum) -> Strategy:
                                   enum_class))
 
 
+@from_column_type.register(UUID)
 def uuid_type_values_factory(_: UUID) -> Strategy:
     return strategies.uuids()
 
@@ -189,8 +200,4 @@ factories_by_sql_types = {
 
 
 def column_values_factory(column: Column) -> Strategy:
-    column_type = column.type
-    try:
-        return factories_by_sql_types[type(column_type)](column_type)
-    except KeyError:
-        return values_by_python_types[column_type.python_type]
+    return from_column_type(column.type)
