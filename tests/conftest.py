@@ -1,9 +1,9 @@
+import os
 import pkgutil
 import sys
 from typing import List
 
-import os
-from _pytest.config import Parser
+from _pytest.config.argparsing import Parser
 from _pytest.python import Metafunc
 
 base_dir = os.path.dirname(__file__)
