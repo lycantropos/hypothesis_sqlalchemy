@@ -1,6 +1,6 @@
 import datetime
-from enum import (EnumMeta,
-                  Enum,
+from enum import (Enum,
+                  EnumMeta,
                   IntEnum)
 
 import pytest
