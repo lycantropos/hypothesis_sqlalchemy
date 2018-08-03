@@ -14,6 +14,7 @@ def factory(table: Table,
 
 
 def lists_factory(table: Table,
+                  *,
                   min_size: int = MIN_RECORDS_COUNT,
                   max_size: int = MAX_RECORDS_COUNT,
                   **fixed_columns_values: Strategy) -> TupleStrategy:
