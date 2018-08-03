@@ -5,6 +5,23 @@ import hypothesis_sqlalchemy
 from hypothesis_sqlalchemy.config import PROJECT_NAME
 
 project_base_url = 'https://github.com/lycantropos/hypothesis_sqlalchemy/'
+
+install_requires = [
+    'sqlalchemy>=1.1.14',
+    'hypothesis>=3.28.0',
+]
+setup_requires = [
+    'pytest-runner>=2.11',
+]
+tests_require = [
+    'pydevd>=1.0.0',  # debugging
+    'sqlalchemy_helpers>=0.1.0',  # context managers
+    'sqlalchemy_utils>=0.32.16',  # database creation/destruction
+    'pytest>=3.0.5',
+    'pytest-cov>=2.4.0',
+    'hypothesis>=3.13.0',
+]
+
 setup(name=PROJECT_NAME,
       version=hypothesis_sqlalchemy.__version__,
       author='Azat Ibrakov',
@@ -31,16 +48,6 @@ setup(name=PROJECT_NAME,
       packages=find_packages(exclude=('tests',)),
       keywords=['SQLAlchemy', 'hypothesis'],
       python_requires='>=3.5',
-      install_requires=[
-          'sqlalchemy>=1.1.14',
-          'hypothesis>=3.28.0',
-      ],
-      setup_requires=['pytest-runner>=2.11'],
-      tests_require=[
-          'pydevd>=1.0.0',  # debugging
-          'sqlalchemy_helpers>=0.1.0',  # context managers
-          'sqlalchemy_utils>=0.32.16',  # database creation/destruction
-          'pytest>=3.0.5',
-          'pytest-cov>=2.4.0',
-          'hypothesis>=3.13.0',
-      ])
+      install_requires=install_requires,
+      setup_requires=setup_requires,
+      tests_require=tests_require)
