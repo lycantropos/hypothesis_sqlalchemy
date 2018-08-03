@@ -8,6 +8,7 @@ python:
 env:
   - PYTHON3_VERSION=3.5
   - PYTHON3_VERSION=3.6
+  - PYTHON3_VERSION=3.7
 
 before_install:
   - ./install-docker.sh
