@@ -1,28 +1,23 @@
-from setuptools import (setup,
-                        find_packages)
+from setuptools import (find_packages,
+                        setup)
 
 import hypothesis_sqlalchemy
-from hypothesis_sqlalchemy.config import PROJECT_NAME
 
 project_base_url = 'https://github.com/lycantropos/hypothesis_sqlalchemy/'
 
 install_requires = [
-    'sqlalchemy>=1.1.14',
-    'hypothesis>=3.28.0',
+    'sqlalchemy>=1.1.0',
+    'hypothesis>=3.20.0',
 ]
 setup_requires = [
-    'pytest-runner>=2.11',
+    'pytest-runner>=4.2',
 ]
 tests_require = [
-    'pydevd>=1.0.0',  # debugging
-    'sqlalchemy_helpers>=0.1.0',  # context managers
-    'sqlalchemy_utils>=0.32.16',  # database creation/destruction
-    'pytest>=3.0.5',
-    'pytest-cov>=2.4.0',
-    'hypothesis>=3.13.0',
+    'pytest>=3.8.1',
+    'pytest-cov>=2.6.0',
 ]
 
-setup(name=PROJECT_NAME,
+setup(name='hypothesis_sqlalchemy',
       version=hypothesis_sqlalchemy.__version__,
       author='Azat Ibrakov',
       author_email='azatibrakov@gmail.com',
@@ -40,7 +35,9 @@ setup(name=PROJECT_NAME,
           'License :: OSI Approved :: MIT License',
           'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3.7',
           'Programming Language :: Python :: Implementation :: CPython',
+          'Programming Language :: Python :: Implementation :: PyPy',
           'Operating System :: POSIX',
           'Operating System :: MacOS :: MacOS X',
           'Operating System :: Microsoft :: Windows',

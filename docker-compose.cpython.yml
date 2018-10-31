@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  hypothesis_sqlalchemy-cpython:
+    build:
+      context: .
+      args:
+      - PYTHON_IMAGE=${CPYTHON_IMAGE_NAME}
+      - PYTHON_IMAGE_VERSION=${CPYTHON_IMAGE_VERSION}
+    image: lycantropos/hypothesis_sqlalchemy-cpython:0.0.4-alpha
+    volumes:
+      - ./hypothesis_sqlalchemy/:/opt/hypothesis_sqlalchemy/hypothesis_sqlalchemy/
+      - ./tests/:/opt/hypothesis_sqlalchemy/tests/
+      - ./README.md:/opt/hypothesis_sqlalchemy/README.md
+      - ./setup.py:/opt/hypothesis_sqlalchemy/setup.py
+      - ./setup.cfg:/opt/hypothesis_sqlalchemy/setup.cfg
+    entrypoint: python3
+    command: setup.py test
