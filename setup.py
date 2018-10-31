@@ -35,6 +35,7 @@ setup(name=PROJECT_NAME,
       classifiers=[
           'Development Status :: 3 - Alpha',
           'Environment :: Web Environment',
+          'Framework :: Hypothesis',
           'Intended Audience :: Developers',
           'License :: OSI Approved :: MIT License',
           'Programming Language :: Python :: 3.5',
