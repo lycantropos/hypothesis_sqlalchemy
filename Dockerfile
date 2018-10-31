@@ -1,13 +1,14 @@
-ARG PYTHON3_VERSION="3"
+ARG PYTHON_IMAGE
+ARG PYTHON_IMAGE_VERSION
 
-FROM python:${PYTHON3_VERSION}
+FROM ${PYTHON_IMAGE}:${PYTHON_IMAGE_VERSION}
 
 WORKDIR /opt/hypothesis_sqlalchemy
 
-COPY ./hypothesis_sqlalchemy hypothesis_sqlalchemy
-COPY ./tests tests
-COPY ./README.md README.md
-COPY ./setup.py setup.py
-COPY ./setup.cfg setup.cfg
+COPY hypothesis_sqlalchemy/ hypothesis_sqlalchemy/
+COPY tests/ tests/
+COPY README.md .
+COPY setup.py .
+COPY setup.cfg .
 
-RUN python3 -m pip install .
+RUN pip install -e .

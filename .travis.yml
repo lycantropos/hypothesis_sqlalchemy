@@ -1,27 +1,22 @@
-sudo: required
+sudo: false
+distro: trusty
 
 language: python
 
-python:
-  - "3.5"
-
-env:
-  - PYTHON3_VERSION=3.5
-  - PYTHON3_VERSION=3.6
-  - PYTHON3_VERSION=3.7
-
-before_install:
-  - ./install-docker.sh
-  - ./install-docker-compose.sh
-  - docker -v
-  - docker-compose -v
-  - printenv
+matrix:
+  include:
+    - python: pypy3.5
+    - python: 3.5
+    - python: 3.6
+    - python: 3.7
+      dist: xenial
+      sudo: true
 
 install:
-  - pip install codecov
+  - python -m pip install codecov>=2.0.15
 
 script:
-  - ./run-tests.sh
+  - python setup.py test
 
 after_success:
   - codecov
