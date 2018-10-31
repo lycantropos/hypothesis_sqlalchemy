@@ -2,7 +2,6 @@ from setuptools import (setup,
                         find_packages)
 
 import hypothesis_sqlalchemy
-from hypothesis_sqlalchemy.config import PROJECT_NAME
 
 project_base_url = 'https://github.com/lycantropos/hypothesis_sqlalchemy/'
 
@@ -22,7 +21,7 @@ tests_require = [
     'hypothesis>=3.13.0',
 ]
 
-setup(name=PROJECT_NAME,
+setup(name='hypothesis_sqlalchemy',
       version=hypothesis_sqlalchemy.__version__,
       author='Azat Ibrakov',
       author_email='azatibrakov@gmail.com',
