@@ -6,8 +6,8 @@ import hypothesis_sqlalchemy
 project_base_url = 'https://github.com/lycantropos/hypothesis_sqlalchemy/'
 
 install_requires = [
-    'sqlalchemy>=1.1.14',
-    'hypothesis>=3.28.0',
+    'sqlalchemy>=1.1.0',
+    'hypothesis>=3.20.0',
 ]
 setup_requires = [
     'pytest-runner>=2.11',
