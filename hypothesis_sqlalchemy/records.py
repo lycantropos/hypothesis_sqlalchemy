@@ -6,7 +6,6 @@ from functools import (partial,
                        singledispatch)
 from typing import (Any,
                     Iterable,
-                    Iterator,
                     List,
                     Tuple)
 
