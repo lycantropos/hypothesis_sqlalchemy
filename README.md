@@ -57,12 +57,11 @@ Install:
   ```
 
 Usage
-=====
+-----
 
 Let's take a look at what can be generated and how.
 
-Tables
-------
+### Tables
 
 Suppose we have metadata
 ```pydocstring
@@ -83,8 +82,7 @@ kahtvedrpis
  'kahtvedrpis.olyrajvsfxbgxzmxheaxdwzgcaj']
 ```
 
-Records
--------
+### Records
 
 Suppose we have a table
 ```pydocstring
