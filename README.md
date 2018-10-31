@@ -18,8 +18,8 @@ Install the latest `pip` & `setuptools` packages versions
 python3 -m pip install --upgrade pip setuptools
 ```
 
-Release
--------
+User
+----
 
 Download and install the latest stable version from `PyPI` repository
 ```bash
