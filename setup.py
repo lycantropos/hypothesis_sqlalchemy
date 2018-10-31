@@ -10,11 +10,11 @@ install_requires = [
     'hypothesis>=3.20.0',
 ]
 setup_requires = [
-    'pytest-runner>=2.11',
+    'pytest-runner>=4.2',
 ]
 tests_require = [
-    'pytest>=3.0.5',
-    'pytest-cov>=2.4.0',
+    'pytest>=3.8.1',
+    'pytest-cov>=2.6.0',
 ]
 
 setup(name='hypothesis_sqlalchemy',
