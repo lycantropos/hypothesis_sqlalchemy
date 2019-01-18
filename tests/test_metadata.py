@@ -1,13 +1,11 @@
 import re
 
-import hypothesis_sqlalchemy
+from hypothesis_sqlalchemy import __version__
 
 
 def test_version() -> None:
-    version_string = hypothesis_sqlalchemy.__version__
-
-    assert isinstance(version_string, str)
-    assert is_semver(version_string)
+    assert isinstance(__version__, str)
+    assert is_semver(__version__)
 
 
 SEMVER_PATTERN = re.compile(r'^(?P<major>[0-9]|[1-9][0-9]*)\.'
