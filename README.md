@@ -64,13 +64,13 @@ Let's take a look at what can be generated and how.
 ### Tables
 
 Suppose we have metadata
-```pydocstring
+```python
 >>> from sqlalchemy.schema import MetaData 
 >>> metadata = MetaData()
 ```
 
 We can write a strategy that produces tables associated with given metadata
-```pydocstring
+```python
 >>> from hypothesis import strategies
 >>> from hypothesis_sqlalchemy import tables
 >>> tables_strategy = tables.factory(metadatas=strategies.just(metadata))
@@ -85,7 +85,7 @@ kahtvedrpis
 ### Records
 
 Suppose we have a table
-```pydocstring
+```python
 >>> from sqlalchemy.schema import (Column,
                                    MetaData,
                                    Table)
@@ -103,14 +103,14 @@ Suppose we have a table
 ```
 and we can write strategy that
 * produces single records (as `tuple`s)
-    ```pydocstring
+    ```python
     >>> from hypothesis_sqlalchemy import tables
     >>> records = tables.records.factory(user_table)
     >>> records.example()
     (1022, '>5', None, '+b8a*,\x04&3<')
     ```
 * produces records `list`s (with configurable `list` size bounds)
-    ```pydocstring
+    ```python
     >>> from hypothesis_sqlalchemy import tables
     >>> records_lists = tables.records.lists_factory(user_table,
                                                      min_size=2,
