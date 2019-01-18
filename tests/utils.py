@@ -16,7 +16,6 @@ def example(strategy: SearchStrategy) -> Any:
     return find(specifier=strategy,
                 condition=lambda x: True,
                 settings=settings(phases=[Phase.generate],
-                                  max_iterations=100,
                                   verbosity=Verbosity.quiet))
 
 
