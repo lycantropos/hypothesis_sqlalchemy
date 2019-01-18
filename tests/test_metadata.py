@@ -13,8 +13,7 @@ def test_version() -> None:
 SEMVER_PATTERN = re.compile(r'^(?P<major>[0-9]|[1-9][0-9]*)\.'
                             r'(?P<minor>[0-9]|[1-9][0-9]*)\.'
                             r'(?P<patch>[0-9]|[1-9][0-9]*)'
-                            r'(?P<build>:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))'
-                            r'?$')
+                            r'(?P<build>-([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$')
 
 
 def is_semver(version_string: str) -> bool:
