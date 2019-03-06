@@ -2,9 +2,10 @@ import uuid
 from typing import Any
 
 from hypothesis import (Phase,
-                        Verbosity,
-                        find,
+                        core,
                         settings)
+from hypothesis.errors import (NoSuchExample,
+                               Unsatisfiable)
 from hypothesis.searchstrategy import SearchStrategy
 from sqlalchemy import Table
 from sqlalchemy.dialects.postgresql import UUID
@@ -13,10 +14,28 @@ from hypothesis_sqlalchemy.types import RecordType
 
 
 def example(strategy: SearchStrategy) -> Any:
-    return find(specifier=strategy,
-                condition=lambda x: True,
-                settings=settings(phases=[Phase.generate],
-                                  verbosity=Verbosity.quiet))
+    first_object_list = []
+
+    def condition(object_: Any) -> bool:
+        if first_object_list:
+            return True
+        else:
+            first_object_list.append(object_)
+            return False
+
+    try:
+        return core.find(strategy,
+                         condition,
+                         settings=settings(database=None,
+                                           phases=tuple(set(Phase)
+                                                        - {Phase.shrink})))
+    except (NoSuchExample, Unsatisfiable) as search_error:
+        try:
+            result, = first_object_list
+        except ValueError as unpacking_error:
+            raise unpacking_error from search_error
+        else:
+            return result
 
 
 def table_record_is_valid(table_record: RecordType,
