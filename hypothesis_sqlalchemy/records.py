@@ -60,10 +60,15 @@ def lists_factory(columns: List[Column],
     def to_unique_fields(row: Tuple[Any, ...]) -> Tuple[Any, ...]:
         return tuple(row[index] for index in unique_indices)
 
+    if unique_indices:
+        unique_by = to_unique_fields
+    else:
+        unique_by = None
+
     return strategies.lists(values_tuples,
                             min_size=min_size,
                             max_size=max_size,
-                            unique_by=to_unique_fields)
+                            unique_by=unique_by)
 
 
 booleans_factory = strategies.booleans
