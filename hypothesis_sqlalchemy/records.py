@@ -57,11 +57,9 @@ def lists_factory(columns: List[Column],
                       for index, column in enumerate(columns)
                       if is_column_unique(column)]
 
-    def to_unique_fields(row: Tuple[Any, ...]) -> Tuple[Any, ...]:
-        return tuple(row[index] for index in unique_indices)
-
     if unique_indices:
-        unique_by = to_unique_fields
+        def unique_by(row: Tuple[Any, ...]) -> Tuple[Any, ...]:
+            return tuple(row[index] for index in unique_indices)
     else:
         unique_by = None
 
