@@ -19,7 +19,8 @@ def test_table_records_factory(table: Table) -> None:
 
 
 def test_table_records_lists_factory(table: Table) -> None:
-    table_records_lists = records.lists_factory(table, min_size=2)
+    table_records_lists = records.lists_factory(table,
+                                                min_size=2)
     table_records = example(table_records_lists)
 
     assert isinstance(table_records_lists, SearchStrategy)
