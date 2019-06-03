@@ -15,6 +15,7 @@ from hypothesis.strategies import none
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.schema import Column
 from sqlalchemy.sql.sqltypes import (Enum,
+                                     LargeBinary,
                                      String)
 from sqlalchemy.sql.type_api import TypeEngine
 
@@ -164,6 +165,11 @@ def enum_type_values_factory(enum_type: Enum) -> Strategy:
 @from_column_type.register(UUID)
 def uuid_type_values_factory(_: UUID) -> Strategy:
     return strategies.uuids()
+
+
+@from_column_type.register(LargeBinary)
+def bytes_type_values_factory(bytes_type: LargeBinary) -> Strategy:
+    return binary(min_size=bytes_type.length, max_size=bytes_type.length)
 
 
 factories_by_sql_types = {
