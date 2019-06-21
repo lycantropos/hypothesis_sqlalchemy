@@ -2,7 +2,7 @@
 ========================================
 
 [![](https://travis-ci.org/lycantropos/hypothesis_sqlalchemy.svg?branch=master)](https://travis-ci.org/lycantropos/hypothesis_sqlalchemy "Travis CI")
-[![](https://ci.appveyor.com/api/projects/status/6a33c5sfm4gy0iup/branch/master?svg=true)](https://ci.appveyor.com/project/lycantropos/hypothesis-sqlalchemy/branch/master "AppVeyor")
+[![](https://dev.azure.com/azatibrakov/hypothesis_sqlachemy/_apis/build/status/lycantropos.hypothesis_sqlachemy?branchName=master)](https://dev.azure.com/azatibrakov/hypothesis_sqlachemy/_build/latest?definitionId=2&branchName=master "Azure Pipelines")
 [![](https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy/branch/master/graph/badge.svg)](https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy "Codecov")
 [![](https://img.shields.io/github/license/lycantropos/monty.svg)](https://github.com/lycantropos/hypothesis_sqlalchemy/blob/master/LICENSE "License")
 [![](https://badge.fury.io/py/hypothesis-sqlalchemy.svg)](https://badge.fury.io/py/hypothesis-sqlalchemy "PyPI")
