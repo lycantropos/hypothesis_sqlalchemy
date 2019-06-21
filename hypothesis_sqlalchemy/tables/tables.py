@@ -1,8 +1,11 @@
 from typing import (Any,
-                    Callable)
+                    Callable,
+                    List)
 
 from hypothesis import strategies
-from sqlalchemy.schema import Table
+from sqlalchemy.schema import (Column,
+                               MetaData,
+                               Table)
 
 from hypothesis_sqlalchemy import columns
 from hypothesis_sqlalchemy.types import Strategy
@@ -10,10 +13,11 @@ from hypothesis_sqlalchemy.utils import identifiers
 
 
 def factory(*,
-            tables_names: Strategy = identifiers,
-            metadatas: Strategy,
-            columns_lists: Strategy = columns.non_all_unique_lists_factory(),
-            extend_existing: Strategy = strategies.just(True)
+            tables_names: Strategy[str] = identifiers,
+            metadatas: Strategy[MetaData],
+            columns_lists: Strategy[List[Column]] =
+            columns.non_all_unique_lists_factory(),
+            extend_existing: Strategy[bool] = strategies.just(True)
             ) -> Strategy:
     def table_factory(draw: Callable[[Strategy], Any]) -> Table:
         table_name = draw(tables_names)
