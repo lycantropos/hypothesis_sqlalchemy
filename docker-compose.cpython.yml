@@ -12,6 +12,8 @@ services:
       - ./hypothesis_sqlalchemy/:/opt/hypothesis_sqlalchemy/hypothesis_sqlalchemy/
       - ./tests/:/opt/hypothesis_sqlalchemy/tests/
       - ./README.md:/opt/hypothesis_sqlalchemy/README.md
+      - ./requirements.txt:/opt/hypothesis_sqlalchemy/requirements.txt
+      - ./requirements-tests.txt:/opt/hypothesis_sqlalchemy/requirements-tests.txt
       - ./setup.py:/opt/hypothesis_sqlalchemy/setup.py
       - ./setup.cfg:/opt/hypothesis_sqlalchemy/setup.cfg
     entrypoint: python3
