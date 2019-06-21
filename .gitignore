@@ -27,7 +27,7 @@ var/
 # tests
 .hypothesis/
 .coverage
-result.xml
+coverage.xml
 .pytest_cache
 
 # IntelliJ IDEA
