@@ -34,4 +34,4 @@ result.xml
 .idea/
 
 # virtual environment
-venv/
+venv*/
