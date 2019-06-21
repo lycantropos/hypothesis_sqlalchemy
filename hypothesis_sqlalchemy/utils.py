@@ -1,3 +1,5 @@
+from string import ascii_letters
+
 from hypothesis import strategies
 from sqlalchemy.schema import Column
 
@@ -11,9 +13,7 @@ MAX_RECORDS_COUNT = 50
 # https://dev.mysql.com/doc/refman/5.5/en/identifiers.html
 MAX_IDENTIFIER_LENGTH = 63
 
-identifiers_characters = strategies.characters(min_codepoint=ord('a'),
-                                               max_codepoint=ord('z'))
-
+identifiers_characters = strategies.sampled_from(ascii_letters)
 identifiers = strategies.text(alphabet=identifiers_characters,
                               min_size=8,
                               max_size=MAX_IDENTIFIER_LENGTH)
