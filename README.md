@@ -46,6 +46,16 @@ git clone https://github.com/lycantropos/hypothesis_sqlalchemy.git
 cd hypothesis_sqlalchemy
 ```
 
+Install dependencies:
+- with `CPython`
+  ```bash
+  python -m pip install -r requirements.txt
+  ```
+- with `PyPy`
+  ```bash
+  pypy -m pip install -r requirements.txt
+  ```
+
 Install:
 - with `CPython`
   ```bash
@@ -156,34 +166,38 @@ This will set version to `major.minor.patch-alpha`.
 
 Test bumping version
 ```bash
-bump2version --dry-run --verbose --tag release
+bump2version --dry-run --verbose release
 ```
 
 Bump version
 ```bash
-bump2version --verbose --tag release
+bump2version --verbose release
 ```
 
-This will set version to `major.minor.patch` and add `Git` tag.
-
+This will set version to `major.minor.patch`.
 
 #### Notes
 
 To avoid inconsistency between branches and pull requests,
-bumping version should be merged into `master` branch as separate pull
-request.
+bumping version should be merged into `master` branch 
+as separate pull request.
 
 ### Running tests
 
-Plain:
+Install dependencies:
 - with `CPython`
   ```bash
-  python setup.py test
+  python -m pip install -r requirements-tests.txt
   ```
 - with `PyPy`
   ```bash
-  pypy setup.py test
+  pypy -m pip install -r requirements-tests.txt
   ```
+
+Plain
+```bash
+pytest
+```
 
 Inside `Docker` container:
 - with `CPython`
