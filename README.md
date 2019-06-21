@@ -5,7 +5,7 @@
 [![](https://ci.appveyor.com/api/projects/status/6a33c5sfm4gy0iup/branch/master?svg=true)](https://ci.appveyor.com/project/lycantropos/hypothesis-sqlalchemy/branch/master "AppVeyor")
 [![](https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy/branch/master/graph/badge.svg)](https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy "Codecov")
 [![](https://img.shields.io/github/license/lycantropos/monty.svg)](https://github.com/lycantropos/hypothesis_sqlalchemy/blob/master/LICENSE "License")
-[![](https://badge.fury.io/py/hypothesis-sqlalchemy.svg)](https://badge.fury.io/py/hypothesis_sqlalchemy "PyPI")
+[![](https://badge.fury.io/py/hypothesis-sqlalchemy.svg)](https://badge.fury.io/py/hypothesis-sqlalchemy "PyPI")
 
 In what follows
 - `python` is an alias for `python3.5` or any later
