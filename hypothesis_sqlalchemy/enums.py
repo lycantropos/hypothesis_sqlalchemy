@@ -50,12 +50,7 @@ def factory(*,
 
 
 def types_factory(enums: Strategy = factory()) -> Strategy:
-    types_values = strategies.one_of(strategies.tuples(enums),
-                                     strategies.lists(identifiers,
-                                                      min_size=1))
-
-    def enum_type_factory(draw: Callable[[Strategy], Any]) -> EnumType:
-        type_values = draw(types_values)
-        return EnumType(*type_values)
-
-    return strategies.composite(enum_type_factory)()
+    return (strategies.one_of(strategies.tuples(enums),
+                              strategies.lists(identifiers,
+                                               min_size=1))
+            .map(lambda type_values: EnumType(*type_values)))
