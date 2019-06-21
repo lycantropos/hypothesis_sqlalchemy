@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from setuptools import (find_packages,
                         setup)
 
@@ -24,7 +26,7 @@ setup(name='hypothesis_sqlalchemy',
       url=project_base_url,
       download_url=project_base_url + 'archive/master.tar.gz',
       description=hypothesis_sqlalchemy.__doc__,
-      long_description=open('README.md').read(),
+      long_description=Path('README.md').read_text(),
       long_description_content_type='text/markdown',
       license='MIT',
       classifiers=[
