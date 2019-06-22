@@ -10,7 +10,7 @@ project_base_url = 'https://github.com/lycantropos/hypothesis_sqlalchemy/'
 setup_requires = [
     'pytest-runner>=4.2',
 ]
-install_require = Path('requirements.txt').read_text()
+install_requires = Path('requirements.txt').read_text()
 tests_require = Path('requirements-tests.txt').read_text()
 
 setup(name='hypothesis_sqlalchemy',
