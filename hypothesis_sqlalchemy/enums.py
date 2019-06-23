@@ -1,56 +1,67 @@
 from enum import (Enum,
-                  EnumMeta)
+                  EnumMeta,
+                  _is_dunder as is_ignored_enum_key,
+                  _is_sunder as is_invalid_enum_key)
 from typing import (Any,
-                    Callable)
+                    Callable,
+                    Dict,
+                    Hashable,
+                    Optional,
+                    Sequence)
 
 from hypothesis import strategies
 from sqlalchemy.sql.sqltypes import Enum as EnumType
 
-from .types import Strategy
+from .hints import Strategy
 from .utils import identifiers
 
-ENUM_TEMPLATE = ('class {name}(*bases):\n'
-                 '{content}')
+Bases = Sequence[type]
+UniqueBy = Optional[Callable[[Any], Hashable]]
 
 
-# FIXME: find safer way of generating enum
+def is_valid_enum_key(key: str) -> bool:
+    return not is_invalid_enum_key(key) and not is_ignored_enum_key(key)
+
+
 def factory(*,
-            names: Strategy = identifiers,
-            keys: Strategy = identifiers,
-            values: Strategy = strategies.integers(),
-            bases: Strategy = strategies.tuples(strategies.just(Enum)),
-            value_to_string: Callable[[Any], str] = '{!r}'.format,
-            **namespace: Any
-            ) -> Strategy:
-    contents = strategies.dictionaries(keys=keys,
-                                       values=values,
-                                       min_size=1)
-
-    def enum_factory(draw: Callable[[Strategy], Any]) -> EnumMeta:
-        name = draw(names)
-        enum_bases = draw(bases)
-        content = draw(contents)
-        namespace['bases'] = enum_bases
-        indent = 4 * ' '
-        lines = (key + '=' + value_to_string(value)
-                 for key, value in content.items())
-        try:
-            content_str = '\n'.join(indent + line
-                                    for line in lines)
-        except TypeError as err:
-            err_msg = ('Invalid strategy: '
-                       '"keys" should generate "str" instances.')
-            raise ValueError(err_msg) from err
-        exec(ENUM_TEMPLATE.format(name=name,
-                                  content=content_str),
-             namespace)
-        return namespace[name]
-
-    return strategies.composite(enum_factory)()
+            names: Strategy[str] = identifiers,
+            keys: Strategy[str] = identifiers.filter(is_valid_enum_key),
+            bases: Strategy[Bases] =
+            strategies.tuples(strategies.just(Enum)),
+            values: Strategy[Any] = strategies.integers(),
+            unique_by: UniqueBy = None,
+            min_size: int = 0,
+            max_size: Optional[int] = None) -> Strategy:
+    contents = (strategies.tuples(strategies.lists(keys,
+                                                   min_size=min_size,
+                                                   max_size=max_size,
+                                                   unique=True),
+                                  strategies.lists(values,
+                                                   min_size=min_size,
+                                                   max_size=max_size,
+                                                   unique_by=unique_by))
+                .map(lambda items: dict(zip(*items))))
+    return (strategies.tuples(names, bases, contents)
+            .map(lambda args: _to_enum(*args)))
 
 
-def types_factory(enums: Strategy = factory()) -> Strategy:
-    return (strategies.one_of(strategies.tuples(enums),
-                              strategies.lists(identifiers,
-                                               min_size=1))
+def _to_enum(name: str, bases: Bases, contents: Dict[str, Any]) -> type:
+    contents = _to_enum_contents(name, bases, contents)
+    return EnumMeta(name, bases, contents)
+
+
+def _to_enum_contents(name: str,
+                      bases: Bases,
+                      contents: Dict[str, Any]) -> Dict[str, Any]:
+    result = EnumMeta.__prepare__(name, bases)
+    # can't use `update` method because `_EnumDict` overloads `__setitem__`
+    for name, content in contents.items():
+        result[name] = content
+    return result
+
+
+def types_factory(enums: Strategy = factory(min_size=1)) -> Strategy:
+    return ((strategies.tuples(enums)
+             | strategies.lists(identifiers,
+                                min_size=1))
             .map(lambda type_values: EnumType(*type_values)))
