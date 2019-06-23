@@ -7,21 +7,19 @@ from functools import (partial,
 from typing import (Any,
                     Iterable,
                     List,
+                    Optional,
                     Tuple)
 
 from hypothesis import strategies
 from hypothesis.searchstrategy.collections import TupleStrategy
 from hypothesis.strategies import none
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.schema import Column
 from sqlalchemy.sql.sqltypes import (Enum,
                                      String)
 from sqlalchemy.sql.type_api import TypeEngine
 
-from .types import Strategy
-from .utils import (MAX_RECORDS_COUNT,
-                    MIN_RECORDS_COUNT,
-                    is_column_unique)
+from hypothesis_sqlalchemy.hints import Strategy
+from hypothesis_sqlalchemy.utils import is_column_unique
 
 # we're using integers as primary key values
 # which are usually positive
@@ -47,8 +45,8 @@ def factory(columns: Iterable[Column],
 
 def lists_factory(columns: List[Column],
                   *,
-                  min_size: int = MIN_RECORDS_COUNT,
-                  max_size: int = MAX_RECORDS_COUNT,
+                  min_size: int = 0,
+                  max_size: Optional[int] = None,
                   **fixed_columns_values: Strategy
                   ) -> TupleStrategy:
     values_tuples = factory(columns,
@@ -159,18 +157,6 @@ def enum_type_values_factory(enum_type: Enum) -> Strategy:
     # http://docs.sqlalchemy.org/en/latest/core/type_basics.html#sqlalchemy.types.Enum
     return strategies.one_of(*map(strategies.just,
                                   enum_class))
-
-
-@from_column_type.register(UUID)
-def uuid_type_values_factory(_: UUID) -> Strategy:
-    return strategies.uuids()
-
-
-factories_by_sql_types = {
-    String: string_type_values_factory,
-    Enum: enum_type_values_factory,
-    UUID: uuid_type_values_factory,
-}
 
 
 def column_values_factory(column: Column) -> Strategy:

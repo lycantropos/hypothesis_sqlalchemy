@@ -3,53 +3,17 @@ from typing import (Any,
                     List)
 
 from hypothesis import strategies
-from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.schema import Column
-from sqlalchemy.sql.sqltypes import (BigInteger,
-                                     Boolean,
-                                     Date,
-                                     DateTime,
-                                     Float,
-                                     Integer,
-                                     SmallInteger,
-                                     String)
 
-from . import enums
-from .types import Strategy
-from .utils import (identifiers,
-                    is_column_unique)
-
-MAX_POSTGRES_VARCHAR_LENGTH = 10485760
-
-
-def string_types_factory() -> Strategy:
-    string_lengths = strategies.integers(min_value=0,
-                                         max_value=MAX_POSTGRES_VARCHAR_LENGTH)
-    return strategies.one_of(strategies.builds(String,
-                                               length=string_lengths),
-                             strategies.builds(UUID,
-                                               as_uuid=strategies.booleans()),
-                             enums.types_factory())
-
-
-def primary_keys_types_factory() -> Strategy:
-    types = [SmallInteger, Integer, BigInteger]
-    return strategies.one_of(*map(strategies.just, types))
-
-
-def types_factory(*,
-                  string_types: Strategy = string_types_factory(),
-                  primary_keys_types: Strategy = primary_keys_types_factory()
-                  ) -> Strategy:
-    extra_types = [Float(asdecimal=True), Boolean, Date, DateTime]
-    return strategies.one_of(string_types,
-                             primary_keys_types,
-                             *map(strategies.just, extra_types))
+from hypothesis_sqlalchemy.hints import Strategy
+from hypothesis_sqlalchemy.utils import (identifiers,
+                                         is_column_unique)
+from . import types
 
 
 def non_primary_keys_factory(*,
                              names: Strategy = identifiers,
-                             types: Strategy = types_factory(),
+                             types: Strategy = types.factory(),
                              are_unique: Strategy = strategies.booleans(),
                              are_nullable: Strategy = strategies.booleans(),
                              are_indexed: Strategy = strategies.booleans()
@@ -65,7 +29,7 @@ def non_primary_keys_factory(*,
 
 def primary_keys_factory(*,
                          names: Strategy = identifiers,
-                         types: Strategy = primary_keys_types_factory(),
+                         types: Strategy = types.primary_keys_factory(),
                          are_auto_incremented: Strategy = strategies.just(True)
                          ) -> Strategy:
     return strategies.builds(Column,
