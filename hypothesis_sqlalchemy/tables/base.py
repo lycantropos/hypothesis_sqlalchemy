@@ -9,11 +9,11 @@ from sqlalchemy.schema import (Column,
 
 from hypothesis_sqlalchemy import columns
 from hypothesis_sqlalchemy.hints import Strategy
-from hypothesis_sqlalchemy.utils import identifiers
+from hypothesis_sqlalchemy.utils import sql_identifiers
 
 
 def factory(*,
-            tables_names: Strategy[str] = identifiers,
+            tables_names: Strategy[str] = sql_identifiers,
             metadatas: Strategy[MetaData],
             columns_lists: Strategy[List[Column]] =
             columns.non_all_unique_lists_factory(),

@@ -15,14 +15,16 @@ from . import strategies
 
 
 @given(strategies.bases_values_strategies, strategies.min_sizes,
-       strategies.max_sizes)
+       strategies.keys_strategies, strategies.max_sizes)
 def test_basic(bases_values: Tuple[SearchStrategy[strategies.Bases],
                                    SearchStrategy[Any]],
+               keys: SearchStrategy[str],
                min_size: int,
                max_size: Optional[int]) -> None:
     bases, values = bases_values
 
     result = factory(bases=bases,
+                     keys=keys,
                      values=values,
                      min_size=min_size,
                      max_size=max_size)
@@ -31,14 +33,16 @@ def test_basic(bases_values: Tuple[SearchStrategy[strategies.Bases],
 
 
 @given(strategies.data, strategies.bases_values_strategies,
-       strategies.min_sizes, strategies.max_sizes)
+       strategies.keys_strategies, strategies.min_sizes, strategies.max_sizes)
 def test_example(data: DataObject,
                  bases_values: Tuple[SearchStrategy[strategies.Bases],
                                      SearchStrategy[Any]],
+                 keys: SearchStrategy[str],
                  min_size: int,
                  max_size: Optional[int]) -> None:
     bases, values = bases_values
     strategy = factory(bases=bases,
+                       keys=keys,
                        values=values,
                        min_size=min_size,
                        max_size=max_size)
@@ -52,15 +56,17 @@ def test_example(data: DataObject,
 
 
 @given(strategies.data, strategies.bases_unique_values_strategies,
-       strategies.min_sizes, strategies.max_sizes)
+       strategies.keys_strategies, strategies.min_sizes, strategies.max_sizes)
 def test_unique_by(data: DataObject,
                    bases_values_unique_by: Tuple[SearchStrategy[Bases],
                                                  SearchStrategy[Any],
                                                  UniqueBy],
+                   keys: SearchStrategy[str],
                    min_size: int,
                    max_size: Optional[int]) -> None:
     bases, values, unique_by = bases_values_unique_by
     strategy = factory(bases=bases,
+                       keys=keys,
                        values=values,
                        min_size=min_size,
                        max_size=max_size,
@@ -93,14 +99,16 @@ def test_invalid_keys_values(data: DataObject,
         data.draw(strategy)
 
 
-@given(strategies.data, strategies.bases_invalid_values_strategies)
+@given(strategies.data, strategies.bases_invalid_values_strategies,
+       strategies.keys_strategies)
 def test_invalid_values(data: DataObject,
                         bases_invalid_values: Tuple[SearchStrategy[Bases],
-                                                    SearchStrategy[Any]]
-                        ) -> None:
+                                                    SearchStrategy[Any]],
+                        keys: SearchStrategy[str]) -> None:
     bases, invalid_values = bases_invalid_values
 
     result = factory(bases=bases,
+                     keys=keys,
                      values=invalid_values,
                      min_size=1)
 

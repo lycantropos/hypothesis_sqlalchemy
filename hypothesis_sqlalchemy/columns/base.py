@@ -8,14 +8,14 @@ from sqlalchemy.schema import Column
 from sqlalchemy.sql.type_api import TypeEngine
 
 from hypothesis_sqlalchemy.hints import Strategy
-from hypothesis_sqlalchemy.utils import (identifiers,
+from hypothesis_sqlalchemy.utils import (sql_identifiers,
                                          is_column_unique)
 from . import types
 
 
 def non_primary_keys_factory(
         *,
-        names: Strategy[str] = identifiers,
+        names: Strategy[str] = sql_identifiers,
         types: Strategy[TypeEngine] = types.factory(),
         are_unique: Strategy[bool] = strategies.booleans(),
         are_nullable: Strategy[bool] = strategies.booleans(),
@@ -32,7 +32,7 @@ def non_primary_keys_factory(
 
 def primary_keys_factory(
         *,
-        names: Strategy[str] = identifiers,
+        names: Strategy[str] = sql_identifiers,
         types: Strategy[TypeEngine] = types.primary_keys_factory(),
         are_auto_incremented: Strategy[bool] = strategies.just(True)
 ) -> Strategy:
