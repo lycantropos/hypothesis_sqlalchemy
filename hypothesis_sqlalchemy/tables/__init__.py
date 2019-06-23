@@ -1,2 +1,2 @@
 from . import records
-from .tables import factory
+from .base import factory

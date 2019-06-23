@@ -3,9 +3,6 @@ from string import ascii_letters
 from hypothesis import strategies
 from sqlalchemy.schema import Column
 
-MIN_RECORDS_COUNT = 1
-MAX_RECORDS_COUNT = 50
-
 # more info at:
 # for PostgreSQL
 # https://www.postgresql.org/docs/current/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
@@ -13,7 +10,7 @@ MAX_RECORDS_COUNT = 50
 # https://dev.mysql.com/doc/refman/5.5/en/identifiers.html
 MAX_IDENTIFIER_LENGTH = 63
 
-identifiers_characters = strategies.sampled_from(ascii_letters)
+identifiers_characters = strategies.sampled_from('_' + ascii_letters)
 identifiers = strategies.text(alphabet=identifiers_characters,
                               min_size=8,
                               max_size=MAX_IDENTIFIER_LENGTH)

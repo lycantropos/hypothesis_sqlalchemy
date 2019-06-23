@@ -8,7 +8,7 @@ from sqlalchemy.schema import (Column,
                                Table)
 
 from hypothesis_sqlalchemy import columns
-from hypothesis_sqlalchemy.types import Strategy
+from hypothesis_sqlalchemy.hints import Strategy
 from hypothesis_sqlalchemy.utils import identifiers
 
 
