@@ -13,21 +13,18 @@ from hypothesis import strategies
 from sqlalchemy.sql.sqltypes import Enum as EnumType
 
 from .hints import Strategy
-from .utils import identifiers
+from .utils import (python_identifiers,
+                    sql_identifiers)
 
 Bases = Sequence[type]
 UniqueBy = Optional[Callable[[Any], Hashable]]
 
 
-def is_valid_enum_key(key: str) -> bool:
-    return not is_invalid_enum_key(key) and not is_ignored_enum_key(key)
-
-
 def factory(*,
-            names: Strategy[str] = identifiers,
-            keys: Strategy[str] = identifiers.filter(is_valid_enum_key),
+            names: Strategy[str] = python_identifiers,
             bases: Strategy[Bases] =
             strategies.tuples(strategies.just(Enum)),
+            keys: Strategy[str],
             values: Strategy[Any] = strategies.integers(),
             unique_by: UniqueBy = None,
             min_size: int = 0,
@@ -60,8 +57,19 @@ def _to_enum_contents(name: str,
     return result
 
 
-def types_factory(enums: Strategy = factory(min_size=1)) -> Strategy:
+def types_factory(*,
+                  values: Strategy[str] = sql_identifiers,
+                  min_size: int = 1,
+                  max_size: Optional[int] = None) -> Strategy:
+    enums = factory(keys=values.filter(is_valid_enum_key),
+                    min_size=min_size,
+                    max_size=max_size)
     return ((strategies.tuples(enums)
-             | strategies.lists(identifiers,
-                                min_size=1))
+             | strategies.lists(values,
+                                min_size=min_size,
+                                max_size=max_size))
             .map(lambda type_values: EnumType(*type_values)))
+
+
+def is_valid_enum_key(key: str) -> bool:
+    return not is_invalid_enum_key(key) and not is_ignored_enum_key(key)

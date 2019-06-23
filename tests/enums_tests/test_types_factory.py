@@ -1,3 +1,5 @@
+from typing import Optional
+
 from hypothesis import given
 from hypothesis.searchstrategy import SearchStrategy
 from hypothesis.strategies import DataObject
@@ -7,16 +9,23 @@ from hypothesis_sqlalchemy.enums import types_factory
 from . import strategies
 
 
-def test_basic() -> None:
-    result = types_factory()
+@given(strategies.min_sizes, strategies.max_sizes)
+def test_basic(min_size: int, max_size: Optional[int]) -> None:
+    result = types_factory(min_size=min_size,
+                           max_size=max_size)
 
     assert isinstance(result, SearchStrategy)
 
 
-@given(strategies.data)
-def test_enum_types_factory(data: DataObject) -> None:
-    strategy = types_factory()
+@given(strategies.data, strategies.min_sizes, strategies.max_sizes)
+def test_enum_types_factory(data: DataObject,
+                            min_size: int,
+                            max_size: Optional[int]) -> None:
+    strategy = types_factory(min_size=min_size,
+                             max_size=max_size)
 
     result = data.draw(strategy)
 
     assert isinstance(result, EnumType)
+    assert min_size <= len(result.enums)
+    assert max_size is None or len(result.enums) <= max_size

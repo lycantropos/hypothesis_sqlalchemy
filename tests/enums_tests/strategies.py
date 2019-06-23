@@ -10,7 +10,9 @@ from hypothesis.searchstrategy import SearchStrategy
 
 from hypothesis_sqlalchemy.enums import (Bases,
                                          UniqueBy,
-                                         is_invalid_enum_key)
+                                         is_invalid_enum_key,
+                                         is_valid_enum_key)
+from hypothesis_sqlalchemy.utils import sql_identifiers
 from tests.strategies import (data,
                               max_sizes,
                               min_sizes)
@@ -27,6 +29,7 @@ scalars = (strategies.builds(object)
            | strings
            | floats
            | strategies.datetimes())
+keys_strategies = strategies.just(sql_identifiers.filter(is_valid_enum_key))
 invalid_keys_types_strategies = strategies.just(strategies.none())
 invalid_keys_values_strategies = strategies.just(strings
                                                  .map('_{}_'.format)
