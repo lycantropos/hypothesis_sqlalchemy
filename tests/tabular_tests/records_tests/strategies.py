@@ -24,8 +24,9 @@ non_unique_columns = columnar.non_primary_keys_factory(
         are_unique=strategies.just(False))
 tables_without_unique_columns = tabular.factory(
         metadatas=metadatas,
-        columns_lists=strategies.lists(non_unique_columns,
-                                       unique_by=attrgetter('name')))
+        columns_factory=partial(strategies.lists,
+                                non_unique_columns,
+                                unique_by=attrgetter('name')))
 tables_with_unique_columns = tabular.factory(metadatas=metadatas)
 tables = tables_without_unique_columns | tables_with_unique_columns
 
