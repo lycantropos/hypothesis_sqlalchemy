@@ -27,40 +27,13 @@ def factory(column: Column) -> Strategy:
 
 
 to_booleans = strategies.booleans
-
-
-def to_integers(min_value: int = MIN_POSITIVE_INTEGER_VALUE,
-                max_value: int = MAX_SMALLINT_VALUE) -> Strategy:
-    return strategies.integers(min_value=min_value,
-                               max_value=max_value)
-
-
-def to_floats(*,
-              min_value: float = None,
-              max_value: float = None,
-              allow_nan: bool = False,
-              allow_infinity: bool = False) -> Strategy:
-    return strategies.floats(min_value=min_value,
-                             max_value=max_value,
-                             allow_nan=allow_nan,
-                             allow_infinity=allow_infinity)
-
-
-def to_decimals(*,
-                min_value: float = None,
-                max_value: float = None,
-                allow_nan: bool = False,
-                allow_infinity: bool = False,
-                places: int = None) -> Strategy:
-    return strategies.decimals(min_value=min_value,
-                               max_value=max_value,
-                               allow_nan=allow_nan,
-                               allow_infinity=allow_infinity,
-                               places=places)
+to_integers = strategies.integers
+to_floats = strategies.floats
+to_decimals = strategies.decimals
 
 
 def to_date_times(*,
-                  min_value: datetime = MIN_DATE_TIME,
+                  min_value: datetime = datetime.min,
                   max_value: datetime = datetime.max,
                   timezones: Strategy = strategies.none()) -> Strategy:
     date_times = strategies.datetimes(min_value=min_value,
@@ -70,19 +43,18 @@ def to_date_times(*,
                                   microsecond=0))
 
 
-def to_dates(min_value: date = MIN_DATE_TIME.date(),
-             max_value: date = date.max) -> Strategy:
-    return strategies.dates(min_value=min_value,
-                            max_value=max_value)
-
+to_dates = strategies.dates
 
 values_by_python_types = {
     bool: to_booleans(),
-    int: to_integers(),
-    float: to_floats(),
-    Decimal: to_decimals(),
-    datetime: to_date_times(),
-    date: to_dates(),
+    int: to_integers(min_value=MIN_POSITIVE_INTEGER_VALUE,
+                     max_value=MAX_SMALLINT_VALUE),
+    float: to_floats(allow_nan=False,
+                     allow_infinity=False),
+    Decimal: to_decimals(allow_nan=False,
+                         allow_infinity=False),
+    datetime: to_date_times(min_value=MIN_DATE_TIME),
+    date: to_dates(min_value=MIN_DATE_TIME.date()),
 }
 
 
