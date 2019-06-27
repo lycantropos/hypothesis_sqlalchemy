@@ -3,7 +3,7 @@ from sqlalchemy.schema import (MetaData,
                                Table)
 
 from hypothesis_sqlalchemy.hints import Strategy
-from hypothesis_sqlalchemy.tables import factory
+from hypothesis_sqlalchemy.tabular import factory
 from hypothesis_sqlalchemy.utils import is_column_unique
 from tests.utils import DataObject
 from . import strategies
