@@ -1,4 +1,3 @@
-from collections import OrderedDict
 from datetime import (date,
                       datetime)
 from decimal import Decimal
@@ -32,15 +31,22 @@ MIN_DATE_TIME = datetime.utcfromtimestamp(0)
 def factory(columns: Iterable[Column],
             **fixed_columns_values: Strategy
             ) -> TupleStrategy:
-    columns_values_strategies = OrderedDict(
-            (column.name,
-             strategies.one_of(column_values_factory(column),
-                               strategies.none())
-             if column.nullable
-             else column_values_factory(column))
-            for column in columns)
-    columns_values_strategies.update(fixed_columns_values)
-    return strategies.tuples(*columns_values_strategies.values())
+    def to_plain_values_strategy(column: Column) -> Strategy[Any]:
+        result = column_values_factory(column)
+        if column.nullable:
+            result |= strategies.none()
+        return result
+
+    if fixed_columns_values:
+        def to_values_strategy(column: Column) -> Strategy[Any]:
+            column_name = column.name
+            if column_name in fixed_columns_values:
+                return fixed_columns_values[column_name]
+            else:
+                return to_plain_values_strategy(column)
+    else:
+        to_values_strategy = to_plain_values_strategy
+    return strategies.tuples(*map(to_values_strategy, columns))
 
 
 def lists_factory(columns: List[Column],
