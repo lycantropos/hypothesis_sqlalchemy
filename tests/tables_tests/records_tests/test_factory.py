@@ -3,9 +3,9 @@ from hypothesis.searchstrategy import SearchStrategy
 from sqlalchemy.schema import Table
 
 from hypothesis_sqlalchemy.tables.records import factory
-from tests import strategies
 from tests.utils import (DataObject,
                          table_record_is_valid)
+from . import strategies
 
 
 @given(strategies.tables)
