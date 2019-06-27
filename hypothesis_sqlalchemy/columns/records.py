@@ -1,5 +1,4 @@
 from typing import (Any,
-                    Iterable,
                     List,
                     Optional,
                     Tuple)
@@ -13,7 +12,7 @@ from hypothesis_sqlalchemy.utils import is_column_unique
 from . import values
 
 
-def factory(columns: Iterable[Column],
+def factory(columns: List[Column],
             **fixed_columns_values: Strategy
             ) -> TupleStrategy:
     def to_plain_values_strategy(column: Column) -> Strategy[Any]:
