@@ -2,9 +2,9 @@
 ========================================
 
 [![](https://travis-ci.org/lycantropos/hypothesis_sqlalchemy.svg?branch=master)](https://travis-ci.org/lycantropos/hypothesis_sqlalchemy "Travis CI")
-[![](https://dev.azure.com/azatibrakov/hypothesis_sqlalchemy/_apis/build/status/lycantropos.hypothesis_sqlalchemy?branchName=master)](https://dev.azure.com/azatibrakov/hypothesis_sqlalchemy/_build/latest?branchName=master "Azure Pipelines")
+[![](https://dev.azure.com/lycantropos/hypothesis_sqlalchemy/_apis/build/status/lycantropos.hypothesis_sqlalchemy?branchName=master)](https://dev.azure.com/lycantropos/hypothesis_sqlalchemy/_build/latest?branchName=master "Azure Pipelines")
 [![](https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy/branch/master/graph/badge.svg)](https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy "Codecov")
-[![](https://img.shields.io/github/license/lycantropos/monty.svg)](https://github.com/lycantropos/hypothesis_sqlalchemy/blob/master/LICENSE "License")
+[![](https://img.shields.io/github/license/lycantropos/hypothesis_sqlalchemy.svg)](https://github.com/lycantropos/hypothesis_sqlalchemy/blob/master/LICENSE "License")
 [![](https://badge.fury.io/py/hypothesis-sqlalchemy.svg)](https://badge.fury.io/py/hypothesis-sqlalchemy "PyPI")
 
 In what follows
