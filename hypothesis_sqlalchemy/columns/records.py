@@ -1,19 +1,21 @@
 from datetime import (date,
                       datetime)
 from decimal import Decimal
+from enum import Enum
 from functools import (partial,
                        singledispatch)
 from typing import (Any,
                     Iterable,
                     List,
                     Optional,
-                    Tuple)
+                    Tuple,
+                    Union)
 
 from hypothesis import strategies
 from hypothesis.searchstrategy.collections import TupleStrategy
 from hypothesis.strategies import none
 from sqlalchemy.schema import Column
-from sqlalchemy.sql.sqltypes import (Enum,
+from sqlalchemy.sql.sqltypes import (Enum as EnumType,
                                      String)
 from sqlalchemy.sql.type_api import TypeEngine
 
@@ -134,7 +136,7 @@ values_by_python_types = {
 
 
 @singledispatch
-def from_column_type(column_type: TypeEngine) -> Strategy:
+def from_column_type(column_type: TypeEngine) -> Strategy[Any]:
     return values_by_python_types[column_type.python_type]
 
 
@@ -146,23 +148,24 @@ ascii_not_null_characters = strategies.characters(min_codepoint=1,
 def string_type_values_factory(string_type: String,
                                *,
                                alphabet: Strategy = ascii_not_null_characters
-                               ) -> Strategy:
+                               ) -> Strategy[str]:
     return strategies.text(alphabet=alphabet,
                            max_size=string_type.length)
 
 
-@from_column_type.register(Enum)
-def enum_type_values_factory(enum_type: Enum) -> Strategy:
+@from_column_type.register(EnumType)
+def enum_type_values_factory(enum_type: EnumType
+                             ) -> Strategy[Union[str, Enum]]:
     enum_class = enum_type.enum_class
-    # The source of enumerated values may be a list of string values
     if enum_class is None:
-        return strategies.one_of(*map(strategies.just,
-                                      enum_type.enums))
-    # ... or a PEP-435-compliant enumerated class.
-    # More info at
-    # http://docs.sqlalchemy.org/en/latest/core/type_basics.html#sqlalchemy.types.Enum
-    return strategies.one_of(*map(strategies.just,
-                                  enum_class))
+        # The source of enumerated values may be a list of string values
+        values = enum_type.enums
+    else:
+        # ... or a PEP-435-compliant enumerated class.
+        # More info at
+        # http://docs.sqlalchemy.org/en/latest/core/type_basics.html#sqlalchemy.types.Enum
+        values = list(enum_class)
+    return strategies.sampled_from(values)
 
 
 def column_values_factory(column: Column) -> Strategy:
