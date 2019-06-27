@@ -1,3 +1,7 @@
+from typing import (Any,
+                    Dict,
+                    Tuple)
+
 from hypothesis import given
 from sqlalchemy.schema import Table
 
@@ -8,16 +12,25 @@ from tests.utils import (DataObject,
 from . import strategies
 
 
-@given(strategies.tables)
-def test_basic(table: Table) -> None:
-    result = factory(table)
+@given(strategies.tables_with_fixed_columns_values)
+def test_basic(table_fixed_columns_values: Tuple[Table,
+                                                 Dict[str, Strategy[Any]]]
+               ) -> None:
+    table, fixed_columns_values = table_fixed_columns_values
+
+    result = factory(table, **fixed_columns_values)
 
     assert isinstance(result, Strategy)
 
 
-@given(strategies.data, strategies.tables)
-def test_examples(data: DataObject, table: Table) -> None:
-    strategy = factory(table)
+@given(strategies.data, strategies.tables_with_fixed_columns_values)
+def test_examples(data: DataObject,
+                  table_fixed_columns_values: Tuple[Table,
+                                                    Dict[str, Strategy[Any]]]
+                  ) -> None:
+    table, fixed_columns_values = table_fixed_columns_values
+
+    strategy = factory(table, **fixed_columns_values)
 
     result = data.draw(strategy)
 
