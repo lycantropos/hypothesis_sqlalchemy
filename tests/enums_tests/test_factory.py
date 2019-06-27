@@ -5,20 +5,19 @@ from typing import (Any,
 
 import pytest
 from hypothesis import given
-from hypothesis.searchstrategy import SearchStrategy
 
 from hypothesis_sqlalchemy.enums import (Bases,
                                          UniqueBy,
                                          factory)
+from hypothesis_sqlalchemy.hints import Strategy
 from tests.utils import DataObject
 from . import strategies
 
 
 @given(strategies.bases_values_strategies, strategies.min_sizes,
        strategies.keys_strategies, strategies.max_sizes)
-def test_basic(bases_values: Tuple[SearchStrategy[strategies.Bases],
-                                   SearchStrategy[Any]],
-               keys: SearchStrategy[str],
+def test_basic(bases_values: Tuple[Strategy[strategies.Bases], Strategy[Any]],
+               keys: Strategy[str],
                min_size: int,
                max_size: Optional[int]) -> None:
     bases, values = bases_values
@@ -29,15 +28,15 @@ def test_basic(bases_values: Tuple[SearchStrategy[strategies.Bases],
                      min_size=min_size,
                      max_size=max_size)
 
-    assert isinstance(result, SearchStrategy)
+    assert isinstance(result, Strategy)
 
 
 @given(strategies.data, strategies.bases_values_strategies,
        strategies.keys_strategies, strategies.min_sizes, strategies.max_sizes)
 def test_example(data: DataObject,
-                 bases_values: Tuple[SearchStrategy[strategies.Bases],
-                                     SearchStrategy[Any]],
-                 keys: SearchStrategy[str],
+                 bases_values: Tuple[Strategy[strategies.Bases],
+                                     Strategy[Any]],
+                 keys: Strategy[str],
                  min_size: int,
                  max_size: Optional[int]) -> None:
     bases, values = bases_values
@@ -58,10 +57,10 @@ def test_example(data: DataObject,
 @given(strategies.data, strategies.bases_unique_values_strategies,
        strategies.keys_strategies, strategies.min_sizes, strategies.max_sizes)
 def test_unique_by(data: DataObject,
-                   bases_values_unique_by: Tuple[SearchStrategy[Bases],
-                                                 SearchStrategy[Any],
+                   bases_values_unique_by: Tuple[Strategy[Bases],
+                                                 Strategy[Any],
                                                  UniqueBy],
-                   keys: SearchStrategy[str],
+                   keys: Strategy[str],
                    min_size: int,
                    max_size: Optional[int]) -> None:
     bases, values, unique_by = bases_values_unique_by
@@ -81,7 +80,7 @@ def test_unique_by(data: DataObject,
 
 @given(strategies.data, strategies.invalid_keys_types_strategies)
 def test_invalid_keys_types(data: DataObject,
-                            keys: SearchStrategy[Any]) -> None:
+                            keys: Strategy[Any]) -> None:
     strategy = factory(keys=keys,
                        min_size=1)
 
@@ -91,7 +90,7 @@ def test_invalid_keys_types(data: DataObject,
 
 @given(strategies.data, strategies.invalid_keys_values_strategies)
 def test_invalid_keys_values(data: DataObject,
-                             keys: SearchStrategy[str]) -> None:
+                             keys: Strategy[str]) -> None:
     strategy = factory(keys=keys,
                        min_size=1)
 
@@ -102,9 +101,9 @@ def test_invalid_keys_values(data: DataObject,
 @given(strategies.data, strategies.bases_invalid_values_strategies,
        strategies.keys_strategies)
 def test_invalid_values(data: DataObject,
-                        bases_invalid_values: Tuple[SearchStrategy[Bases],
-                                                    SearchStrategy[Any]],
-                        keys: SearchStrategy[str]) -> None:
+                        bases_invalid_values: Tuple[Strategy[Bases],
+                                                    Strategy[Any]],
+                        keys: Strategy[str]) -> None:
     bases, invalid_values = bases_invalid_values
 
     result = factory(bases=bases,

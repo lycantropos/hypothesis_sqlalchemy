@@ -2,9 +2,9 @@ from functools import partial
 from typing import Optional
 
 from hypothesis import given
-from hypothesis.searchstrategy import SearchStrategy
 from sqlalchemy.schema import Table
 
+from hypothesis_sqlalchemy.hints import Strategy
 from hypothesis_sqlalchemy.tables.records import lists_factory
 from tests.utils import (DataObject,
                          table_record_is_valid)
@@ -17,7 +17,7 @@ def test_basic(table: Table, min_size: int, max_size: Optional[int]) -> None:
                            min_size=min_size,
                            max_size=max_size)
 
-    assert isinstance(result, SearchStrategy)
+    assert isinstance(result, Strategy)
 
 
 @given(strategies.data, strategies.tables,

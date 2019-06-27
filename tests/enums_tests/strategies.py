@@ -6,12 +6,12 @@ from typing import (Any,
                     Tuple)
 
 from hypothesis import strategies
-from hypothesis.searchstrategy import SearchStrategy
 
 from hypothesis_sqlalchemy.enums import (Bases,
                                          UniqueBy,
                                          is_invalid_enum_key,
                                          is_valid_enum_key)
+from hypothesis_sqlalchemy.hints import Strategy
 from hypothesis_sqlalchemy.utils import sql_identifiers
 from tests.strategies import (data,
                               max_sizes,
@@ -54,8 +54,8 @@ def is_enum_class(cls: type) -> bool:
     return isinstance(cls, EnumMeta)
 
 
-def combine_bases_with_values(bases: Bases) -> Tuple[SearchStrategy[Bases],
-                                                     SearchStrategy[Any]]:
+def combine_bases_with_values(bases: Bases) -> Tuple[Strategy[Bases],
+                                                     Strategy[Any]]:
     if any(base is IntEnum for base in bases):
         values = _valid_class_strategies[int]
     else:
@@ -69,8 +69,8 @@ def combine_bases_with_values(bases: Bases) -> Tuple[SearchStrategy[Bases],
 
 
 def combine_bases_with_unique_values(bases: Bases
-                                     ) -> Tuple[SearchStrategy[Bases],
-                                                SearchStrategy[Any],
+                                     ) -> Tuple[Strategy[Bases],
+                                                Strategy[Any],
                                                 UniqueBy]:
     if any(base is IntEnum for base in bases):
         values = _valid_class_strategies[int]
@@ -88,8 +88,8 @@ def combine_bases_with_unique_values(bases: Bases
 
 
 def combine_bases_with_invalid_values(bases: Bases
-                                      ) -> Tuple[SearchStrategy[Bases],
-                                                 SearchStrategy[Any]]:
+                                      ) -> Tuple[Strategy[Bases],
+                                                 Strategy[Any]]:
     if any(base is IntEnum for base in bases):
         values = _invalid_class_strategies[int]
     else:
