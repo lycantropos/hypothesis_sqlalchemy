@@ -46,11 +46,11 @@ def enums_factory(*,
 
 
 def factory(*,
-            string_types: Strategy = strings_factory(),
-            enum_types: Strategy = enums_factory(),
-            primary_keys_types: Strategy = primary_keys_factory()
-            ) -> Strategy:
-    extra_types = [Float(asdecimal=True), Boolean, Date, DateTime]
+            string_types: Strategy[TypeEngine] = strings_factory(),
+            enum_types: Strategy[TypeEngine] = enums_factory(),
+            primary_keys_types: Strategy[TypeEngine] = primary_keys_factory()
+            ) -> Strategy[TypeEngine]:
+    extra_types = [Float(asdecimal=True), Boolean(), Date(), DateTime()]
     return strategies.one_of(string_types,
                              enum_types,
                              primary_keys_types,
