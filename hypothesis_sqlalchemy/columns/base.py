@@ -59,8 +59,7 @@ def lists_factory(
         primary_key = draw(primary_keys)
 
         def names_are_unique(columns: List[Column]) -> bool:
-            names = [primary_key.name]
-            names += [column.name for column in columns]
+            names = [primary_key.name] + [column.name for column in columns]
             return len(names) == len(set(names))
 
         rest_columns_list = draw(rest_columns_lists
