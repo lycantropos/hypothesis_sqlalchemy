@@ -6,7 +6,7 @@ from hypothesis import given
 from sqlalchemy.schema import Table
 
 from hypothesis_sqlalchemy.hints import Strategy
-from hypothesis_sqlalchemy.tables.records import factory
+from hypothesis_sqlalchemy.tabular.records import factory
 from tests.utils import (DataObject,
                          table_record_is_valid)
 from . import strategies

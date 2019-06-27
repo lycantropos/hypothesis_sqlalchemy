@@ -9,7 +9,7 @@ from sqlalchemy.schema import (Column,
                                Table)
 
 from hypothesis_sqlalchemy import (columnar,
-                                   tables)
+                                   tabular)
 from hypothesis_sqlalchemy.columnar import values
 from hypothesis_sqlalchemy.hints import Strategy
 from tests.strategies import (data,
@@ -22,11 +22,11 @@ min_sizes = min_sizes
 max_sizes = max_sizes
 non_unique_columns = columnar.non_primary_keys_factory(
         are_unique=strategies.just(False))
-tables_without_unique_columns = tables.factory(
+tables_without_unique_columns = tabular.factory(
         metadatas=metadatas,
         columns_lists=strategies.lists(non_unique_columns,
                                        unique_by=attrgetter('name')))
-tables_with_unique_columns = tables.factory(metadatas=metadatas)
+tables_with_unique_columns = tabular.factory(metadatas=metadatas)
 tables = tables_without_unique_columns | tables_with_unique_columns
 
 
