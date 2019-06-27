@@ -8,8 +8,10 @@ from sqlalchemy.sql.sqltypes import (BigInteger,
                                      Enum,
                                      Float,
                                      Integer,
+                                     Interval,
                                      SmallInteger,
-                                     String)
+                                     String,
+                                     Time)
 from sqlalchemy.sql.type_api import TypeEngine
 
 from hypothesis_sqlalchemy import enumerable
@@ -50,7 +52,8 @@ def factory(*,
             enum_types: Strategy[TypeEngine] = enums_factory(),
             primary_keys_types: Strategy[TypeEngine] = primary_keys_factory()
             ) -> Strategy[TypeEngine]:
-    extra_types = [Float(asdecimal=True), Boolean(), Date(), DateTime()]
+    extra_types = [Float(asdecimal=True), Boolean(),
+                   Date(), DateTime(), Interval(), Time()]
     return strategies.one_of(string_types,
                              enum_types,
                              primary_keys_types,
