@@ -8,8 +8,8 @@ from sqlalchemy.schema import Column
 from sqlalchemy.sql.type_api import TypeEngine
 
 from hypothesis_sqlalchemy.hints import Strategy
-from hypothesis_sqlalchemy.utils import (sql_identifiers,
-                                         is_column_unique)
+from hypothesis_sqlalchemy.utils import (is_column_unique,
+                                         sql_identifiers)
 from . import types
 
 
