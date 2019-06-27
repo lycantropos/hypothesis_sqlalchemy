@@ -7,10 +7,10 @@ from typing import (Any,
 
 from hypothesis import strategies
 
-from hypothesis_sqlalchemy.enums import (Bases,
-                                         UniqueBy,
-                                         is_invalid_key,
-                                         is_valid_key)
+from hypothesis_sqlalchemy.enumerable import (Bases,
+                                              UniqueBy,
+                                              is_invalid_key,
+                                              is_valid_key)
 from hypothesis_sqlalchemy.hints import Strategy
 from hypothesis_sqlalchemy.utils import sql_identifiers
 from tests.strategies import (data,

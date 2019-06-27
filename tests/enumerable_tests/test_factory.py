@@ -6,9 +6,9 @@ from typing import (Any,
 import pytest
 from hypothesis import given
 
-from hypothesis_sqlalchemy.enums import (Bases,
-                                         UniqueBy,
-                                         factory)
+from hypothesis_sqlalchemy.enumerable import (Bases,
+                                              UniqueBy,
+                                              factory)
 from hypothesis_sqlalchemy.hints import Strategy
 from tests.utils import DataObject
 from . import strategies
