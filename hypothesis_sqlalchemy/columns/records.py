@@ -73,32 +73,32 @@ def lists_factory(columns: List[Column],
                             unique_by=unique_by)
 
 
-booleans_factory = strategies.booleans
+to_booleans = strategies.booleans
 
 
-def integers_factory(min_value: int = MIN_POSITIVE_INTEGER_VALUE,
-                     max_value: int = MAX_SMALLINT_VALUE) -> Strategy:
+def to_integers(min_value: int = MIN_POSITIVE_INTEGER_VALUE,
+                max_value: int = MAX_SMALLINT_VALUE) -> Strategy:
     return strategies.integers(min_value=min_value,
                                max_value=max_value)
 
 
-def floats_factory(*,
-                   min_value: float = None,
-                   max_value: float = None,
-                   allow_nan: bool = False,
-                   allow_infinity: bool = False) -> Strategy:
+def to_floats(*,
+              min_value: float = None,
+              max_value: float = None,
+              allow_nan: bool = False,
+              allow_infinity: bool = False) -> Strategy:
     return strategies.floats(min_value=min_value,
                              max_value=max_value,
                              allow_nan=allow_nan,
                              allow_infinity=allow_infinity)
 
 
-def decimals_factory(*,
-                     min_value: float = None,
-                     max_value: float = None,
-                     allow_nan: bool = False,
-                     allow_infinity: bool = False,
-                     places: int = None) -> Strategy:
+def to_decimals(*,
+                min_value: float = None,
+                max_value: float = None,
+                allow_nan: bool = False,
+                allow_infinity: bool = False,
+                places: int = None) -> Strategy:
     return strategies.decimals(min_value=min_value,
                                max_value=max_value,
                                allow_nan=allow_nan,
@@ -106,10 +106,10 @@ def decimals_factory(*,
                                places=places)
 
 
-def date_times_factory(*,
-                       min_value: datetime = MIN_DATE_TIME,
-                       max_value: datetime = datetime.max,
-                       timezones: Strategy = none()) -> Strategy:
+def to_date_times(*,
+                  min_value: datetime = MIN_DATE_TIME,
+                  max_value: datetime = datetime.max,
+                  timezones: Strategy = none()) -> Strategy:
     date_times = strategies.datetimes(min_value=min_value,
                                       max_value=max_value,
                                       timezones=timezones)
@@ -117,19 +117,19 @@ def date_times_factory(*,
                                   microsecond=0))
 
 
-def dates_factory(min_value: date = MIN_DATE_TIME.date(),
-                  max_value: date = date.max) -> Strategy:
+def to_dates(min_value: date = MIN_DATE_TIME.date(),
+             max_value: date = date.max) -> Strategy:
     return strategies.dates(min_value=min_value,
                             max_value=max_value)
 
 
 values_by_python_types = {
-    bool: booleans_factory(),
-    int: integers_factory(),
-    float: floats_factory(),
-    Decimal: decimals_factory(),
-    datetime: date_times_factory(),
-    date: dates_factory(),
+    bool: to_booleans(),
+    int: to_integers(),
+    float: to_floats(),
+    Decimal: to_decimals(),
+    datetime: to_date_times(),
+    date: to_dates(),
 }
 
 
