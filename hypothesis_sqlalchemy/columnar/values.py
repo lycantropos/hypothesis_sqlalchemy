@@ -81,6 +81,12 @@ def string_type_values_factory(string_type: String,
                            max_size=string_type.length)
 
 
+@from_type.register(LargeBinary)
+def binary_string_type_values_factory(string_type: LargeBinary
+                                      ) -> Strategy[bytes]:
+    return strategies.binary(max_size=string_type.length)
+
+
 @from_type.register(EnumType)
 def enum_type_values_factory(enum_type: EnumType
                              ) -> Strategy[Union[str, Enum]]:

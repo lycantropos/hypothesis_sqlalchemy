@@ -9,6 +9,7 @@ from sqlalchemy.sql.sqltypes import (BigInteger,
                                      Float,
                                      Integer,
                                      Interval,
+                                     LargeBinary,
                                      SmallInteger,
                                      String,
                                      Time)
@@ -25,6 +26,15 @@ def strings_factory(lengths: Strategy[int] =
                                         max_value=10485760)
                     ) -> Strategy[TypeEngine]:
     return strategies.builds(String,
+                             length=lengths)
+
+
+def binary_strings_factory(lengths: Strategy[int] =
+                           strategies.integers(min_value=0,
+                                               # MySQL BLOB max size
+                                               max_value=65535)
+                           ) -> Strategy[TypeEngine]:
+    return strategies.builds(LargeBinary,
                              length=lengths)
 
 
@@ -49,12 +59,15 @@ def enums_factory(*,
 
 def factory(*,
             string_types: Strategy[TypeEngine] = strings_factory(),
+            binary_string_types: Strategy[TypeEngine] =
+            binary_strings_factory(),
             enum_types: Strategy[TypeEngine] = enums_factory(),
             primary_keys_types: Strategy[TypeEngine] = primary_keys_factory()
             ) -> Strategy[TypeEngine]:
     extra_types = [Float(asdecimal=True), Boolean(),
                    Date(), DateTime(), Interval(), Time()]
     return strategies.one_of(string_types,
+                             binary_string_types,
                              enum_types,
                              primary_keys_types,
                              strategies.sampled_from(extra_types))
