@@ -39,6 +39,8 @@ jobs:
         displayName: 'Install requirements'
       - script: pytest
         displayName: 'Run tests'
+      - script: python -m doctest README.md
+        displayName: 'Run doctests'
       - script: python -m codecov -f coverage.xml -X gcov
         condition: succeeded()
         displayName: 'Upload coverage'
@@ -74,6 +76,8 @@ jobs:
         displayName: 'Install requirements'
       - script: pytest
         displayName: 'Run tests'
+      - script: python -m doctest README.md
+        displayName: 'Run doctests'
       - script: python -m codecov -f coverage.xml -X gcov
         condition: succeeded()
         displayName: 'Upload coverage'
