@@ -1,10 +1,10 @@
 from typing import Optional
 
 from hypothesis import given
-from hypothesis.searchstrategy import SearchStrategy
 from sqlalchemy.sql.sqltypes import Enum as EnumType
 
 from hypothesis_sqlalchemy.enums import types_factory
+from hypothesis_sqlalchemy.hints import Strategy
 from tests.utils import DataObject
 from . import strategies
 
@@ -14,7 +14,7 @@ def test_basic(min_size: int, max_size: Optional[int]) -> None:
     result = types_factory(min_size=min_size,
                            max_size=max_size)
 
-    assert isinstance(result, SearchStrategy)
+    assert isinstance(result, Strategy)
 
 
 @given(strategies.data, strategies.min_sizes, strategies.max_sizes)
