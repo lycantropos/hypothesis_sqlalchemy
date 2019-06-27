@@ -3,7 +3,7 @@ from typing import Optional
 from hypothesis import given
 from sqlalchemy.sql.sqltypes import Enum as EnumType
 
-from hypothesis_sqlalchemy.columns.types import enums_factory
+from hypothesis_sqlalchemy.columnar.types import enums_factory
 from hypothesis_sqlalchemy.hints import Strategy
 from tests import strategies
 from tests.utils import DataObject
