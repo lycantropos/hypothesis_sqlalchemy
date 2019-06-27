@@ -73,23 +73,20 @@ Let's take a look at what can be generated and how.
 
 ### Tables
 
-Suppose we have metadata
-```python
->>> from sqlalchemy.schema import MetaData 
->>> metadata = MetaData()
-```
-
-We can write a strategy that produces tables associated with given metadata
+We can write a strategy that produces tables
 ```python
 >>> from hypothesis import strategies
->>> from hypothesis_sqlalchemy import tables
->>> tables_strategy = tables.factory(metadatas=strategies.just(metadata))
->>> table = tables_strategy.example()
->>> table.name
-kahtvedrpis
->>> table.columns
-['kahtvedrpis.wkeggvqvekovyornpixczunhlslpirtqbnpwdppjvccgvy', 
- 'kahtvedrpis.olyrajvsfxbgxzmxheaxdwzgcaj']
+>>> from hypothesis_sqlalchemy import tabular
+>>> from sqlalchemy.schema import MetaData
+>>> tables = tabular.factory(metadatas=strategies.builds(MetaData))
+>>> table = tables.example()
+>>> from sqlalchemy.schema import Table
+>>> isinstance(table, Table)
+True
+>>> from sqlalchemy.schema import Column
+>>> all(isinstance(column, Column) for column in table.columns)
+True
+
 ```
 
 ### Records
@@ -97,39 +94,54 @@ kahtvedrpis
 Suppose we have a table
 ```python
 >>> from sqlalchemy.schema import (Column,
-                                   MetaData,
-                                   Table)
+...                                MetaData,
+...                                Table)
 >>> from sqlalchemy.sql.sqltypes import (Integer,
-                                         String)
+...                                      String)
 >>> metadata = MetaData()
 >>> user_table = Table('user', metadata,
-                       Column('user_id', Integer,
-                              primary_key=True),
-                       Column('user_name', String(16),
-                              nullable=False),
-                       Column('email_address', String(60)),
-                       Column('password', String(20),
-                              nullable=False))
+...                    Column('user_id', Integer,
+...                           primary_key=True),
+...                    Column('user_name', String(16),
+...                           nullable=False),
+...                    Column('email_address', String(60)),
+...                    Column('password', String(20),
+...                           nullable=False))
+
 ```
 and we can write strategy that
 * produces single records (as `tuple`s)
     ```python
-    >>> from hypothesis_sqlalchemy import tables
-    >>> records = tables.records.factory(user_table)
-    >>> records.example()
-    (1022, '>5', None, '+b8a*,\x04&3<')
+    >>> from hypothesis import strategies
+    >>> from hypothesis_sqlalchemy import tabular
+    >>> records = tabular.records.factory(user_table, 
+    ...                                   email_address=strategies.emails())
+    >>> record = records.example()
+    >>> isinstance(record, tuple)
+    True
+    >>> len(record) == len(user_table.columns)
+    True
+    >>> all(column.nullable and value is None
+    ...     or isinstance(value, column.type.python_type) 
+    ...     for value, column in zip(record, user_table.columns))
+    True
+  
     ```
 * produces records `list`s (with configurable `list` size bounds)
     ```python
-    >>> from hypothesis_sqlalchemy import tables
-    >>> records_lists = tables.records.lists_factory(user_table,
-                                                     min_size=2,
-                                                     max_size=5)
-    >>> records_lists.example()
-    [(11310, '', 'P\x02LT/Q\\', ''),
-     (16747, '\x08*Z#j0 ;', None, ''),
-     (29983, '', None, ''), 
-     (7597, '', '}\x16', '<:+n$W')]
+    >>> from hypothesis_sqlalchemy import tabular
+    >>> records_lists = tabular.records.lists_factory(user_table,
+    ...                                               min_size=2,
+    ...                                               max_size=5, 
+    ...                                               email_address=strategies.emails())
+    >>> records_list = records_lists.example()
+    >>> isinstance(records_list, list)
+    True
+    >>> all(isinstance(record, tuple) for record in records_list)
+    True
+    >>> all(len(record) == len(user_table.columns) for record in records_list)
+    True
+
     ```
 
 Development
