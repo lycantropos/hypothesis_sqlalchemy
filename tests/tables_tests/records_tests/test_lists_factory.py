@@ -1,5 +1,5 @@
 from functools import partial
-from typing import Optional
+from typing import Any, Dict, Optional, Tuple
 
 from hypothesis import given
 from sqlalchemy.schema import Table
@@ -11,24 +11,33 @@ from tests.utils import (DataObject,
 from . import strategies
 
 
-@given(strategies.tables, strategies.min_sizes, strategies.max_sizes)
-def test_basic(table: Table, min_size: int, max_size: Optional[int]) -> None:
+@given(strategies.tables_with_fixed_columns_values,
+       strategies.min_sizes, strategies.max_sizes)
+def test_basic(table_fixed_columns_values: Tuple[Table,
+                                                 Dict[str, Strategy[Any]]],
+               min_size: int, max_size: Optional[int]) -> None:
+    table, fixed_columns_values = table_fixed_columns_values
+
     result = lists_factory(table,
                            min_size=min_size,
-                           max_size=max_size)
+                           max_size=max_size,
+                           **fixed_columns_values)
 
     assert isinstance(result, Strategy)
 
 
-@given(strategies.data, strategies.tables,
+@given(strategies.data, strategies.tables_with_fixed_columns_values,
        strategies.min_sizes, strategies.max_sizes)
 def test_lists_factory(data: DataObject,
-                       table: Table,
+                       table_fixed_columns_values: Table,
                        min_size: int,
                        max_size: Optional[int]) -> None:
+    table, fixed_columns_values = table_fixed_columns_values
+
     strategy = lists_factory(table,
                              min_size=min_size,
-                             max_size=max_size)
+                             max_size=max_size,
+                             **fixed_columns_values)
 
     result = data.draw(strategy)
 
