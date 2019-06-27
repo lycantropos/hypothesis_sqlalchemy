@@ -1,5 +1,7 @@
 from datetime import (date,
-                      datetime)
+                      datetime,
+                      time,
+                      timedelta)
 from decimal import Decimal
 from enum import Enum
 from functools import (partial,
@@ -10,6 +12,7 @@ from typing import (Any,
 from hypothesis import strategies
 from sqlalchemy import (Column,
                         Enum as EnumType,
+                        LargeBinary,
                         String)
 from sqlalchemy.sql.type_api import TypeEngine
 
@@ -55,6 +58,8 @@ values_by_python_types = {
                          allow_infinity=False),
     datetime: to_date_times(min_value=MIN_DATE_TIME),
     date: to_dates(min_value=MIN_DATE_TIME.date()),
+    time: strategies.times(),
+    timedelta: strategies.timedeltas(),
 }
 
 
