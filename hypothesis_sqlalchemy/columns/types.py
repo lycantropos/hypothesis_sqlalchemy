@@ -1,8 +1,11 @@
+from typing import Optional
+
 from hypothesis import strategies
 from sqlalchemy.sql.sqltypes import (BigInteger,
                                      Boolean,
                                      Date,
                                      DateTime,
+                                     Enum,
                                      Float,
                                      Integer,
                                      SmallInteger,
@@ -11,6 +14,7 @@ from sqlalchemy.sql.type_api import TypeEngine
 
 from hypothesis_sqlalchemy import enums
 from hypothesis_sqlalchemy.hints import Strategy
+from hypothesis_sqlalchemy.utils import sql_identifiers
 
 
 def strings_factory(lengths: Strategy[int] =
@@ -27,9 +31,23 @@ def primary_keys_factory() -> Strategy[TypeEngine]:
     return strategies.one_of(*map(strategies.builds, types))
 
 
+def enums_factory(*,
+                  values: Strategy[str] = sql_identifiers,
+                  min_size: int = 1,
+                  max_size: Optional[int] = None) -> Strategy[TypeEngine]:
+    enums_keys = values.filter(enums.is_valid_key)
+    return ((strategies.tuples(enums.factory(keys=enums_keys,
+                                             min_size=min_size,
+                                             max_size=max_size))
+             | strategies.lists(values,
+                                min_size=min_size,
+                                max_size=max_size))
+            .map(lambda type_values: Enum(*type_values)))
+
+
 def factory(*,
             string_types: Strategy = strings_factory(),
-            enum_types: Strategy = enums.types_factory(),
+            enum_types: Strategy = enums_factory(),
             primary_keys_types: Strategy = primary_keys_factory()
             ) -> Strategy:
     extra_types = [Float(asdecimal=True), Boolean, Date, DateTime]

@@ -1,7 +1,7 @@
 from enum import (Enum,
                   EnumMeta,
-                  _is_dunder as is_ignored_enum_key,
-                  _is_sunder as is_invalid_enum_key)
+                  _is_dunder as is_ignored_key,
+                  _is_sunder as is_invalid_key)
 from typing import (Any,
                     Callable,
                     Dict,
@@ -10,11 +10,9 @@ from typing import (Any,
                     Sequence)
 
 from hypothesis import strategies
-from sqlalchemy.sql.sqltypes import Enum as EnumType
 
 from .hints import Strategy
-from .utils import (python_identifiers,
-                    sql_identifiers)
+from .utils import python_identifiers
 
 Bases = Sequence[type]
 UniqueBy = Optional[Callable[[Any], Hashable]]
@@ -57,19 +55,5 @@ def _to_enum_contents(name: str,
     return result
 
 
-def types_factory(*,
-                  values: Strategy[str] = sql_identifiers,
-                  min_size: int = 1,
-                  max_size: Optional[int] = None) -> Strategy:
-    enums = factory(keys=values.filter(is_valid_enum_key),
-                    min_size=min_size,
-                    max_size=max_size)
-    return ((strategies.tuples(enums)
-             | strategies.lists(values,
-                                min_size=min_size,
-                                max_size=max_size))
-            .map(lambda type_values: EnumType(*type_values)))
-
-
-def is_valid_enum_key(key: str) -> bool:
-    return not is_invalid_enum_key(key) and not is_ignored_enum_key(key)
+def is_valid_key(key: str) -> bool:
+    return not is_invalid_key(key) and not is_ignored_key(key)
