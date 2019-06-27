@@ -6,11 +6,11 @@ from typing import (Any,
 import pytest
 from hypothesis import given
 from hypothesis.searchstrategy import SearchStrategy
-from hypothesis.strategies import DataObject
 
 from hypothesis_sqlalchemy.enums import (Bases,
                                          UniqueBy,
                                          factory)
+from tests.utils import DataObject
 from . import strategies
 
 

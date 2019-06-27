@@ -3,12 +3,12 @@ from typing import Optional
 
 from hypothesis import given
 from hypothesis.searchstrategy import SearchStrategy
-from hypothesis.strategies import DataObject
 from sqlalchemy.schema import Table
 
 from hypothesis_sqlalchemy.tables.records import lists_factory
 from tests import strategies
-from tests.utils import table_record_is_valid
+from tests.utils import (DataObject,
+                         table_record_is_valid)
 
 
 @given(strategies.tables, strategies.min_sizes, strategies.max_sizes)
