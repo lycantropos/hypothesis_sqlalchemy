@@ -19,6 +19,7 @@ install:
 
 script:
   - pytest
+  - python -m doctest README.md
 
 after_success:
   - python -m codecov -f coverage.xml -X gcov
