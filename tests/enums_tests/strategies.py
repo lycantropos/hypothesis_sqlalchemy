@@ -9,8 +9,8 @@ from hypothesis import strategies
 
 from hypothesis_sqlalchemy.enums import (Bases,
                                          UniqueBy,
-                                         is_invalid_enum_key,
-                                         is_valid_enum_key)
+                                         is_invalid_key,
+                                         is_valid_key)
 from hypothesis_sqlalchemy.hints import Strategy
 from hypothesis_sqlalchemy.utils import sql_identifiers
 from tests.strategies import (data,
@@ -29,11 +29,11 @@ scalars = (strategies.builds(object)
            | strings
            | floats
            | strategies.datetimes())
-keys_strategies = strategies.just(sql_identifiers.filter(is_valid_enum_key))
+keys_strategies = strategies.just(sql_identifiers.filter(is_valid_key))
 invalid_keys_types_strategies = strategies.just(strategies.none())
 invalid_keys_values_strategies = strategies.just(strings
                                                  .map('_{}_'.format)
-                                                 .filter(is_invalid_enum_key))
+                                                 .filter(is_invalid_key))
 
 _non_enum_bases = [str, float, int]
 _valid_class_strategies = {str: scalars,
