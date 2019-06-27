@@ -49,10 +49,8 @@ def lists_factory(
         non_primary_keys: Strategy[TypeEngine] = non_primary_keys_factory(),
         min_size: int = 0,
         max_size: Optional[int] = None) -> Strategy[List[Column]]:
-    if min_size > 0:
-        min_size -= 1
-    if max_size is not None:
-        max_size -= 1
+    min_size = min_size - 1 if min_size > 0 else min_size
+    max_size = max_size - 1 if max_size is not None else max_size
     rest_columns_lists = strategies.lists(non_primary_keys,
                                           min_size=min_size,
                                           max_size=max_size)
