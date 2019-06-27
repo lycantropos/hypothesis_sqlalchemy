@@ -32,7 +32,6 @@ def test_lists_factory(data: DataObject,
 
     result = data.draw(strategy)
 
-    assert isinstance(strategy, SearchStrategy)
     assert isinstance(result, list)
     assert min_size <= len(result)
     assert max_size is None or len(result) <= max_size
