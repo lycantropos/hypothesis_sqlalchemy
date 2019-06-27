@@ -12,7 +12,7 @@ from sqlalchemy.sql.sqltypes import (BigInteger,
                                      String)
 from sqlalchemy.sql.type_api import TypeEngine
 
-from hypothesis_sqlalchemy import enums
+from hypothesis_sqlalchemy import enumerable
 from hypothesis_sqlalchemy.hints import Strategy
 from hypothesis_sqlalchemy.utils import sql_identifiers
 
@@ -35,10 +35,10 @@ def enums_factory(*,
                   values: Strategy[str] = sql_identifiers,
                   min_size: int = 1,
                   max_size: Optional[int] = None) -> Strategy[TypeEngine]:
-    enums_keys = values.filter(enums.is_valid_key)
-    return ((strategies.tuples(enums.factory(keys=enums_keys,
-                                             min_size=min_size,
-                                             max_size=max_size))
+    enums_keys = values.filter(enumerable.is_valid_key)
+    return ((strategies.tuples(enumerable.factory(keys=enums_keys,
+                                                  min_size=min_size,
+                                                  max_size=max_size))
              | strategies.lists(values,
                                 min_size=min_size,
                                 max_size=max_size))
