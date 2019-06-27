@@ -69,10 +69,10 @@ def lists_factory(
     return strategies.composite(to_columns_lists)()
 
 
-def non_all_unique_lists_factory(
-        min_size: int = 0,
-        max_size: Optional[int] = None
-) -> Strategy:
+def non_all_unique_lists_factory(*,
+                                 min_size: int = 0,
+                                 max_size: Optional[int] = None
+                                 ) -> Strategy[List[Column]]:
     def has_non_unique_column(columns: List[Column]) -> bool:
         return any(not is_column_unique(column)
                    for column in columns)
