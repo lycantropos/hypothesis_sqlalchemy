@@ -2,10 +2,10 @@ from typing import Optional
 
 from hypothesis import given
 from hypothesis.searchstrategy import SearchStrategy
-from hypothesis.strategies import DataObject
 from sqlalchemy.sql.sqltypes import Enum as EnumType
 
 from hypothesis_sqlalchemy.enums import types_factory
+from tests.utils import DataObject
 from . import strategies
 
 

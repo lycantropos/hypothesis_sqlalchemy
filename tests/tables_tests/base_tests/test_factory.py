@@ -1,12 +1,12 @@
 from hypothesis import given
 from hypothesis.searchstrategy import SearchStrategy
-from hypothesis.strategies import DataObject
 from sqlalchemy.schema import (MetaData,
                                Table)
 
 from hypothesis_sqlalchemy.tables import factory
 from hypothesis_sqlalchemy.utils import is_column_unique
 from tests import strategies
+from tests.utils import DataObject
 
 
 @given(strategies.metadatas_strategies)
