@@ -24,5 +24,4 @@ def test_examples(data: DataObject,
     result = data.draw(strategy)
 
     assert isinstance(result, Table)
-    assert any(not is_column_unique(column)
-               for column in result.columns)
+    assert not all(map(is_column_unique, result.columns))
