@@ -5,8 +5,8 @@ from sqlalchemy.schema import (MetaData,
 
 from hypothesis_sqlalchemy.tables import factory
 from hypothesis_sqlalchemy.utils import is_column_unique
-from tests import strategies
 from tests.utils import DataObject
+from . import strategies
 
 
 @given(strategies.metadatas_strategies)
