@@ -89,6 +89,7 @@ True
 >>> all(isinstance(column, Column) for column in table.columns)
 True
 >>> 3 <= len(table.columns) <= 10
+True
 
 ```
 
