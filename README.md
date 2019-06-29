@@ -78,7 +78,9 @@ We can write a strategy that produces tables
 >>> from hypothesis import strategies
 >>> from hypothesis_sqlalchemy import tabular
 >>> from sqlalchemy.schema import MetaData
->>> tables = tabular.factory(metadatas=strategies.builds(MetaData))
+>>> tables = tabular.factory(metadatas=strategies.builds(MetaData),
+...                          min_size=3,
+...                          max_size=10)
 >>> table = tables.example()
 >>> from sqlalchemy.schema import Table
 >>> isinstance(table, Table)
@@ -86,6 +88,7 @@ True
 >>> from sqlalchemy.schema import Column
 >>> all(isinstance(column, Column) for column in table.columns)
 True
+>>> 3 <= len(table.columns) <= 10
 
 ```
 
@@ -136,6 +139,8 @@ and we can write strategy that
     ...                                               email_address=strategies.emails())
     >>> records_list = records_lists.example()
     >>> isinstance(records_list, list)
+    True
+    >>> 2 <= len(records_list) <= 5
     True
     >>> all(isinstance(record, tuple) for record in records_list)
     True
