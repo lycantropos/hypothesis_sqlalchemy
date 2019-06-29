@@ -188,12 +188,6 @@ bump2version --verbose release
 
 This will set version to `major.minor.patch`.
 
-#### Notes
-
-To avoid inconsistency between branches and pull requests,
-bumping version should be merged into `master` branch 
-as separate pull request.
-
 ### Running tests
 
 Install dependencies:
