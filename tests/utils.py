@@ -28,5 +28,5 @@ def records_satisfy_table_constraints(records: List[RecordType],
                       for index, column in enumerate(table.columns)
                       if is_column_unique(column)]
     # All returned values are unique for the columns marked as unique
-    return all(len({record[index] for record in records}) == len(records)
+    return all(len(set(record[index] for record in records)) == len(records)
                for index in unique_indices)
