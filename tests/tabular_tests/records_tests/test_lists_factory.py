@@ -6,6 +6,7 @@ from sqlalchemy.schema import Table
 
 from hypothesis_sqlalchemy.hints import Strategy
 from hypothesis_sqlalchemy.tabular.records import lists_factory
+from hypothesis_sqlalchemy.utils import is_column_unique
 from tests.utils import (DataObject,
                          table_record_is_valid)
 from . import strategies
@@ -49,3 +50,13 @@ def test_lists_factory(data: DataObject,
     assert all(map(partial(table_record_is_valid,
                            table=table),
                    result))
+
+    unique_indices = [
+        index for index, column in enumerate(table.columns)
+        if is_column_unique(column)
+    ]
+
+    # Assert that all returned values are unique for the columns
+    # marked as unique
+    for index in unique_indices:
+      assert len({record[index] for record in result}) == len(result)

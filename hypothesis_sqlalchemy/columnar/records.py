@@ -46,8 +46,11 @@ def lists_factory(columns: List[Column],
                       if is_column_unique(column)]
 
     if unique_indices:
-        def unique_by(row: Tuple[Any, ...]) -> Tuple[Any, ...]:
-            return tuple(row[index] for index in unique_indices)
+        # Create a tuple of functions, each function asserting the uniqueness
+        # of a single column value
+        unique_by = tuple(
+            (lambda row, idx=idx: row[idx]) for idx in unique_indices
+        )
     else:
         unique_by = None
 
