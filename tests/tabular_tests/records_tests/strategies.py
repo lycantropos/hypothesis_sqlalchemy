@@ -42,7 +42,7 @@ def fix_columns_values(table: Table
                                 .map(partial(map, to_item))
                                 .map(dict))
     else:
-        fixed_columns_values = strategies.just({})
+        fixed_columns_values = strategies.builds(dict)
     return strategies.tuples(strategies.just(table), fixed_columns_values)
 
 
