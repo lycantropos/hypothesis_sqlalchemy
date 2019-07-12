@@ -2,6 +2,7 @@ from typing import (Any,
                     List,
                     Optional,
                     Tuple)
+from operator import itemgetter
 
 from hypothesis import strategies
 from hypothesis.searchstrategy.collections import TupleStrategy
@@ -48,9 +49,7 @@ def lists_factory(columns: List[Column],
     if unique_indices:
         # Create a tuple of functions, each function asserting the uniqueness
         # of a single column value
-        unique_by = tuple(
-            (lambda row, idx=idx: row[idx]) for idx in unique_indices
-        )
+        unique_by = tuple(map(itemgetter, unique_indices))
     else:
         unique_by = None
 
