@@ -1,4 +1,4 @@
-from typing import List
+from typing import Hashable, Iterable, List
 
 from sqlalchemy import Table
 
@@ -24,9 +24,14 @@ def table_record_is_valid(table_record: RecordType,
 def records_satisfy_table_constraints(records: List[RecordType],
                                       *,
                                       table: Table) -> bool:
-    unique_indices = [index
-                      for index, column in enumerate(table.columns)
-                      if is_column_unique(column)]
-    # All returned values are unique for the columns marked as unique
-    return all(len(set(record[index] for record in records)) == len(records)
-               for index in unique_indices)
+    def all_unique(iterable: Iterable[Hashable]) -> bool:
+        seen = set()
+        for element in iterable:
+            if element in seen:
+                return False
+            seen.add(element)
+        return True
+    
+    return all(all_unique(record[index] for record in records)
+               for index, column in enumerate(table.columns)
+               if is_column_unique(column))
