@@ -36,10 +36,13 @@ def fix_columns_values(table: Table
     def to_item(column: Column) -> Tuple[str, Strategy[Any]]:
         return column.name, values.factory(column)
 
-    fixed_columns_values = (strategies.sets(strategies
-                                            .sampled_from(list(table.columns)))
-                            .map(partial(map, to_item))
-                            .map(dict))
+    if table.columns:
+        fixed_columns_values = (strategies.sets(strategies
+                                                .sampled_from(list(table.columns)))
+                                .map(partial(map, to_item))
+                                .map(dict))
+    else:
+        fixed_columns_values = strategies.just({})
     return strategies.tuples(strategies.just(table), fixed_columns_values)
 
 
