@@ -23,6 +23,7 @@ def table_record_is_valid(table_record: RecordType,
                or isinstance(coordinate, column.type.python_type)
                for coordinate, column in zip(table_record, table.columns))
 
+
 def records_satisfy_table_constraints(records: List[RecordType],
                                       *,
                                       table: Table) -> bool:
@@ -33,7 +34,7 @@ def records_satisfy_table_constraints(records: List[RecordType],
                 return False
             seen.add(element)
         return True
-    
+
     return all(all_unique(record[index] for record in records)
                for index, column in enumerate(table.columns)
                if is_column_unique(column))
