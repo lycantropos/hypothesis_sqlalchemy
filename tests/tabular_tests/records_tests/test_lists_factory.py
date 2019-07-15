@@ -53,4 +53,5 @@ def test_lists_factory(data: DataObject,
     assert all(map(partial(table_record_is_valid,
                            table=table),
                    result))
-    assert records_satisfy_table_constraints(result, table=table)
+    assert records_satisfy_table_constraints(result,
+                                             table=table)
