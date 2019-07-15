@@ -1,4 +1,6 @@
-from typing import Hashable, Iterable, List
+from typing import (Hashable,
+                    Iterable,
+                    List)
 
 from sqlalchemy import Table
 
