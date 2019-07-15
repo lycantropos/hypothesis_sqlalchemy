@@ -1,5 +1,8 @@
 from functools import partial
-from typing import Any, Dict, Optional, Tuple
+from typing import (Any,
+                    Dict,
+                    Optional,
+                    Tuple)
 
 from hypothesis import given
 from sqlalchemy.schema import Table
@@ -7,8 +10,8 @@ from sqlalchemy.schema import Table
 from hypothesis_sqlalchemy.hints import Strategy
 from hypothesis_sqlalchemy.tabular.records import lists_factory
 from tests.utils import (DataObject,
-                         table_record_is_valid,
-                         records_satisfy_table_constraints)
+                         records_satisfy_table_constraints,
+                         table_record_is_valid)
 from . import strategies
 
 
