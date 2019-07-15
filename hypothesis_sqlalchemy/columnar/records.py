@@ -1,8 +1,7 @@
+from operator import itemgetter
 from typing import (Any,
                     List,
-                    Optional,
-                    Tuple)
-from operator import itemgetter
+                    Optional)
 
 from hypothesis import strategies
 from hypothesis.searchstrategy.collections import TupleStrategy
