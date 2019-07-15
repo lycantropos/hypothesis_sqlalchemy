@@ -4,17 +4,16 @@ from typing import (Any,
                     Optional)
 
 from hypothesis import strategies
-from hypothesis.searchstrategy.collections import TupleStrategy
 from sqlalchemy.schema import Column
 
-from hypothesis_sqlalchemy.hints import Strategy
+from hypothesis_sqlalchemy.hints import (RecordType,
+                                         Strategy)
 from hypothesis_sqlalchemy.utils import is_column_unique
 from . import values
 
 
 def factory(columns: List[Column],
-            **fixed_columns_values: Strategy
-            ) -> TupleStrategy:
+            **fixed_columns_values: Strategy) -> Strategy[RecordType]:
     def to_plain_values_strategy(column: Column) -> Strategy[Any]:
         result = values.factory(column)
         if column.nullable:
@@ -38,7 +37,7 @@ def lists_factory(columns: List[Column],
                   min_size: int = 0,
                   max_size: Optional[int] = None,
                   **fixed_columns_values: Strategy
-                  ) -> TupleStrategy:
+                  ) -> Strategy[List[RecordType]]:
     values_tuples = factory(columns,
                             **fixed_columns_values)
     unique_indices = [index
