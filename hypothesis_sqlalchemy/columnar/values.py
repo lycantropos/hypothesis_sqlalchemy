@@ -73,27 +73,25 @@ ascii_not_null_characters = strategies.characters(min_codepoint=1,
 
 
 @from_type.register(String)
-def string_type_values_factory(string_type: String,
+def string_type_values_factory(type_: String,
                                *,
                                alphabet: Strategy = ascii_not_null_characters
                                ) -> Strategy[str]:
     return strategies.text(alphabet=alphabet,
-                           max_size=string_type.length)
+                           max_size=type_.length)
 
 
 @from_type.register(LargeBinary)
-def binary_string_type_values_factory(string_type: LargeBinary
-                                      ) -> Strategy[bytes]:
-    return strategies.binary(max_size=string_type.length)
+def binary_string_type_values_factory(type_: LargeBinary) -> Strategy[bytes]:
+    return strategies.binary(max_size=type_.length)
 
 
 @from_type.register(EnumType)
-def enum_type_values_factory(enum_type: EnumType
-                             ) -> Strategy[Union[str, Enum]]:
-    enum_class = enum_type.enum_class
+def enum_type_values_factory(type_: EnumType) -> Strategy[Union[str, Enum]]:
+    enum_class = type_.enum_class
     if enum_class is None:
         # The source of enumerated values may be a list of string values
-        values = enum_type.enums
+        values = type_.enums
     else:
         # ... or a PEP-435-compliant enumerated class.
         # More info at
