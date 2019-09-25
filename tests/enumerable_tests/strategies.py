@@ -12,7 +12,7 @@ from hypothesis_sqlalchemy.enumerable import (Bases,
                                               is_invalid_key,
                                               is_valid_key)
 from hypothesis_sqlalchemy.hints import Strategy
-from hypothesis_sqlalchemy.utils import sql_identifiers
+from hypothesis_sqlalchemy.utils import python_identifiers
 from tests.strategies import (data,
                               max_sizes,
                               min_sizes)
@@ -29,7 +29,7 @@ scalars = (strategies.builds(object)
            | strings
            | floats
            | strategies.datetimes())
-keys_strategies = strategies.just(sql_identifiers.filter(is_valid_key))
+keys_strategies = strategies.just(python_identifiers.filter(is_valid_key))
 invalid_keys_types_strategies = strategies.just(strategies.none())
 invalid_keys_values_strategies = strategies.just(strings
                                                  .map('_{}_'.format)
