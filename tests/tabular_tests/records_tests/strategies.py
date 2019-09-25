@@ -57,8 +57,8 @@ def fix_columns_values(table: Table
         return column.name, values.factory(column)
 
     if table.columns:
-        fixed_columns_values = (strategies.sets(strategies.sampled_from(
-                list(table.columns)))
+        fixed_columns_values = (strategies.sets(
+                strategies.sampled_from(list(table.columns)))
                                 .map(partial(map, to_item))
                                 .map(dict))
     else:
