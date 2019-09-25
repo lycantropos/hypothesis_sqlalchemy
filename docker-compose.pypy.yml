@@ -5,8 +5,8 @@ services:
     build:
       context: .
       args:
-      - PYTHON_IMAGE=${PYPY_IMAGE_NAME}
-      - PYTHON_IMAGE_VERSION=${PYPY_IMAGE_VERSION}
+        - PYTHON_IMAGE=${PYPY_IMAGE_NAME}
+        - PYTHON_IMAGE_VERSION=${PYPY_IMAGE_VERSION}
     image: lycantropos/hypothesis_sqlalchemy-pypy:0.1.1
     volumes:
       - ./hypothesis_sqlalchemy/:/opt/hypothesis_sqlalchemy/hypothesis_sqlalchemy/
@@ -16,5 +16,4 @@ services:
       - ./requirements-tests.txt:/opt/hypothesis_sqlalchemy/requirements-tests.txt
       - ./setup.py:/opt/hypothesis_sqlalchemy/setup.py
       - ./setup.cfg:/opt/hypothesis_sqlalchemy/setup.cfg
-    entrypoint: pypy3
-    command: setup.py test
+    entrypoint: pytest
