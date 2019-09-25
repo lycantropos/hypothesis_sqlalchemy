@@ -1,6 +1,7 @@
 from typing import Optional
 
 from hypothesis import given
+from sqlalchemy.engine import Dialect
 from sqlalchemy.sql.sqltypes import Enum as EnumType
 
 from hypothesis_sqlalchemy.columnar.types import enums_factory
@@ -9,19 +10,25 @@ from tests import strategies
 from tests.utils import DataObject
 
 
-@given(strategies.min_sizes, strategies.max_sizes)
-def test_basic(min_size: int, max_size: Optional[int]) -> None:
-    result = enums_factory(min_size=min_size,
+@given(strategies.dialects, strategies.min_sizes, strategies.max_sizes)
+def test_basic(dialect: Dialect,
+               min_size: int,
+               max_size: Optional[int]) -> None:
+    result = enums_factory(dialect,
+                           min_size=min_size,
                            max_size=max_size)
 
     assert isinstance(result, Strategy)
 
 
-@given(strategies.data, strategies.min_sizes, strategies.max_sizes)
+@given(strategies.data, strategies.dialects,
+       strategies.min_sizes, strategies.max_sizes)
 def test_enum_types_factory(data: DataObject,
+                            dialect: Dialect,
                             min_size: int,
                             max_size: Optional[int]) -> None:
-    strategy = enums_factory(min_size=min_size,
+    strategy = enums_factory(dialect,
+                             min_size=min_size,
                              max_size=max_size)
 
     result = data.draw(strategy)

@@ -1,6 +1,7 @@
 from typing import Optional
 
 from hypothesis import given
+from sqlalchemy.engine import Dialect
 from sqlalchemy.schema import (MetaData,
                                Table)
 
@@ -11,25 +12,31 @@ from tests.utils import DataObject
 from . import strategies
 
 
-@given(strategies.metadatas_strategies,
+@given(strategies.dialects,
+       strategies.metadatas,
        strategies.min_sizes, strategies.max_sizes)
-def test_basic(metadatas: Strategy[MetaData],
+def test_basic(dialect: Dialect,
+               metadata: MetaData,
                min_size: int,
                max_size: Optional[int]) -> None:
-    result = factory(metadatas=metadatas,
+    result = factory(dialect=dialect,
+                     metadata=metadata,
                      min_size=min_size,
                      max_size=max_size)
 
     assert isinstance(result, Strategy)
 
 
-@given(strategies.data, strategies.metadatas_strategies,
+@given(strategies.data, strategies.dialects,
+       strategies.metadatas,
        strategies.min_sizes, strategies.max_sizes)
 def test_examples(data: DataObject,
-                  metadatas: Strategy[MetaData],
+                  dialect: Dialect,
+                  metadata: MetaData,
                   min_size: int,
                   max_size: Optional[int]) -> None:
-    strategy = factory(metadatas=metadatas,
+    strategy = factory(dialect=dialect,
+                       metadata=metadata,
                        min_size=min_size,
                        max_size=max_size)
 
