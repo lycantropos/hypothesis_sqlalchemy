@@ -17,7 +17,10 @@ def factory(columns: List[Column],
     def to_plain_values_strategy(column: Column) -> Strategy[Any]:
         result = values.factory(column)
         if column.nullable:
-            result |= strategies.none()
+            # putting simpler strategies first
+            # more info at
+            # https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.one_of
+            result = strategies.none() | result
         return result
 
     if fixed_columns_values:
