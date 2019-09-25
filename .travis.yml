@@ -5,7 +5,8 @@ language: python
 
 matrix:
   include:
-    - python: pypy3.5
+    - python: pypy3.5-6.0.0
+    - python: pypy3.6-7.0.0
     - python: 3.5
     - python: 3.6
     - python: 3.7
@@ -14,8 +15,8 @@ matrix:
 
 install:
   - python -m pip install codecov
-  - python -m pip install -r requirements-tests.txt
   - python -m pip install -r requirements.txt
+  - python -m pip install -r requirements-tests.txt
 
 script:
   - pytest
