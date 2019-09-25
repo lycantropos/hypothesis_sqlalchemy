@@ -1,7 +1,7 @@
 from enum import (Enum,
                   EnumMeta,
                   _is_dunder as is_ignored_key,
-                  _is_sunder as is_invalid_key)
+                  _is_sunder)
 from typing import (Any,
                     Callable,
                     Dict,
@@ -57,3 +57,7 @@ def _to_enum_contents(name: str,
 
 def is_valid_key(key: str) -> bool:
     return not is_invalid_key(key) and not is_ignored_key(key)
+
+
+def is_invalid_key(key: str) -> bool:
+    return _is_sunder(key) or key == type.mro.__name__
