@@ -32,10 +32,11 @@ def test_basic(table_fixed_columns_values: Tuple[Table,
 
 @given(strategies.data, strategies.tables_with_fixed_columns_values,
        strategies.min_sizes, strategies.max_sizes)
-def test_lists_factory(data: DataObject,
-                       table_fixed_columns_values: Table,
-                       min_size: int,
-                       max_size: Optional[int]) -> None:
+def test_lists_factory(
+        data: DataObject,
+        table_fixed_columns_values: Tuple[Table, Dict[str, Strategy[Any]]],
+        min_size: int,
+        max_size: Optional[int]) -> None:
     table, fixed_columns_values = table_fixed_columns_values
 
     strategy = lists_factory(table,
