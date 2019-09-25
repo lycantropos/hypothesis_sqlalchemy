@@ -1,3 +1,4 @@
+from operator import attrgetter
 from typing import (Any,
                     Callable,
                     List,
@@ -53,7 +54,8 @@ def lists_factory(
     max_size = max_size - 1 if max_size is not None else max_size
     rest_columns_lists = strategies.lists(non_primary_keys,
                                           min_size=min_size,
-                                          max_size=max_size)
+                                          max_size=max_size,
+                                          unique_by=attrgetter('name'))
 
     def to_columns_lists(draw: Callable[[Strategy], Any]) -> List[Column]:
         primary_key = draw(primary_keys)
