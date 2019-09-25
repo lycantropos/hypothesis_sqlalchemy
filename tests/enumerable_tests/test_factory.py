@@ -14,8 +14,8 @@ from tests.utils import DataObject
 from . import strategies
 
 
-@given(strategies.bases_values_strategies, strategies.min_sizes,
-       strategies.keys_strategies, strategies.max_sizes)
+@given(strategies.bases_values_strategies, strategies.keys_strategies,
+       strategies.min_sizes, strategies.max_sizes)
 def test_basic(bases_values: Tuple[Strategy[strategies.Bases], Strategy[Any]],
                keys: Strategy[str],
                min_size: int,
