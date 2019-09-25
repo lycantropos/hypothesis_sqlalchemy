@@ -4,30 +4,35 @@ from typing import (Any,
                     Optional)
 
 from hypothesis import strategies
+from sqlalchemy.engine import Dialect
 from sqlalchemy.schema import (Column,
                                MetaData,
                                Table)
 
-from hypothesis_sqlalchemy import columnar
+from hypothesis_sqlalchemy import (columnar,
+                                   dialectic)
 from hypothesis_sqlalchemy.hints import Strategy
-from hypothesis_sqlalchemy.utils import sql_identifiers
+from hypothesis_sqlalchemy.utils import to_sql_identifiers
 
 
 def factory(*,
-            tables_names: Strategy[str] = sql_identifiers,
-            metadatas: Strategy[MetaData],
+            dialect: Dialect = dialectic.default,
+            metadata: MetaData,
+            tables_names: Optional[Strategy[str]] = None,
             columns_factory: Callable[..., Strategy[List[Column]]] =
             columnar.non_all_unique_lists_factory,
             min_size: int = 0,
             max_size: Optional[int] = None,
             extend_existing: Strategy[bool] = strategies.just(True)
             ) -> Strategy:
-    columns_lists = columns_factory(min_size=min_size,
+    if tables_names is None:
+        tables_names = to_sql_identifiers(dialect)
+    columns_lists = columns_factory(dialect,
+                                    min_size=min_size,
                                     max_size=max_size)
 
     def table_factory(draw: Callable[[Strategy], Any]) -> Table:
         table_name = draw(tables_names)
-        metadata = draw(metadatas)
         columns_list = draw(columns_lists)
         return Table(table_name,
                      metadata,

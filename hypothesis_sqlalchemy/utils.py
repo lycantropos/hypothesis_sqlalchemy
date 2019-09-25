@@ -1,19 +1,22 @@
 from string import ascii_letters
 
 from hypothesis import strategies
+from sqlalchemy.engine import Dialect
 from sqlalchemy.schema import Column
 
-# more info at:
-# for PostgreSQL
-# https://www.postgresql.org/docs/current/static/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
-# for MySQL
-# https://dev.mysql.com/doc/refman/en/identifiers.html
-MAX_IDENTIFIER_LENGTH = 63
+from hypothesis_sqlalchemy.hints import Strategy
 
 identifiers_characters = strategies.sampled_from('_' + ascii_letters)
-sql_identifiers = strategies.text(alphabet=identifiers_characters,
-                                  min_size=8,
-                                  max_size=MAX_IDENTIFIER_LENGTH)
+
+
+def to_sql_identifiers(dialect: Dialect) -> Strategy[str]:
+    max_size = dialect.max_identifier_length
+    min_size = min(8, max_size)
+    return strategies.text(alphabet=identifiers_characters,
+                           min_size=min_size,
+                           max_size=max_size)
+
+
 python_identifiers = (strategies.text(alphabet=identifiers_characters,
                                       min_size=1)
                       .filter(str.isidentifier))

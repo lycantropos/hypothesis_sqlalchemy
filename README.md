@@ -75,10 +75,9 @@ Let's take a look at what can be generated and how.
 
 We can write a strategy that produces tables
 ```python
->>> from hypothesis import strategies
 >>> from hypothesis_sqlalchemy import tabular
 >>> from sqlalchemy.schema import MetaData
->>> tables = tabular.factory(metadatas=strategies.builds(MetaData),
+>>> tables = tabular.factory(metadata=MetaData(),
 ...                          min_size=3,
 ...                          max_size=10)
 >>> table = tables.example()

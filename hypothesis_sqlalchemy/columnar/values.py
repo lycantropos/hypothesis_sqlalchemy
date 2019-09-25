@@ -7,13 +7,16 @@ from enum import Enum
 from functools import (partial,
                        singledispatch)
 from typing import (Any,
+                    Optional,
                     Union)
+from uuid import UUID
 
 from hypothesis import strategies
 from sqlalchemy import (Column,
                         Enum as EnumType,
                         LargeBinary,
                         String)
+from sqlalchemy.dialects import postgresql
 from sqlalchemy.sql.type_api import TypeEngine
 
 from hypothesis_sqlalchemy.hints import Strategy
@@ -98,3 +101,14 @@ def enum_type_values_factory(type_: EnumType) -> Strategy[Union[str, Enum]]:
         # http://docs.sqlalchemy.org/en/latest/core/type_basics.html#sqlalchemy.types.Enum
         values = list(enum_class)
     return strategies.sampled_from(values)
+
+
+@from_type.register(postgresql.UUID)
+def uuid_type_values_factory(type_: postgresql.UUID,
+                             *,
+                             version: Optional[int] = None
+                             ) -> Strategy[Union[str, UUID]]:
+    result = strategies.uuids(version)
+    if not type_.as_uuid:
+        result = result.map(str)
+    return result
