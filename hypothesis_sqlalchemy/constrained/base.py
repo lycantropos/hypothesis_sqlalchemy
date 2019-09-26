@@ -16,17 +16,26 @@ UNIQUE_TYPES = (PrimaryKeyConstraint, UniqueConstraint)
 def lists_factory(columns: List[Column],
                   *,
                   min_size: int = 0,
-                  max_size: Optional[int] = None
+                  max_size: Optional[int] = None,
+                  primary_key_min_size: int = 0,
+                  primary_key_max_size: Optional[int] = None,
+                  unique_min_size: int = 0,
+                  unique_max_size: Optional[int] = None
                   ) -> Strategy[List[Constraint]]:
     if not columns:
         return strategies.builds(list)
-    primary_keys_lists = primary_keys_factory(columns).map(lambda key: [key])
-    return (strategies.tuples(primary_keys_lists,
-                              strategies.lists(unique_factory(columns),
-                                               min_size=max(min_size - 1, 0),
-                                               max_size=max_size - 1
-                                               if max_size is not None
-                                               else max_size))
+    primary_keys_lists = (primary_keys_factory(columns,
+                                               min_size=primary_key_min_size,
+                                               max_size=primary_key_max_size)
+                          .map(lambda key: [key]))
+    unique_lists = strategies.lists(unique_factory(columns,
+                                                   min_size=unique_min_size,
+                                                   max_size=unique_max_size),
+                                    min_size=max(min_size - 1, 0),
+                                    max_size=max_size - 1
+                                    if max_size is not None
+                                    else max_size)
+    return (strategies.tuples(primary_keys_lists, unique_lists)
             .map(lambda lists_pair: add(*lists_pair)))
 
 
