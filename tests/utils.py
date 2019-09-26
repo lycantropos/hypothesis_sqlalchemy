@@ -1,6 +1,8 @@
 from typing import (Hashable,
                     Iterable,
-                    List)
+                    List,
+                    Optional,
+                    Tuple)
 from uuid import UUID
 
 from sqlalchemy import (Column,
@@ -15,6 +17,7 @@ try:
 except ImportError:
     from hypothesis._strategies import DataObject
 
+Bounds = Tuple[int, Optional[int]]
 DataObject = DataObject
 
 
