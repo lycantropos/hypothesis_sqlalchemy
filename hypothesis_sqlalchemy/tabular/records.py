@@ -19,6 +19,7 @@ def lists_factory(table: Table,
                   max_size: Optional[int] = None,
                   **fixed_columns_values: Strategy) -> TupleStrategy:
     return columnar.records.lists_factory(table.columns,
+                                          table.constraints,
                                           min_size=min_size,
                                           max_size=max_size,
                                           **fixed_columns_values)

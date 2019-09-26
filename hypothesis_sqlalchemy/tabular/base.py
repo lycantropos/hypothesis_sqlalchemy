@@ -1,6 +1,6 @@
+from operator import attrgetter
 from typing import (Any,
                     Callable,
-                    List,
                     Optional)
 
 from hypothesis import strategies
@@ -10,6 +10,7 @@ from sqlalchemy.schema import (Column,
                                Table)
 
 from hypothesis_sqlalchemy import (columnar,
+                                   constrained,
                                    dialectic)
 from hypothesis_sqlalchemy.hints import Strategy
 from hypothesis_sqlalchemy.utils import to_sql_identifiers
@@ -18,25 +19,43 @@ from hypothesis_sqlalchemy.utils import to_sql_identifiers
 def factory(*,
             dialect: Dialect = dialectic.default,
             metadata: MetaData,
-            tables_names: Optional[Strategy[str]] = None,
-            columns_factory: Callable[..., Strategy[List[Column]]] =
-            columnar.non_all_unique_lists_factory,
+            names: Optional[Strategy[str]] = None,
+            columns: Strategy[Column] = None,
             min_size: int = 0,
             max_size: Optional[int] = None,
-            extend_existing: Strategy[bool] = strategies.just(True)
-            ) -> Strategy:
-    if tables_names is None:
-        tables_names = to_sql_identifiers(dialect)
-    columns_lists = columns_factory(dialect,
-                                    min_size=min_size,
-                                    max_size=max_size)
+            extending_existing: Strategy[bool] = strategies.booleans()
+            ) -> Strategy[Table]:
+    if names is None:
+        names = to_sql_identifiers(dialect)
+    if columns is None:
+        columns = columnar.factory(dialect,
+                                   names=names)
 
     def table_factory(draw: Callable[[Strategy], Any]) -> Table:
-        table_name = draw(tables_names)
+        extend_existing = draw(extending_existing)
+        if extend_existing:
+            table_names = names
+        else:
+            table_names = (names
+                           .filter(lambda identifier:
+                                   identifier not in metadata.tables))
+        table_name = draw(table_names)
+        columns_lists = strategies.lists(columns,
+                                         min_size=min_size,
+                                         max_size=max_size,
+                                         unique_by=attrgetter('name'))
         columns_list = draw(columns_lists)
-        return Table(table_name,
-                     metadata,
-                     *columns_list,
-                     extend_existing=draw(extend_existing))
+        if extend_existing and table_name in metadata.tables:
+            existing_table = metadata.tables[table_name]
+            columns_list = [existing_table.c.get(column.name, column)
+                            for column in columns_list]
+        result = Table(table_name,
+                       metadata,
+                       *columns_list,
+                       extend_existing=extend_existing)
+        constraints = draw(constrained.lists_factory(columns_list))
+        for constraint in constraints:
+            result.append_constraint(constraint)
+        return result
 
     return strategies.composite(table_factory)()

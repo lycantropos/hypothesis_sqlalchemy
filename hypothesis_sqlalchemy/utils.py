@@ -2,7 +2,6 @@ from string import ascii_letters
 
 from hypothesis import strategies
 from sqlalchemy.engine import Dialect
-from sqlalchemy.schema import Column
 
 from hypothesis_sqlalchemy.hints import Strategy
 
@@ -20,7 +19,3 @@ def to_sql_identifiers(dialect: Dialect) -> Strategy[str]:
 python_identifiers = (strategies.text(alphabet=identifiers_characters,
                                       min_size=1)
                       .filter(str.isidentifier))
-
-
-def is_column_unique(column: Column) -> bool:
-    return column.unique or column.primary_key

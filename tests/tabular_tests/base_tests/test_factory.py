@@ -7,7 +7,6 @@ from sqlalchemy.schema import (MetaData,
 
 from hypothesis_sqlalchemy.hints import Strategy
 from hypothesis_sqlalchemy.tabular import factory
-from hypothesis_sqlalchemy.utils import is_column_unique
 from tests.utils import DataObject
 from . import strategies
 
@@ -45,4 +44,4 @@ def test_examples(data: DataObject,
     assert isinstance(result, Table)
     assert min_size <= len(result.columns)
     assert max_size is None or len(result.columns) <= max_size
-    assert not all(map(is_column_unique, result.columns))
+    assert not result.columns or result.primary_key
