@@ -24,21 +24,19 @@ def factory(*,
             max_size: Optional[int] = None,
             extending_existing: Strategy[bool] = strategies.booleans()
             ) -> Strategy[Table]:
-    if names is None:
-        names = to_sql_identifiers(dialect)
-    if columns is None:
-        columns = columnar.factory(dialect,
-                                   names=names)
+    names = to_sql_identifiers(dialect) if names is None else names
+    columns = (columnar.factory(dialect,
+                                names=names)
+               if columns is None else columns)
     columns_lists = columnar.lists_factory(columns,
                                            min_size=min_size,
                                            max_size=max_size)
 
     def table_factory(draw: Callable[[Strategy], Any]) -> Table:
         extend_existing = draw(extending_existing)
-        if extend_existing:
-            table_names = names
-        else:
-            table_names = (names
+        table_names = names
+        if not extend_existing:
+            table_names = (table_names
                            .filter(lambda identifier:
                                    identifier not in metadata.tables))
         table_name = draw(table_names)
