@@ -30,10 +30,17 @@ def lists_factory(columns: List[Column],
             .map(lambda lists_pair: add(*lists_pair)))
 
 
-def unique_factory(columns: List[Column]) -> Strategy[UniqueConstraint]:
+def unique_factory(columns: List[Column],
+                   *,
+                   min_size: int = 0,
+                   max_size: Optional[int] = None
+                   ) -> Strategy[UniqueConstraint]:
+    if max_size is None:
+        max_size = len(columns)
     return (strategies.sets(strategies.sampled_from(columns) if columns
                             else strategies.nothing(),
-                            max_size=len(columns))
+                            min_size=min_size,
+                            max_size=max_size)
             .map(lambda constraint_columns:
                  UniqueConstraint(*constraint_columns)))
 
