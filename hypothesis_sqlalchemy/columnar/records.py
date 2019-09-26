@@ -1,14 +1,17 @@
+from itertools import starmap
 from operator import itemgetter
-from typing import (Any,
+from typing import (AbstractSet,
+                    Any,
                     List,
                     Optional)
 
 from hypothesis import strategies
-from sqlalchemy.schema import Column
+from sqlalchemy.schema import (Column,
+                               Constraint)
 
+from hypothesis_sqlalchemy import constrained
 from hypothesis_sqlalchemy.hints import (RecordType,
                                          Strategy)
-from hypothesis_sqlalchemy.utils import is_column_unique
 from . import values
 
 
@@ -36,6 +39,7 @@ def factory(columns: List[Column],
 
 
 def lists_factory(columns: List[Column],
+                  constraints: AbstractSet[Constraint],
                   *,
                   min_size: int = 0,
                   max_size: Optional[int] = None,
@@ -43,14 +47,17 @@ def lists_factory(columns: List[Column],
                   ) -> Strategy[List[RecordType]]:
     values_tuples = factory(columns,
                             **fixed_columns_values)
-    unique_indices = [index
-                      for index, column in enumerate(columns)
-                      if is_column_unique(column)]
+    columns_indices = {column: index for index, column in enumerate(columns)}
+    unique_indices = [[columns_indices[column]
+                       for column in constraint.columns]
+                      for constraint in constraints
+                      if isinstance(constraint, constrained.UNIQUE_TYPES)
+                      and constraint.columns]
 
     if unique_indices:
         # Create a tuple of functions, each function asserting the uniqueness
         # of a single column value
-        unique_by = tuple(map(itemgetter, unique_indices))
+        unique_by = tuple(starmap(itemgetter, unique_indices))
     else:
         unique_by = None
 

@@ -7,8 +7,8 @@ from sqlalchemy import (Column,
                         Table)
 from sqlalchemy.dialects import postgresql
 
+from hypothesis_sqlalchemy import constrained
 from hypothesis_sqlalchemy.hints import RecordType
-from hypothesis_sqlalchemy.utils import is_column_unique
 
 try:
     from hypothesis.strategies import DataObject
@@ -45,6 +45,11 @@ def records_satisfy_table_constraints(records: List[RecordType],
             seen.add(element)
         return True
 
-    return all(all_unique(record[index] for record in records)
-               for index, column in enumerate(table.columns)
-               if is_column_unique(column))
+    columns_indices = {column: index
+                       for index, column in enumerate(table.columns)}
+    return all(all_unique(tuple(record[columns_indices[column]]
+                                for column in constraint.columns)
+                          for record in records)
+               for constraint in table.constraints
+               if isinstance(constraint, constrained.UNIQUE_TYPES)
+               and constraint.columns)
