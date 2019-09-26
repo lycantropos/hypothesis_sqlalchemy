@@ -52,7 +52,8 @@ def factory(*,
                        metadata,
                        *columns_list,
                        extend_existing=extend_existing)
-        constraints = draw(constrained.lists_factory(columns_list))
+        constraints = draw(constrained.lists_factory(columns_list,
+                                                     primary_key_min_size=1))
         for constraint in constraints:
             result.append_constraint(constraint)
         return result
