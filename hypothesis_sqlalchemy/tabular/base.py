@@ -1,4 +1,3 @@
-from operator import attrgetter
 from typing import (Any,
                     Callable,
                     Optional)
@@ -30,6 +29,9 @@ def factory(*,
     if columns is None:
         columns = columnar.factory(dialect,
                                    names=names)
+    columns_lists = columnar.lists_factory(columns,
+                                           min_size=min_size,
+                                           max_size=max_size)
 
     def table_factory(draw: Callable[[Strategy], Any]) -> Table:
         extend_existing = draw(extending_existing)
@@ -40,12 +42,9 @@ def factory(*,
                            .filter(lambda identifier:
                                    identifier not in metadata.tables))
         table_name = draw(table_names)
-        columns_lists = strategies.lists(columns,
-                                         min_size=min_size,
-                                         max_size=max_size,
-                                         unique_by=attrgetter('name'))
         columns_list = draw(columns_lists)
         if extend_existing and table_name in metadata.tables:
+            # preserving constraints, especially primary key one
             existing_table = metadata.tables[table_name]
             columns_list = [existing_table.c.get(column.name, column)
                             for column in columns_list]
