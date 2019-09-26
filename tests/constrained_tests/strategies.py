@@ -1,5 +1,6 @@
 from operator import attrgetter
-from typing import List, Tuple, Optional
+from typing import (List,
+                    Tuple)
 
 from hypothesis import strategies
 from sqlalchemy.schema import (Column,
