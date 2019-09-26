@@ -45,13 +45,17 @@ def unique_factory(columns: List[Column],
                  UniqueConstraint(*constraint_columns)))
 
 
-def primary_keys_factory(columns: List[Column]
+def primary_keys_factory(columns: List[Column],
+                         *,
+                         min_size: int = 0,
+                         max_size: Optional[int] = None
                          ) -> Strategy[PrimaryKeyConstraint]:
     existing_columns = [column for column in columns if column.primary_key]
     if existing_columns:
         return strategies.just(PrimaryKeyConstraint(*existing_columns))
     return (strategies.sets(strategies.sampled_from(columns) if columns
                             else strategies.nothing(),
-                            max_size=len(columns))
+                            min_size=min_size,
+                            max_size=max_size)
             .map(lambda constraint_columns:
                  PrimaryKeyConstraint(*constraint_columns)))
