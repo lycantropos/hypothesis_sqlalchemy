@@ -21,10 +21,8 @@ def factory(dialect: Dialect,
             are_nullable: Strategy[Optional[bool]] = strategies.booleans(),
             are_indexed: Strategy[Optional[bool]] = strategies.booleans()
             ) -> Strategy[Column]:
-    if names is None:
-        names = to_sql_identifiers(dialect)
-    if types is None:
-        types = _types.factory(dialect)
+    names = to_sql_identifiers(dialect) if names is None else names
+    types = _types.factory(dialect) if types is None else types
     return strategies.builds(Column,
                              name=names,
                              type_=types,
