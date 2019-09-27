@@ -22,7 +22,7 @@ def factory(*,
             columns: Strategy[Column] = None,
             min_size: int = 0,
             max_size: Optional[int] = None,
-            extending_existing: Strategy[bool] = strategies.booleans()
+            extend_existing: Strategy[bool] = strategies.booleans()
             ) -> Strategy[Table]:
     names = to_sql_identifiers(dialect) if names is None else names
     columns = (columnar.factory(dialect)
@@ -32,15 +32,15 @@ def factory(*,
                                            max_size=max_size)
 
     def table_factory(draw: Callable[[Strategy], Any]) -> Table:
-        extend_existing = draw(extending_existing)
+        extends_existing = draw(extend_existing)
         table_names = names
-        if not extend_existing:
+        if not extends_existing:
             table_names = (table_names
                            .filter(lambda identifier:
                                    identifier not in metadata.tables))
         table_name = draw(table_names)
         columns_list = draw(columns_lists)
-        if extend_existing and table_name in metadata.tables:
+        if extends_existing and table_name in metadata.tables:
             # preserving constraints, especially primary key one
             existing_table = metadata.tables[table_name]
             columns_list = [existing_table.c.get(column.name, column)
@@ -48,7 +48,7 @@ def factory(*,
         result = Table(table_name,
                        metadata,
                        *columns_list,
-                       extend_existing=extend_existing)
+                       extend_existing=extends_existing)
         constraints = draw(constrained.lists_factory(columns_list,
                                                      primary_key_min_size=1))
         for constraint in constraints:

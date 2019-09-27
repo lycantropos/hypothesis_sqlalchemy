@@ -62,7 +62,7 @@ def test_extending(data: DataObject,
                        names=strategies.just(name),
                        min_size=min_size,
                        max_size=max_size,
-                       extending_existing=strategies.just(True))
+                       extend_existing=strategies.just(True))
 
     first_result = data.draw(strategy)
     second_result = data.draw(strategy)
