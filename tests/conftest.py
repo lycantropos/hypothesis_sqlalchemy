@@ -3,4 +3,5 @@ from hypothesis import (HealthCheck,
 
 settings.register_profile('default',
                           deadline=None,
-                          suppress_health_check=[HealthCheck.too_slow])
+                          suppress_health_check=[HealthCheck.too_slow,
+                                                 HealthCheck.filter_too_much])
