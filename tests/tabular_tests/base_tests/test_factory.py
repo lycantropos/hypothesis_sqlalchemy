@@ -1,4 +1,5 @@
-from typing import Optional
+from typing import (Optional,
+                    Tuple)
 
 from hypothesis import given
 from sqlalchemy.engine import Dialect
@@ -45,3 +46,25 @@ def test_examples(data: DataObject,
     assert min_size <= len(result.columns)
     assert max_size is None or len(result.columns) <= max_size
     assert not result.columns or result.primary_key
+
+
+@given(strategies.data, strategies.dialects_with_names,
+       strategies.metadatas, strategies.min_sizes, strategies.max_sizes)
+def test_extending(data: DataObject,
+                   dialect_with_name: Tuple[Dialect, str],
+                   metadata: MetaData,
+                   min_size: int,
+                   max_size: Optional[int]) -> None:
+    dialect, name = dialect_with_name
+
+    strategy = factory(dialect=dialect,
+                       metadata=metadata,
+                       names=strategies.just(name),
+                       min_size=min_size,
+                       max_size=max_size,
+                       extending_existing=strategies.just(True))
+
+    first_result = data.draw(strategy)
+    second_result = data.draw(strategy)
+
+    assert first_result == second_result
