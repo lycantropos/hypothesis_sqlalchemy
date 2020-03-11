@@ -11,7 +11,7 @@ STATUS=$?
 
 docker-compose --file ${COMPOSE_FILE_NAME} down --remove-orphans
 
-if [ "$STATUS" -eq "0" ]; then
+if [[ "$STATUS" -eq "0" ]]; then
 	echo "${IMPLEMENTATION} tests passed";
 else
 	echo "${IMPLEMENTATION} tests failed to pass"
