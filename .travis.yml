@@ -1,5 +1,4 @@
-sudo: false
-distro: trusty
+distro: xenial
 
 language: python
 
@@ -10,8 +9,6 @@ matrix:
     - python: 3.5
     - python: 3.6
     - python: 3.7
-      dist: xenial
-      sudo: true
 
 install:
   - python -m pip install codecov
