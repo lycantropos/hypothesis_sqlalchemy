@@ -5,7 +5,7 @@ from decimal import Decimal
 from typing import (Tuple,
                     Union)
 
-from hypothesis.searchstrategy import SearchStrategy
+from hypothesis.strategies import SearchStrategy
 
 ColumnValueType = Union[int, bool,
                         float, Decimal, str, None,
