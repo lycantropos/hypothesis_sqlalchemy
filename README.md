@@ -49,11 +49,11 @@ cd hypothesis_sqlalchemy
 Install dependencies:
 - with `CPython`
   ```bash
-  python -m pip install -r requirements.txt
+  python -m pip install --force-reinstall -r requirements.txt
   ```
 - with `PyPy`
   ```bash
-  pypy -m pip install -r requirements.txt
+  pypy -m pip install --force-reinstall -r requirements.txt
   ```
 
 Install:
@@ -198,11 +198,11 @@ This will set version to `major.minor.patch`.
 Install dependencies:
 - with `CPython`
   ```bash
-  python -m pip install -r requirements-tests.txt
+  python -m pip install --force-reinstall -r requirements-tests.txt
   ```
 - with `PyPy`
   ```bash
-  pypy -m pip install -r requirements-tests.txt
+  pypy -m pip install --force-reinstall -r requirements-tests.txt
   ```
 
 Plain
