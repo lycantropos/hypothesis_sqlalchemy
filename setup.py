@@ -7,12 +7,6 @@ import hypothesis_sqlalchemy
 
 project_base_url = 'https://github.com/lycantropos/hypothesis_sqlalchemy/'
 
-setup_requires = [
-    'pytest-runner>=4.2',
-]
-install_requires = Path('requirements.txt').read_text()
-tests_require = Path('requirements-tests.txt').read_text()
-
 setup(name='hypothesis_sqlalchemy',
       version=hypothesis_sqlalchemy.__version__,
       author='Azat Ibrakov',
@@ -42,6 +36,4 @@ setup(name='hypothesis_sqlalchemy',
       packages=find_packages(exclude=('tests', 'tests.*')),
       keywords=['SQLAlchemy', 'hypothesis'],
       python_requires='>=3.5',
-      install_requires=install_requires,
-      setup_requires=setup_requires,
-      tests_require=tests_require)
+      install_requires=Path('requirements.txt').read_text())
