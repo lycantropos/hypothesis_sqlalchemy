@@ -15,5 +15,5 @@ services:
       - ./requirements.txt:/opt/hypothesis_sqlalchemy/requirements.txt
       - ./requirements-tests.txt:/opt/hypothesis_sqlalchemy/requirements-tests.txt
       - ./setup.py:/opt/hypothesis_sqlalchemy/setup.py
-      - ./setup.cfg:/opt/hypothesis_sqlalchemy/setup.cfg
+      - ./pytest.ini:/opt/hypothesis_sqlalchemy/pytest.ini
     entrypoint: pytest
