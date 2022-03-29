@@ -1,3 +1,5 @@
-from . import records
+from . import (records,
+               types,
+               values)
 from .base import (factory,
                    lists_factory)
