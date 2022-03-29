@@ -47,30 +47,10 @@ def binary_strings_factory(dialect: Dialect,
                              length=lengths)
 
 
-def filter_unsupported_types(types_or_instances: Iterable[TypeOrInstance],
-                             *,
-                             dialect: Dialect) -> Iterable[TypeOrInstance]:
-    return filter(partial(is_type_supported,
-                          dialect=dialect),
-                  types_or_instances)
-
-
-def is_type_supported(type_or_instance: Type[TypeOrInstance],
-                      *,
-                      dialect: Dialect) -> bool:
-    instance = to_instance(type_or_instance)
-    try:
-        instance.compile(dialect)
-    except exc.UnsupportedCompilationError:
-        return False
-    else:
-        return True
-
-
 def primary_keys_factory(dialect: Dialect) -> Strategy[TypeEngine]:
-    types = list(filter_unsupported_types([SmallInteger, Integer, BigInteger,
-                                           postgresql.UUID],
-                                          dialect=dialect))
+    types = list(_filter_unsupported_types([SmallInteger, Integer, BigInteger,
+                                            postgresql.UUID],
+                                           dialect=dialect))
     return strategies.sampled_from(types).map(to_instance)
 
 
@@ -91,7 +71,8 @@ def enums_factory(dialect: Dialect,
             .map(lambda type_values: Enum(*type_values)))
 
 
-EXTRA_COLUMNS_TYPES = [Numeric, Float, Boolean, Date, DateTime, Interval, Time]
+_EXTRA_COLUMNS_TYPES = [Numeric, Float, Boolean, Date, DateTime, Interval,
+                        Time]
 
 
 def factory(dialect: Dialect,
@@ -109,10 +90,30 @@ def factory(dialect: Dialect,
         binary_string_types = binary_strings_factory(dialect)
     if enum_types is None:
         enum_types = enums_factory(dialect)
-    extra_types = list(filter_unsupported_types(EXTRA_COLUMNS_TYPES,
-                                                dialect=dialect))
+    extra_types = list(_filter_unsupported_types(_EXTRA_COLUMNS_TYPES,
+                                                 dialect=dialect))
     return strategies.one_of(primary_keys_types,
                              strategies.sampled_from(extra_types),
                              string_types,
                              binary_string_types,
                              enum_types)
+
+
+def _filter_unsupported_types(types_or_instances: Iterable[TypeOrInstance],
+                              *,
+                              dialect: Dialect) -> Iterable[TypeOrInstance]:
+    return filter(partial(_is_type_supported,
+                          dialect=dialect),
+                  types_or_instances)
+
+
+def _is_type_supported(type_or_instance: Type[TypeOrInstance],
+                       *,
+                       dialect: Dialect) -> bool:
+    instance = to_instance(type_or_instance)
+    try:
+        instance.compile(dialect)
+    except exc.UnsupportedCompilationError:
+        return False
+    else:
+        return True
