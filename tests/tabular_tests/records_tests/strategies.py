@@ -14,12 +14,12 @@ from hypothesis_sqlalchemy.hints import Strategy
 from tests.strategies import (data,
                               dialects,
                               max_sizes,
-                              metadatas,
-                              min_sizes)
+                              metadatas)
 from tests.strategies.utils import MAX_MIN_SIZE
 
 data = data
-min_sizes = min_sizes
+# for simplest table with single boolean column
+min_sizes = strategies.integers(0, 2)
 max_sizes = max_sizes
 
 tables = dialects.flatmap(
