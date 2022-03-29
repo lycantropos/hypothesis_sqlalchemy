@@ -108,7 +108,7 @@ def uuid_type_values_factory(type_: postgresql.UUID,
                              *,
                              version: Optional[int] = None
                              ) -> Strategy[Union[str, UUID]]:
-    result = strategies.uuids(version)
+    result = strategies.uuids(version=version)
     if not type_.as_uuid:
         result = result.map(str)
     return result
