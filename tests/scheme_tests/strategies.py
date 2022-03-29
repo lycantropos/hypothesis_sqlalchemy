@@ -18,11 +18,11 @@ dialects = (strategies.one_of([strategies.builds(dialect)
                                                mysql.dialect,
                                                postgresql.dialect,
                                                sqlite.dialect]]))
+just = strategies.just
 
 
 def to_dialects_with_names(dialect: Dialect) -> Strategy[Tuple[Dialect, str]]:
-    return strategies.tuples(strategies.just(dialect),
-                             to_sql_identifiers(dialect))
+    return strategies.tuples(just(dialect), to_sql_identifiers(dialect))
 
 
 dialects_with_names = dialects.flatmap(to_dialects_with_names)
