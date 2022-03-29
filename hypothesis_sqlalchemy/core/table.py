@@ -1,3 +1,4 @@
+from operator import attrgetter
 from typing import (Any,
                     Callable,
                     Optional)
@@ -11,7 +12,6 @@ from sqlalchemy.schema import (Column,
 
 from . import (column,
                table_constraints)
-from .columns import lists as columns_lists
 from .hints import Strategy
 from .utils import to_sql_identifiers
 
@@ -27,9 +27,10 @@ def instances(*,
               ) -> Strategy[Table]:
     tables_names = to_sql_identifiers(dialect) if names is None else names
     tables_columns = column.instances(dialect) if columns is None else columns
-    tables_columns_lists = columns_lists(tables_columns,
-                                         min_size=min_size,
-                                         max_size=max_size)
+    tables_columns_lists = strategies.lists(tables_columns,
+                                            min_size=min_size,
+                                            max_size=max_size,
+                                            unique_by=attrgetter('name'))
 
     def draw_table(draw: Callable[[Strategy], Any]) -> Table:
         metadata = draw(metadatas)
