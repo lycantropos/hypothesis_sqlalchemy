@@ -6,8 +6,7 @@ from decimal import Decimal
 from enum import Enum
 from functools import (partial,
                        singledispatch)
-from typing import (Any,
-                    Iterable,
+from typing import (Iterable,
                     Optional,
                     Type,
                     Union)
@@ -35,7 +34,8 @@ from sqlalchemy.sql.type_api import (TypeEngine,
                                      to_instance)
 
 from . import enum
-from .hints import Strategy
+from .hints import (Scalar,
+                    Strategy)
 from .utils import to_sql_identifiers
 
 TypeOrInstance = Union[TypeEngine, Type[TypeEngine]]
@@ -107,7 +107,7 @@ def enums(dialect: Dialect,
 
 
 @singledispatch
-def scalars(type_: TypeEngine) -> Strategy[Any]:
+def scalars(type_: TypeEngine) -> Strategy[Scalar]:
     return _values_by_python_types[type_.python_type]
 
 
