@@ -7,7 +7,8 @@ from hypothesis import strategies
 from sqlalchemy.schema import (Column,
                                Table)
 
-from hypothesis_sqlalchemy import tabular
+from hypothesis_sqlalchemy import (columnar,
+                                   tabular)
 from hypothesis_sqlalchemy.columnar import values
 from hypothesis_sqlalchemy.hints import Strategy
 from tests.strategies import (data,
@@ -15,15 +16,28 @@ from tests.strategies import (data,
                               max_sizes,
                               metadatas,
                               min_sizes)
+from tests.strategies.utils import MAX_MIN_SIZE
 
 data = data
 min_sizes = min_sizes
 max_sizes = max_sizes
 
-tables = strategies.tuples(dialects, metadatas).flatmap(
-        lambda dialect_with_metadata: tabular.factory(
-                dialect=dialect_with_metadata[0],
-                metadata=dialect_with_metadata[1]))
+tables = dialects.flatmap(
+        lambda dialect: tabular.factory(
+                dialect=dialect,
+                columns=columnar.factory(
+                        dialect,
+                        types=columnar.types.factory(
+                                dialect,
+                                enum_types=columnar.types.enums_factory(
+                                        dialect,
+                                        min_size=MAX_MIN_SIZE
+                                )
+                        )
+                ),
+                metadatas=metadatas
+        )
+)
 
 
 def fix_columns_values(table: Table
@@ -32,10 +46,11 @@ def fix_columns_values(table: Table
         return column.name, values.factory(column)
 
     if table.columns:
-        fixed_columns_values = (strategies.sets(
-                strategies.sampled_from(list(table.columns)))
-                                .map(partial(map, to_item))
-                                .map(dict))
+        fixed_columns_values = (
+            (strategies.sets(strategies.sampled_from(list(table.columns)))
+             .map(partial(map, to_item))
+             .map(dict))
+        )
     else:
         fixed_columns_values = strategies.builds(dict)
     return strategies.tuples(strategies.just(table), fixed_columns_values)
