@@ -28,7 +28,7 @@ min_table_records_lists_sizes = strategies.integers(0, 1)
 max_table_records_lists_sizes = (
         strategies.none() | strategies.integers(MAX_MIN_SIZE + 1, MAX_SIZE)
 )
-tables = dialects.flatmap(lambda dialect: scheme.tables(dialect=dialect))
+tables = dialects.flatmap(scheme.tables)
 
 
 def fix_columns_values(table: Table
