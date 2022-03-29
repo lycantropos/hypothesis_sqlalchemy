@@ -60,7 +60,10 @@ let's take a look at what can be generated and how.
 We can write a strategy that produces tables
 ```python
 >>> from hypothesis_sqlalchemy import scheme
->>> tables = scheme.tables(min_size=3,
+>>> from sqlalchemy.engine.default import DefaultDialect
+>>> dialect = DefaultDialect()
+>>> tables = scheme.tables(dialect,
+...                        min_size=3,
 ...                        max_size=10)
 >>> table = tables.example()
 >>> from sqlalchemy.schema import Table
