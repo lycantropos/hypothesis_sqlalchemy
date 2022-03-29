@@ -1,3 +1,5 @@
+"""Strategies for generating ``SQLAlchemy`` objects."""
+
 from .core import (column as _column,
                    column_type as _column_type,
                    table as _table)
