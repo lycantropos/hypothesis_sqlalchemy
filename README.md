@@ -48,7 +48,6 @@ Usage
 With setup
 ```python
 >>> import warnings
->>> from hypothesis import strategies
 >>> from hypothesis.errors import NonInteractiveExampleWarning
 >>> # ignore hypothesis warnings caused by `example` method call
 ... warnings.filterwarnings('ignore', category=NonInteractiveExampleWarning)
@@ -61,9 +60,7 @@ let's take a look at what can be generated and how.
 We can write a strategy that produces tables
 ```python
 >>> from hypothesis_sqlalchemy import tabular
->>> from sqlalchemy.schema import MetaData
->>> tables = tabular.factory(metadatas=strategies.builds(MetaData),
-...                          min_size=3,
+>>> tables = tabular.factory(min_size=3,
 ...                          max_size=10)
 >>> table = tables.example()
 >>> from sqlalchemy.schema import Table
