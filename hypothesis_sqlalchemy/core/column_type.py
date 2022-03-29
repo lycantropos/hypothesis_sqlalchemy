@@ -52,15 +52,25 @@ def instances(dialect: Dialect,
     if primary_key_types is None:
         primary_key_types = primary_keys(dialect)
     if string_types is None:
-        string_types = strings(dialect)
+        string_types = (strings(dialect)
+                        if _is_type_supported(String,
+                                              dialect=dialect)
+                        else strategies.nothing())
     if binary_string_types is None:
-        binary_string_types = binary_strings(dialect)
+        binary_string_types = (binary_strings(dialect)
+                               if _is_type_supported(LargeBinary,
+                                                     dialect=dialect)
+                               else strategies.nothing())
     if enum_types is None:
-        enum_types = enums(dialect)
+        enum_types = (enums(dialect)
+                      if _is_type_supported(Enum,
+                                            dialect=dialect)
+                      else strategies.nothing())
     extra_types = list(_filter_unsupported_types(EXTRA,
                                                  dialect=dialect))
     return strategies.one_of(primary_key_types,
-                             strategies.sampled_from(extra_types),
+                             (strategies.sampled_from(extra_types)
+                              .map(to_instance)),
                              string_types,
                              binary_string_types,
                              enum_types)
