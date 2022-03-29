@@ -25,8 +25,7 @@ def factory(*,
             extend_existing: Strategy[bool] = strategies.booleans()
             ) -> Strategy[Table]:
     names = to_sql_identifiers(dialect) if names is None else names
-    columns = (columnar.factory(dialect)
-               if columns is None else columns)
+    columns = columnar.factory(dialect) if columns is None else columns
     columns_lists = columnar.lists_factory(columns,
                                            min_size=min_size,
                                            max_size=max_size)
