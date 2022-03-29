@@ -19,7 +19,6 @@ from sqlalchemy.sql.sqltypes import (BigInteger,
                                      Boolean,
                                      Date,
                                      DateTime,
-                                     Enum,
                                      Enum as EnumType,
                                      Float,
                                      Integer,
@@ -28,6 +27,7 @@ from sqlalchemy.sql.sqltypes import (BigInteger,
                                      Numeric,
                                      SmallInteger,
                                      String,
+                                     Text,
                                      Time,
                                      exc)
 from sqlalchemy.sql.type_api import (TypeEngine,
@@ -53,7 +53,7 @@ def instances(dialect: Dialect,
         primary_key_types = primary_keys(dialect)
     if string_types is None:
         string_types = (strings(dialect)
-                        if _is_type_supported(String,
+                        if _is_type_supported(Text,
                                               dialect=dialect)
                         else strategies.nothing())
     if binary_string_types is None:
@@ -63,7 +63,7 @@ def instances(dialect: Dialect,
                                else strategies.nothing())
     if enum_types is None:
         enum_types = (enums(dialect)
-                      if _is_type_supported(Enum,
+                      if _is_type_supported(EnumType(name='_'),
                                             dialect=dialect)
                       else strategies.nothing())
     extra_types = list(_filter_unsupported_types(EXTRA,
@@ -86,19 +86,24 @@ def binary_strings(dialect: Dialect,
 
 def enums(dialect: Dialect,
           *,
+          names: Optional[Strategy[str]] = None,
           values: Optional[Strategy[str]] = None,
           min_size: int = 1,
           max_size: Optional[int] = None) -> Strategy[TypeEngine]:
+    if names is None:
+        names = to_sql_identifiers(dialect)
     if values is None:
         values = to_sql_identifiers(dialect)
     enums_keys = values.filter(enum.is_valid_key)
-    return ((strategies.tuples(enum.types(keys=enums_keys,
-                                          min_size=min_size,
-                                          max_size=max_size))
-             | strategies.lists(values,
-                                min_size=min_size,
-                                max_size=max_size))
-            .map(lambda type_values: Enum(*type_values)))
+    args = (strategies.tuples(enum.types(keys=enums_keys,
+                                         min_size=min_size,
+                                         max_size=max_size))
+            | strategies.lists(values,
+                               min_size=min_size,
+                               max_size=max_size))
+    return (strategies.tuples(names, args)
+            .map(lambda name_with_args: EnumType(*name_with_args[1],
+                                                 name=name_with_args[0])))
 
 
 def primary_keys(dialect: Dialect) -> Strategy[TypeEngine]:
@@ -112,7 +117,7 @@ def strings(dialect: Dialect,
             *,
             lengths: Strategy[int] = strategies.none()
             ) -> Strategy[TypeEngine]:
-    return strategies.builds(String,
+    return strategies.builds(Text,
                              length=lengths)
 
 
