@@ -12,8 +12,6 @@ python_identifiers = (strategies.text(alphabet=identifiers_characters,
 
 
 def to_sql_identifiers(dialect: Dialect) -> Strategy[str]:
-    max_size = dialect.max_identifier_length
-    min_size = min(8, max_size)
     return strategies.text(alphabet=identifiers_characters,
-                           min_size=min_size,
-                           max_size=max_size)
+                           min_size=1,
+                           max_size=dialect.max_identifier_length)
