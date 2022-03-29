@@ -1,2 +1,2 @@
-sqlalchemy>=1.1.0
-hypothesis>=4.22.0
+sqlalchemy>=1.4.32,<2.0
+hypothesis>=6.31.6,<7.0
