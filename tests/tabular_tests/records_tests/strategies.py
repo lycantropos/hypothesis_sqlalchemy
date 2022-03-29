@@ -7,37 +7,20 @@ from hypothesis import strategies
 from sqlalchemy.schema import (Column,
                                Table)
 
-from hypothesis_sqlalchemy import (columnar,
-                                   tabular)
+from hypothesis_sqlalchemy import tabular
 from hypothesis_sqlalchemy.columnar import values
 from hypothesis_sqlalchemy.hints import Strategy
 from tests.strategies import (data,
                               dialects,
                               max_sizes,
                               metadatas)
-from tests.strategies.utils import MAX_MIN_SIZE
 
 data = data
-# for simplest table with single boolean column
-min_sizes = strategies.integers(0, 2)
+# for simplest table with single-value enum column
+min_sizes = strategies.integers(0, 1)
 max_sizes = max_sizes
-
-tables = dialects.flatmap(
-        lambda dialect: tabular.factory(
-                dialect=dialect,
-                columns=columnar.factory(
-                        dialect,
-                        types=columnar.types.factory(
-                                dialect,
-                                enum_types=columnar.types.enums_factory(
-                                        dialect,
-                                        min_size=MAX_MIN_SIZE
-                                )
-                        )
-                ),
-                metadatas=metadatas
-        )
-)
+tables = dialects.flatmap(lambda dialect: tabular.factory(dialect=dialect,
+                                                          metadatas=metadatas))
 
 
 def fix_columns_values(table: Table
