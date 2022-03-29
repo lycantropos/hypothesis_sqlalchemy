@@ -14,10 +14,6 @@ from typing import (Any,
 from uuid import UUID
 
 from hypothesis import strategies
-from sqlalchemy import (Enum as EnumType,
-                        LargeBinary,
-                        String,
-                        exc)
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.engine import Dialect
 from sqlalchemy.sql.sqltypes import (BigInteger,
@@ -25,12 +21,16 @@ from sqlalchemy.sql.sqltypes import (BigInteger,
                                      Date,
                                      DateTime,
                                      Enum,
+                                     Enum as EnumType,
                                      Float,
                                      Integer,
                                      Interval,
+                                     LargeBinary,
                                      Numeric,
                                      SmallInteger,
-                                     Time)
+                                     String,
+                                     Time,
+                                     exc)
 from sqlalchemy.sql.type_api import (TypeEngine,
                                      to_instance)
 
