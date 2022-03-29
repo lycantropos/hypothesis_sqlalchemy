@@ -26,7 +26,7 @@ def factory(*,
             values: Strategy[Any] = strategies.integers(),
             unique_by: UniqueBy = None,
             min_size: int = 0,
-            max_size: Optional[int] = None) -> Strategy:
+            max_size: Optional[int] = None) -> Strategy[EnumMeta]:
     contents = (strategies.tuples(strategies.lists(keys,
                                                    min_size=min_size,
                                                    max_size=max_size,
@@ -40,7 +40,7 @@ def factory(*,
             .map(lambda args: _to_enum(*args)))
 
 
-def _to_enum(name: str, bases: Bases, contents: Dict[str, Any]) -> type:
+def _to_enum(name: str, bases: Bases, contents: Dict[str, Any]) -> EnumMeta:
     contents = _to_enum_contents(name, bases, contents)
     return EnumMeta(name, bases, contents)
 
