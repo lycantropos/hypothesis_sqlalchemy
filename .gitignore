@@ -7,6 +7,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 build/
+_build/
 develop-eggs/
 dist/
 downloads/
@@ -43,3 +44,6 @@ venv*/
 
 ### JetBrains
 .idea/
+
+### MacOS
+.DS_Store
