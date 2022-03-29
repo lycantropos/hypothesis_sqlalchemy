@@ -55,7 +55,7 @@ def test_extending(data: DataObject,
 
     strategy = relational.tables(dialect=dialect,
                                  metadatas=strategies.just(metadata),
-                                 table_names=strategies.just(name),
+                                 names=strategies.just(name),
                                  min_size=min_size,
                                  max_size=max_size,
                                  extend_existing=strategies.just(True))
