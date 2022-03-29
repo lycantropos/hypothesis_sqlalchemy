@@ -1,42 +1,28 @@
-`hypothesis` strategies for `SQLAlchemy`
-========================================
+hypothesis_sqlalchemy
+=====================
 
-[![](https://travis-ci.org/lycantropos/hypothesis_sqlalchemy.svg?branch=master)](https://travis-ci.org/lycantropos/hypothesis_sqlalchemy "Travis CI")
-[![](https://dev.azure.com/lycantropos/hypothesis_sqlalchemy/_apis/build/status/lycantropos.hypothesis_sqlalchemy?branchName=master)](https://dev.azure.com/lycantropos/hypothesis_sqlalchemy/_build/latest?definitionId=7&branchName=master "Azure Pipelines")
+[![](https://github.com/lycantropos/hypothesis_sqlalchemy/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/lycantropos/hypothesis_sqlalchemy/actions/workflows/ci.yml "Github Actions")
 [![](https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy/branch/master/graph/badge.svg)](https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy "Codecov")
 [![](https://img.shields.io/github/license/lycantropos/hypothesis_sqlalchemy.svg)](https://github.com/lycantropos/hypothesis_sqlalchemy/blob/master/LICENSE "License")
 [![](https://badge.fury.io/py/hypothesis-sqlalchemy.svg)](https://badge.fury.io/py/hypothesis-sqlalchemy "PyPI")
 
-In what follows
-- `python` is an alias for `python3.5` or any later
-version (`python3.6` and so on),
-- `pypy` is an alias for `pypy3.5` or any later
-version (`pypy3.6` and so on).
+In what follows `python` is an alias for `python3.6` or `pypy3.6`
+or any later version (`python3.7`, `pypy3.7` and so on).
 
 Installation
 ------------
 
-Install the latest `pip` & `setuptools` packages versions:
-- with `CPython`
-  ```bash
-  python -m pip install --upgrade pip setuptools
-  ```
-- with `PyPy`
-  ```bash
-  pypy -m pip install --upgrade pip setuptools
-  ```
+Install the latest `pip` & `setuptools` packages versions
+```bash
+python -m pip install --upgrade pip setuptools
+```
 
 ### User
 
-Download and install the latest stable version from `PyPI` repository:
-- with `CPython`
-  ```bash
-  python -m pip install --upgrade hypothesis_sqlalchemy
-  ```
-- with `PyPy`
-  ```bash
-  pypy -m pip install --upgrade hypothesis_sqlalchemy
-  ```
+Download and install the latest stable version from `PyPI` repository
+```bash
+python -m pip install --upgrade hypothesis_sqlalchemy
+```
 
 ### Developer
 
@@ -46,25 +32,15 @@ git clone https://github.com/lycantropos/hypothesis_sqlalchemy.git
 cd hypothesis_sqlalchemy
 ```
 
-Install dependencies:
-- with `CPython`
-  ```bash
-  python -m pip install --force-reinstall -r requirements.txt
-  ```
-- with `PyPy`
-  ```bash
-  pypy -m pip install --force-reinstall -r requirements.txt
-  ```
+Install dependencies
+```bash
+python -m pip install -r requirements.txt
+```
 
-Install:
-- with `CPython`
-  ```bash
-  python setup.py install
-  ```
-- with `PyPy`
-  ```bash
-  pypy setup.py install
-  ```
+Install
+```bash
+python setup.py install
+```
 
 Usage
 -----
@@ -195,15 +171,10 @@ This will set version to `major.minor.patch`.
 
 ### Running tests
 
-Install dependencies:
-- with `CPython`
-  ```bash
-  python -m pip install --force-reinstall -r requirements-tests.txt
-  ```
-- with `PyPy`
-  ```bash
-  pypy -m pip install --force-reinstall -r requirements-tests.txt
-  ```
+Install dependencies
+```bash
+python -m pip install -r requirements-tests.txt
+```
 
 Plain
 ```bash
@@ -220,7 +191,7 @@ Inside `Docker` container:
   docker-compose --file docker-compose.pypy.yml up
   ```
 
-`Bash` script (e.g. can be used in `Git` hooks):
+`Bash` script:
 - with `CPython`
   ```bash
   ./run-tests.sh
@@ -235,7 +206,7 @@ Inside `Docker` container:
   ./run-tests.sh pypy
   ```
 
-`PowerShell` script (e.g. can be used in `Git` hooks):
+`PowerShell` script:
 - with `CPython`
   ```powershell
   .\run-tests.ps1
