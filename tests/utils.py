@@ -10,7 +10,7 @@ from sqlalchemy import (Column,
 from sqlalchemy.dialects import postgresql
 
 from hypothesis_sqlalchemy import constrained
-from hypothesis_sqlalchemy.hints import RecordType
+from hypothesis_sqlalchemy.hints import Record
 
 try:
     from hypothesis.strategies import DataObject
@@ -21,7 +21,7 @@ Bounds = Tuple[int, Optional[int]]
 DataObject = DataObject
 
 
-def table_record_is_valid(table_record: RecordType,
+def table_record_is_valid(table_record: Record,
                           *,
                           table: Table) -> bool:
     return all(coordinate is None
@@ -37,7 +37,7 @@ def to_python_type(column: Column) -> type:
     return column_type.python_type
 
 
-def records_satisfy_table_constraints(records: List[RecordType],
+def records_satisfy_table_constraints(records: List[Record],
                                       *,
                                       table: Table) -> bool:
     def all_unique(iterable: Iterable[Hashable]) -> bool:

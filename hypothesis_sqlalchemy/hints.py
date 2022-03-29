@@ -7,8 +7,7 @@ from typing import (Tuple,
 
 from hypothesis.strategies import SearchStrategy
 
-ColumnValueType = Union[int, bool,
-                        float, Decimal, str, None,
-                        date, timedelta, datetime]
-RecordType = Tuple[ColumnValueType, ...]
+ColumnValue = Union[int, bool, float, Decimal, str, None, date, timedelta,
+                    datetime]
+Record = Tuple[ColumnValue, ...]
 Strategy = SearchStrategy

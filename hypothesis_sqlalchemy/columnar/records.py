@@ -10,13 +10,13 @@ from sqlalchemy.schema import (Column,
                                Constraint)
 
 from hypothesis_sqlalchemy import constrained
-from hypothesis_sqlalchemy.hints import (RecordType,
+from hypothesis_sqlalchemy.hints import (Record,
                                          Strategy)
 from . import values
 
 
 def factory(columns: List[Column],
-            **fixed_columns_values: Strategy) -> Strategy[RecordType]:
+            **fixed_columns_values: Strategy) -> Strategy[Record]:
     def to_plain_values_strategy(column: Column) -> Strategy[Any]:
         result = values.factory(column)
         if column.nullable:
@@ -44,7 +44,7 @@ def lists_factory(columns: List[Column],
                   min_size: int = 0,
                   max_size: Optional[int] = None,
                   **fixed_columns_values: Strategy
-                  ) -> Strategy[List[RecordType]]:
+                  ) -> Strategy[List[Record]]:
     values_tuples = factory(columns,
                             **fixed_columns_values)
     columns_indices = {column: index for index, column in enumerate(columns)}
