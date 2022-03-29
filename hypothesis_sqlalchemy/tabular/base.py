@@ -4,19 +4,19 @@ from typing import (Any,
 
 from hypothesis import strategies
 from sqlalchemy.engine import Dialect
+from sqlalchemy.engine.default import DefaultDialect
 from sqlalchemy.schema import (Column,
                                MetaData,
                                Table)
 
 from hypothesis_sqlalchemy import (columnar,
-                                   constrained,
-                                   dialectic)
+                                   constrained)
 from hypothesis_sqlalchemy.hints import Strategy
 from hypothesis_sqlalchemy.utils import to_sql_identifiers
 
 
 def factory(*,
-            dialect: Dialect = dialectic.default,
+            dialect: Dialect = DefaultDialect(),
             metadatas: Strategy[MetaData] = strategies.builds(MetaData),
             names: Optional[Strategy[str]] = None,
             columns: Optional[Strategy[Column]] = None,
