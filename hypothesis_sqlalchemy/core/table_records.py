@@ -2,7 +2,7 @@ from typing import (Any,
                     List,
                     Optional)
 
-from sqlalchemy import Table
+from sqlalchemy.schema import Table
 
 from . import columns_records
 from .hints import (Record,
