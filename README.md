@@ -59,9 +59,9 @@ let's take a look at what can be generated and how.
 
 We can write a strategy that produces tables
 ```python
->>> from hypothesis_sqlalchemy import tabular
->>> tables = tabular.factory(min_size=3,
-...                          max_size=10)
+>>> from hypothesis_sqlalchemy import scheme
+>>> tables = scheme.tables(min_size=3,
+...                        max_size=10)
 >>> table = tables.example()
 >>> from sqlalchemy.schema import Table
 >>> isinstance(table, Table)
@@ -98,9 +98,9 @@ and we can write strategy that
 * produces single records (as `tuple`s)
     ```python
     >>> from hypothesis import strategies
-    >>> from hypothesis_sqlalchemy import tabular
-    >>> records = tabular.records.factory(user_table, 
-    ...                                   email_address=strategies.emails())
+    >>> from hypothesis_sqlalchemy.sample import table_records
+    >>> records = table_records(user_table, 
+    ...                         email_address=strategies.emails())
     >>> record = records.example()
     >>> isinstance(record, tuple)
     True
@@ -114,11 +114,11 @@ and we can write strategy that
     ```
 * produces records `list`s (with configurable `list` size bounds)
     ```python
-    >>> from hypothesis_sqlalchemy import tabular
-    >>> records_lists = tabular.records.lists_factory(user_table,
-    ...                                               min_size=2,
-    ...                                               max_size=5, 
-    ...                                               email_address=strategies.emails())
+    >>> from hypothesis_sqlalchemy.sample import table_records_lists
+    >>> records_lists = table_records_lists(user_table,
+    ...                                     min_size=2,
+    ...                                     max_size=5, 
+    ...                                     email_address=strategies.emails())
     >>> records_list = records_lists.example()
     >>> isinstance(records_list, list)
     True
