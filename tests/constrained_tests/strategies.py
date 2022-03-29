@@ -13,10 +13,11 @@ from tests.strategies import (data,
 from tests.utils import Bounds
 
 data = data
+metadatas = strategies.builds(MetaData)
 columns_lists = (dialects
                  .flatmap(lambda dialect:
                           tabular.factory(dialect=dialect,
-                                          metadata=MetaData()))
+                                          metadatas=metadatas))
                  .map(attrgetter('columns'))
                  .map(list))
 
