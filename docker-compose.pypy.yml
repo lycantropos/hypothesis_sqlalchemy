@@ -7,7 +7,7 @@ services:
       args:
         - IMAGE_NAME=${PYPY_IMAGE_NAME}
         - IMAGE_VERSION=${PYPY_IMAGE_VERSION}
-    image: lycantropos/hypothesis_sqlalchemy-pypy:1.0.0-alpha
+    image: lycantropos/hypothesis_sqlalchemy-pypy:1.0.0
     volumes:
       - ./hypothesis_sqlalchemy:/opt/hypothesis_sqlalchemy/hypothesis_sqlalchemy
       - ./pytest.ini:/opt/hypothesis_sqlalchemy/pytest.ini
