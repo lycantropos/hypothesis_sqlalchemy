@@ -10,7 +10,8 @@ from sqlalchemy.engine.default import DefaultDialect
 
 from hypothesis_sqlalchemy.core.hints import Strategy
 from hypothesis_sqlalchemy.core.utils import to_sql_identifiers
-from tests.utils import MAX_MIN_SIZE, MAX_SIZE
+from tests.utils import (MAX_MIN_SIZE,
+                         MAX_SIZE)
 
 data = strategies.data()
 dialects = (strategies.one_of([strategies.builds(dialect)
