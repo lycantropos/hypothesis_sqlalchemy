@@ -3,7 +3,7 @@ from string import ascii_letters
 from hypothesis import strategies
 from sqlalchemy.engine import Dialect
 
-from hypothesis_sqlalchemy.hints import Strategy
+from .hints import Strategy
 
 identifiers_characters = strategies.sampled_from('_' + ascii_letters)
 

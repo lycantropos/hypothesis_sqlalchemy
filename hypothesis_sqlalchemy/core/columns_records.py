@@ -9,16 +9,16 @@ from hypothesis import strategies
 from sqlalchemy.schema import (Column,
                                Constraint)
 
-from hypothesis_sqlalchemy import constrained
-from hypothesis_sqlalchemy.hints import (Record,
-                                         Strategy)
-from . import values
+from . import table_constraints
+from .column import scalars as column_values
+from .hints import (Record,
+                    Strategy)
 
 
-def factory(columns: List[Column],
-            **fixed_columns_values: Strategy) -> Strategy[Record]:
+def instances(columns: List[Column],
+              **fixed_columns_values: Strategy[Any]) -> Strategy[Record]:
     def to_plain_values_strategy(column: Column) -> Strategy[Any]:
-        result = values.factory(column)
+        result = column_values(column)
         if column.nullable:
             # putting simpler strategies first
             # more info at
@@ -38,30 +38,22 @@ def factory(columns: List[Column],
     return strategies.tuples(*map(to_values_strategy, columns))
 
 
-def lists_factory(columns: List[Column],
-                  constraints: AbstractSet[Constraint],
-                  *,
-                  min_size: int = 0,
-                  max_size: Optional[int] = None,
-                  **fixed_columns_values: Strategy
-                  ) -> Strategy[List[Record]]:
-    values_tuples = factory(columns,
-                            **fixed_columns_values)
+def lists(columns: List[Column],
+          constraints: AbstractSet[Constraint],
+          *,
+          min_size: int = 0,
+          max_size: Optional[int] = None,
+          **fixed_columns_values: Strategy[Any]) -> Strategy[List[Record]]:
     columns_indices = {column: index for index, column in enumerate(columns)}
     unique_indices = [[columns_indices[column]
                        for column in constraint.columns]
                       for constraint in constraints
-                      if isinstance(constraint, constrained.UNIQUE_TYPES)
+                      if isinstance(constraint, table_constraints.UNIQUE_TYPES)
                       and constraint.columns]
-
-    if unique_indices:
-        # Create a tuple of functions, each function asserting the uniqueness
-        # of a single column value
-        unique_by = tuple(starmap(itemgetter, unique_indices))
-    else:
-        unique_by = None
-
-    return strategies.lists(values_tuples,
+    unique_by = (tuple(starmap(itemgetter, unique_indices))
+                 if unique_indices
+                 else None)
+    return strategies.lists(instances(columns, **fixed_columns_values),
                             min_size=min_size,
                             max_size=max_size,
                             unique_by=unique_by)

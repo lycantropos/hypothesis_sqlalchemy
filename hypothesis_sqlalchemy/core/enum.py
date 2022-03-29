@@ -18,15 +18,15 @@ Bases = Sequence[type]
 UniqueBy = Optional[Callable[[Any], Hashable]]
 
 
-def factory(*,
-            names: Strategy[str] = python_identifiers,
-            bases: Strategy[Bases] =
-            strategies.tuples(strategies.just(Enum)),
-            keys: Strategy[str],
-            values: Strategy[Any] = strategies.integers(),
-            unique_by: UniqueBy = None,
-            min_size: int = 0,
-            max_size: Optional[int] = None) -> Strategy[EnumMeta]:
+def types(*,
+          names: Strategy[str] = python_identifiers,
+          bases: Strategy[Bases]
+          = strategies.tuples(strategies.just(Enum)),
+          keys: Strategy[str],
+          values: Strategy[Any] = strategies.integers(),
+          unique_by: UniqueBy = None,
+          min_size: int = 0,
+          max_size: Optional[int] = None) -> Strategy[EnumMeta]:
     contents = (strategies.tuples(strategies.lists(keys,
                                                    min_size=min_size,
                                                    max_size=max_size,

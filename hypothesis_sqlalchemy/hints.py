@@ -1,13 +1,5 @@
-from datetime import (date,
-                      datetime,
-                      timedelta)
-from decimal import Decimal
-from typing import (Tuple,
-                    Union)
+from .core import hints as _hints
 
-from hypothesis.strategies import SearchStrategy
-
-ColumnValue = Union[int, bool, float, Decimal, str, None, date, timedelta,
-                    datetime]
-Record = Tuple[ColumnValue, ...]
-Strategy = SearchStrategy
+Record = _hints.Record
+Scalar = _hints.Scalar
+Strategy = _hints.Strategy
