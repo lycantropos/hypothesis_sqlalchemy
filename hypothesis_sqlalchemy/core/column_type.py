@@ -66,27 +66,12 @@ def instances(dialect: Dialect,
                              enum_types)
 
 
-def strings(dialect: Dialect,
-            *,
-            lengths: Strategy[int] = strategies.none()
-            ) -> Strategy[TypeEngine]:
-    return strategies.builds(String,
-                             length=lengths)
-
-
 def binary_strings(dialect: Dialect,
                    *,
                    lengths: Strategy[int] = strategies.none()
                    ) -> Strategy[TypeEngine]:
     return strategies.builds(LargeBinary,
                              length=lengths)
-
-
-def primary_keys(dialect: Dialect) -> Strategy[TypeEngine]:
-    types = list(_filter_unsupported_types([SmallInteger, Integer, BigInteger,
-                                            postgresql.UUID],
-                                           dialect=dialect))
-    return strategies.sampled_from(types).map(to_instance)
 
 
 def enums(dialect: Dialect,
@@ -104,6 +89,21 @@ def enums(dialect: Dialect,
                                 min_size=min_size,
                                 max_size=max_size))
             .map(lambda type_values: Enum(*type_values)))
+
+
+def primary_keys(dialect: Dialect) -> Strategy[TypeEngine]:
+    types = list(_filter_unsupported_types([SmallInteger, Integer, BigInteger,
+                                            postgresql.UUID],
+                                           dialect=dialect))
+    return strategies.sampled_from(types).map(to_instance)
+
+
+def strings(dialect: Dialect,
+            *,
+            lengths: Strategy[int] = strategies.none()
+            ) -> Strategy[TypeEngine]:
+    return strategies.builds(String,
+                             length=lengths)
 
 
 @singledispatch
