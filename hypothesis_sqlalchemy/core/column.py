@@ -5,7 +5,8 @@ from sqlalchemy.engine import Dialect
 from sqlalchemy.schema import Column
 
 from . import column_type
-from .hints import Strategy
+from .hints import (Scalar,
+                    Strategy)
 from .utils import to_sql_identifiers
 
 
@@ -15,8 +16,8 @@ def instances(dialect: Dialect,
               types: Optional[Strategy[column_type.TypeOrInstance]] = None,
               are_unique: Strategy[Optional[bool]] = strategies.none(),
               are_primary_keys: Strategy[Optional[bool]] = strategies.none(),
-              are_auto_incremented: Strategy[
-                  Optional[bool]] = strategies.none(),
+              are_auto_incremented: Strategy[Optional[bool]]
+              = strategies.none(),
               are_nullable: Strategy[Optional[bool]] = strategies.booleans(),
               are_indexed: Strategy[Optional[bool]] = strategies.booleans()
               ) -> Strategy[Column]:
@@ -32,5 +33,6 @@ def instances(dialect: Dialect,
                              index=are_indexed)
 
 
-def scalars(column: Column) -> Strategy:
-    return column_type.scalars(column.type)
+def scalars(column: Column) -> Strategy[Scalar]:
+    result = column_type.scalars(column.type)
+    return strategies.none() | result if column.nullable else result

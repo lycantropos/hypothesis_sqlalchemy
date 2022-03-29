@@ -10,32 +10,23 @@ from sqlalchemy.schema import (Column,
                                Constraint)
 
 from . import table_constraints
-from .column import scalars as column_values
+from .column import scalars
 from .hints import (Record,
+                    Scalar,
                     Strategy)
 
 
 def instances(columns: List[Column],
-              **fixed_columns_values: Strategy[Any]) -> Strategy[Record]:
-    def to_plain_values_strategy(column: Column) -> Strategy[Any]:
-        result = column_values(column)
-        if column.nullable:
-            # putting simpler strategies first
-            # more info at
-            # https://hypothesis.readthedocs.io/en/latest/data.html#hypothesis.strategies.one_of
-            result = strategies.none() | result
-        return result
-
+              **fixed_columns_values: Strategy[Scalar]) -> Strategy[Record]:
     if fixed_columns_values:
-        def to_values_strategy(column: Column) -> Strategy[Any]:
+        def column_scalars(column: Column) -> Strategy[Scalar]:
             column_name = column.name
-            if column_name in fixed_columns_values:
-                return fixed_columns_values[column_name]
-            else:
-                return to_plain_values_strategy(column)
+            return (fixed_columns_values[column_name]
+                    if column_name in fixed_columns_values
+                    else scalars(column))
     else:
-        to_values_strategy = to_plain_values_strategy
-    return strategies.tuples(*map(to_values_strategy, columns))
+        column_scalars = scalars
+    return strategies.tuples(*map(column_scalars, columns))
 
 
 def lists(columns: List[Column],
