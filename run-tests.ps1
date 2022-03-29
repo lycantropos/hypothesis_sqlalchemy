@@ -14,7 +14,7 @@ if ($STATUS -eq 0)
 }
 else
 {
-    echo "${implementation} tests failed to pass"
+    echo "${implementation} tests failed"
 }
 
 exit $STATUS
