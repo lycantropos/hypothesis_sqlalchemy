@@ -5,7 +5,6 @@ from typing import (Any,
 
 from hypothesis import strategies
 from sqlalchemy.engine import Dialect
-from sqlalchemy.engine.default import DefaultDialect
 from sqlalchemy.schema import (Column,
                                MetaData,
                                Table)
@@ -16,8 +15,8 @@ from .hints import Strategy
 from .utils import to_sql_identifiers
 
 
-def instances(*,
-              dialect: Dialect = DefaultDialect(),
+def instances(dialect: Dialect,
+              *,
               metadatas: Strategy[MetaData] = strategies.builds(MetaData),
               names: Optional[Strategy[str]] = None,
               columns: Optional[Strategy[Column]] = None,
