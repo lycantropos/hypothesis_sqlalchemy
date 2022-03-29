@@ -6,7 +6,7 @@ from hypothesis import given
 from sqlalchemy.schema import Table
 
 from hypothesis_sqlalchemy.hints import Strategy
-from hypothesis_sqlalchemy.tabular.records import factory
+from hypothesis_sqlalchemy.sample import table_records
 from tests.utils import (DataObject,
                          table_record_is_valid)
 from . import strategies
@@ -18,7 +18,7 @@ def test_basic(table_fixed_columns_values: Tuple[Table,
                ) -> None:
     table, fixed_columns_values = table_fixed_columns_values
 
-    result = factory(table, **fixed_columns_values)
+    result = table_records(table, **fixed_columns_values)
 
     assert isinstance(result, Strategy)
 
@@ -30,7 +30,7 @@ def test_examples(data: DataObject,
                   ) -> None:
     table, fixed_columns_values = table_fixed_columns_values
 
-    strategy = factory(table, **fixed_columns_values)
+    strategy = table_records(table, **fixed_columns_values)
 
     result = data.draw(strategy)
 
