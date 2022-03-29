@@ -17,7 +17,7 @@ from hypothesis_sqlalchemy.utils import to_sql_identifiers
 
 def factory(*,
             dialect: Dialect = dialectic.default,
-            metadata: MetaData,
+            metadatas: Strategy[MetaData],
             names: Optional[Strategy[str]] = None,
             columns: Strategy[Column] = None,
             min_size: int = 0,
@@ -32,6 +32,7 @@ def factory(*,
                                            max_size=max_size)
 
     def table_factory(draw: Callable[[Strategy], Any]) -> Table:
+        metadata = draw(metadatas)
         extends_existing = draw(extend_existing)
         table_names = names
         if not extends_existing:
@@ -45,9 +46,7 @@ def factory(*,
             existing_table = metadata.tables[table_name]
             columns_list = [existing_table.c.get(column.name, column)
                             for column in columns_list]
-        result = Table(table_name,
-                       metadata,
-                       *columns_list,
+        result = Table(table_name, metadata, *columns_list,
                        extend_existing=extends_existing)
         constraints = draw(constrained.lists_factory(columns_list,
                                                      primary_key_min_size=1))
