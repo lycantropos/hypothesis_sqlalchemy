@@ -17,9 +17,9 @@ from hypothesis_sqlalchemy.utils import to_sql_identifiers
 
 def factory(*,
             dialect: Dialect = dialectic.default,
-            metadatas: Strategy[MetaData],
+            metadatas: Strategy[MetaData] = strategies.builds(MetaData),
             names: Optional[Strategy[str]] = None,
-            columns: Strategy[Column] = None,
+            columns: Optional[Strategy[Column]] = None,
             min_size: int = 0,
             max_size: Optional[int] = None,
             extend_existing: Strategy[bool] = strategies.booleans()
