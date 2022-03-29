@@ -3,7 +3,8 @@ from typing import (Optional,
 
 from hypothesis import given
 from sqlalchemy.engine import Dialect
-from sqlalchemy.schema import Table
+from sqlalchemy.schema import (MetaData,
+                               Table)
 
 from hypothesis_sqlalchemy.hints import Strategy
 from hypothesis_sqlalchemy.tabular import factory
@@ -43,16 +44,18 @@ def test_examples(data: DataObject,
     assert not result.columns or result.primary_key
 
 
-@given(strategies.data, strategies.dialects_with_names, strategies.min_sizes,
+@given(strategies.data, strategies.metadatas, strategies.dialects_with_names,
+       strategies.min_sizes,
        strategies.max_sizes)
 def test_extending(data: DataObject,
+                   metadata: MetaData,
                    dialect_with_name: Tuple[Dialect, str],
                    min_size: int,
                    max_size: Optional[int]) -> None:
     dialect, name = dialect_with_name
 
     strategy = factory(dialect=dialect,
-                       metadatas=strategies.metadatas,
+                       metadatas=strategies.just(metadata),
                        names=strategies.just(name),
                        min_size=min_size,
                        max_size=max_size,
