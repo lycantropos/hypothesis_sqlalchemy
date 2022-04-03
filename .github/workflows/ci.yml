@@ -14,25 +14,49 @@ jobs:
     name: 'Test'
     strategy:
       matrix:
-        python_version: ['3.6', '3.7', '3.8', '3.9', '3.10', 'pypy-3.7']
-        os: ['ubuntu', 'macos', 'windows']
-      fail-fast: true
+        python_version: ['3.6', '3.7', '3.8', '3.9', '3.10']
+        platform: [
+          {
+            os: 'macos-latest',
+            python_architecture: 'x64'
+          },
+          {
+            os: 'ubuntu-latest',
+            python_architecture: 'x64'
+          },
+          {
+            os: 'windows-latest',
+            python_architecture: 'x64'
+          },
+          {
+            os: 'windows-latest',
+            python_architecture: 'x86'
+          },
+        ]
+        include:
+          - python_version: 'pypy-3.7'
+            platform: { os: 'macos-latest', python_architecture: 'x64' }
+          - python_version: 'pypy-3.7'
+            platform: { os: 'ubuntu-latest', python_architecture: 'x64' }
+          - python_version: 'pypy-3.7'
+            platform: { os: 'windows-latest', python_architecture: 'x64' }
     runs-on: ${{ matrix.os }}-latest
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v3
         with:
           submodules: true
-      - name: 'Setup Python ${{ matrix.python_version }}'
+      - name: 'Setup Python'
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python_version }}
+          architecture: ${{ matrix.platform.python_architecture }}
       - name: 'Install packaging tools'
         run: python -m pip install -U pip setuptools
       - name: 'Install coverage dependencies'
         run: python -m pip install -U coverage
-      - name: 'Install dependencies'
-        run: python -m pip install -r requirements.txt
+      - name: 'Install in editable mode'
+        run: python -m pip -v install -e .
       - name: 'Install tests dependencies'
         run: python -m pip install -r requirements-tests.txt
       - name: 'Run doctests'
@@ -56,7 +80,7 @@ jobs:
     if: github.event_name == 'push' && github.ref_type == 'tag'
     steps:
       - name: '_'
-        run: echo "Predeploy step"
+        run: echo "Pre-deploy step"
 
   build:
     name: 'Build'
@@ -81,10 +105,56 @@ jobs:
           name: dist
           path: dist
 
+  test-distributions:
+    name: Test distributions
+    runs-on: ${{ matrix.platform.os }}
+    needs: build
+    strategy:
+      matrix:
+        python_version: ['3.6', '3.7', '3.8', '3.9', '3.10']
+        platform: [
+          {
+            os: 'macos-latest',
+            python_architecture: 'x64'
+          },
+          {
+            os: 'ubuntu-latest',
+            python_architecture: 'x64'
+          },
+          {
+            os: 'windows-latest',
+            python_architecture: 'x64'
+          },
+          {
+            os: 'windows-latest',
+            python_architecture: 'x86'
+          },
+        ]
+        include:
+          - python_version: 'pypy-3.7'
+            platform: { os: 'macos-latest', python_architecture: 'x64' }
+          - python_version: 'pypy-3.7'
+            platform: { os: 'ubuntu-latest', python_architecture: 'x64' }
+          - python_version: 'pypy-3.7'
+            platform: { os: 'windows-latest', python_architecture: 'x64' }
+    steps:
+      - name: 'Setup Python'
+        uses: actions/setup-python@v2
+        with:
+          python-version: ${{ matrix.python_version }}
+          architecture: ${{ matrix.platform.python_architecture }}
+      - name: 'Download distributions'
+        uses: actions/download-artifact@v2
+        with:
+          name: dist
+          path: dist
+      - name: 'Install from distributions'
+        run: python -m pip install --find-links=dist --no-deps --no-index ${{ github.event.repository.name }}
+
   deploy:
     name: 'Deploy'
     environment: release
-    needs: build
+    needs: test-distributions
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout'
@@ -96,8 +166,6 @@ jobs:
         with:
           name: dist
           path: dist
-      - name: 'Collected dists'
-        run: tree dist
       - name: 'PyPI upload'
         uses: pypa/gh-action-pypi-publish@v1.5.0
         with:
