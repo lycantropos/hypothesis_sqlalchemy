@@ -13,11 +13,11 @@ settings.register_profile('default',
                           deadline=(timedelta(hours=1) / max_examples
                                     if on_ci
                                     else None),
-                          max_examples=(10
+                          max_examples=(-(-settings.default.max_examples // 10)
                                         if is_pypy and on_ci
-                                        else max_examples),
-                          suppress_health_check=[HealthCheck.too_slow,
-                                                 HealthCheck.filter_too_much])
+                                        else settings.default.max_examples),
+                          suppress_health_check=[HealthCheck.filter_too_much,
+                                                 HealthCheck.too_slow])
 
 
 @pytest.hookimpl(trylast=True)
