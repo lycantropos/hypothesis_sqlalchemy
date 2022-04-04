@@ -12,6 +12,7 @@ on:
 jobs:
   test:
     name: 'Test'
+    runs-on: ${{ matrix.os }}
     strategy:
       matrix:
         python_version: ['3.6', '3.7', '3.8', '3.9', '3.10']
@@ -40,7 +41,6 @@ jobs:
             platform: { os: 'ubuntu-latest', python_architecture: 'x64' }
           - python_version: 'pypy-3.7'
             platform: { os: 'windows-latest', python_architecture: 'x64' }
-    runs-on: ${{ matrix.os }}-latest
     steps:
       - name: 'Checkout'
         uses: actions/checkout@v3
