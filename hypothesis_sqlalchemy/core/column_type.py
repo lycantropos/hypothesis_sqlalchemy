@@ -11,6 +11,7 @@ from typing import (Iterable,
                     Type,
                     Union)
 from uuid import UUID
+from string import printable
 
 from hypothesis import strategies
 from sqlalchemy.dialects import postgresql
@@ -29,6 +30,7 @@ from sqlalchemy.sql.sqltypes import (BigInteger,
                                      String,
                                      Text,
                                      Time,
+                                     JSON,
                                      exc)
 from sqlalchemy.sql.type_api import (TypeEngine,
                                      to_instance)
@@ -182,6 +184,17 @@ def _(type_: postgresql.UUID,
     if not type_.as_uuid:
         result = result.map(str)
     return result
+
+
+json = strategies.recursive(
+    strategies.none() | strategies.booleans() | strategies.floats() | strategies.text(printable),
+    lambda children: strategies.lists(children) | strategies.dictionaries(strategies.text(printable), children),
+)
+
+
+@scalars.register(postgresql.JSON)
+def _(type_: postgresql.JSON) -> Strategy[JSON]:
+    return json
 
 
 def _filter_unsupported_types(types_or_instances: Iterable[TypeOrInstance],
