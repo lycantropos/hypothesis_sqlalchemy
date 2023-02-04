@@ -113,7 +113,7 @@ def enums(dialect: Dialect,
 def primary_keys(dialect: Dialect) -> Strategy['TypeEngine[Any]']:
     types = list(
             _filter_unsupported_types([SmallInteger, Integer, BigInteger,
-                                       postgresql.UUID,
+                                       postgresql.UUID(as_uuid=False),
                                        postgresql.UUID(as_uuid=True)],
                                       dialect=dialect)
     )
