@@ -68,5 +68,4 @@ def lists(table: Table,
                                     max_size=max_size - 1
                                     if max_size is not None
                                     else max_size)
-    return (strategies.tuples(primary_keys_lists, unique_lists)
-            .map(lambda lists_pair: add(*lists_pair)))
+    return strategies.builds(add, primary_keys_lists, unique_lists)

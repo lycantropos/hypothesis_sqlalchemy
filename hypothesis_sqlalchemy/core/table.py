@@ -15,15 +15,16 @@ from .hints import Strategy
 from .utils import to_sql_identifiers
 
 
-def instances(dialect: Dialect,
-              *,
-              metadatas: Strategy[MetaData] = strategies.builds(MetaData),
-              names: Optional[Strategy[str]] = None,
-              columns: Optional[Strategy[Column]] = None,
-              min_size: int = 0,
-              max_size: Optional[int] = None,
-              extend_existing: Strategy[bool] = strategies.booleans()
-              ) -> Strategy[Table]:
+def instances(
+        dialect: Dialect,
+        *,
+        metadatas: Strategy[MetaData] = strategies.builds(MetaData),
+        names: Optional[Strategy[str]] = None,
+        columns: Optional[Strategy['Column[Any]']] = None,
+        min_size: int = 0,
+        max_size: Optional[int] = None,
+        extend_existing: Strategy[bool] = strategies.booleans()
+) -> Strategy[Table]:
     tables_names = to_sql_identifiers(dialect) if names is None else names
     tables_columns = column.instances(dialect) if columns is None else columns
     tables_columns_lists = strategies.lists(tables_columns,
@@ -31,7 +32,7 @@ def instances(dialect: Dialect,
                                             max_size=max_size,
                                             unique_by=attrgetter('name'))
 
-    def draw_table(draw: Callable[[Strategy], Any]) -> Table:
+    def draw_table(draw: Callable[[Strategy[Any]], Any]) -> Table:
         metadata = draw(metadatas)
         extends_existing = draw(extend_existing)
         table_names = tables_names
