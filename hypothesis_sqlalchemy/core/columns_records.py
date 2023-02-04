@@ -16,10 +16,10 @@ from .hints import (Record,
                     Strategy)
 
 
-def instances(columns: List[Column],
+def instances(columns: List['Column[Any]'],
               **fixed_columns_values: Strategy[Scalar]) -> Strategy[Record]:
     if fixed_columns_values:
-        def column_scalars(column: Column) -> Strategy[Scalar]:
+        def column_scalars(column: 'Column[Scalar]') -> Strategy[Scalar]:
             column_name = column.name
             return (fixed_columns_values[column_name]
                     if column_name in fixed_columns_values
@@ -29,7 +29,7 @@ def instances(columns: List[Column],
     return strategies.tuples(*map(column_scalars, columns))
 
 
-def lists(columns: List[Column],
+def lists(columns: List['Column[Any]'],
           constraints: AbstractSet[Constraint],
           *,
           min_size: int = 0,
