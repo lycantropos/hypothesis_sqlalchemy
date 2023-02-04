@@ -9,6 +9,7 @@ project_base_url = 'https://github.com/lycantropos/hypothesis_sqlalchemy/'
 
 setup(name=hypothesis_sqlalchemy.__name__,
       packages=find_packages(exclude=('tests', 'tests.*')),
+      package_data={hypothesis_sqlalchemy.__name__: ['py.typed']},
       version=hypothesis_sqlalchemy.__version__,
       description=hypothesis_sqlalchemy.__doc__,
       long_description=Path('README.md').read_text(encoding='utf-8'),
