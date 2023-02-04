@@ -69,6 +69,13 @@ jobs:
         run: python -m pip install -U coverage
       - name: 'Install in editable mode'
         run: python -m pip -v install -e .
+      - name: 'Install Mypy'
+        run: python -m pip install -U mypy
+        if: ${{ matrix.python_version != 'pypy-3.7' }}
+      - name: 'Run Mypy'
+        run: >
+          python -m mypy --ignore-missing-imports --strict ${{ github.event.repository.name }}
+        if: ${{ matrix.python_version != 'pypy-3.7' }}
       - name: 'Install tests dependencies'
         run: python -m pip install -r requirements-tests.txt
       - name: 'Run doctests'
