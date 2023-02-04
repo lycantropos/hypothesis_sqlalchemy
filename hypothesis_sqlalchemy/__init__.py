@@ -1,3 +1,3 @@
 """``hypothesis`` strategies for ``SQLAlchemy`` objects and data from them."""
 
-__version__ = '1.1.0-alpha'
+__version__ = '1.1.0'
