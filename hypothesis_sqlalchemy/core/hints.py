@@ -1,16 +1,24 @@
-from datetime import (date,
-                      datetime,
-                      time,
-                      timedelta)
+import uuid
+from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from enum import Enum
-from typing import (Tuple,
-                    Union)
 
 from hypothesis.strategies import SearchStrategy
 
-Scalar = Union[
-    Decimal, Enum, None, bool, date, datetime, float, int, str, time, timedelta
-]
-Record = Tuple[Scalar, ...]
+Scalar = (
+    Decimal
+    | Enum
+    | bool
+    | bytes
+    | date
+    | datetime
+    | float
+    | int
+    | str
+    | time
+    | timedelta
+    | uuid.UUID
+    | None
+)
+Record = tuple[Scalar, ...]
 Strategy = SearchStrategy

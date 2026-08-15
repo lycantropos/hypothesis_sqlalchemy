@@ -10,10 +10,8 @@ services:
     image: lycantropos/hypothesis_sqlalchemy-cpython:1.1.0
     volumes:
       - ./hypothesis_sqlalchemy:/opt/hypothesis_sqlalchemy/hypothesis_sqlalchemy
-      - ./pytest.ini:/opt/hypothesis_sqlalchemy/pytest.ini
+      - ./pyproject.toml:/opt/hypothesis_sqlalchemy/pyproject.toml
       - ./README.md:/opt/hypothesis_sqlalchemy/README.md
-      - ./requirements-tests.txt:/opt/hypothesis_sqlalchemy/requirements-tests.txt
-      - ./requirements.txt:/opt/hypothesis_sqlalchemy/requirements.txt
       - ./setup.py:/opt/hypothesis_sqlalchemy/setup.py
       - ./tests:/opt/hypothesis_sqlalchemy/tests
     entrypoint: pytest

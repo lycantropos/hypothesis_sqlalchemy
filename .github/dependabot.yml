@@ -1,0 +1,19 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: .github/workflows
+    schedule:
+      interval: weekly
+    assignees:
+      - lycantropos
+  - package-ecosystem: pip
+    directory: /
+    schedule:
+      interval: weekly
+    assignees:
+      - lycantropos
+    groups:
+      non-major:
+        update-types:
+          - patch
+          - minor

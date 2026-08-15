@@ -1,18 +1,19 @@
-hypothesis_sqlalchemy
-=====================
+# hypothesis_sqlalchemy
 
-[![](https://github.com/lycantropos/hypothesis_sqlalchemy/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/lycantropos/hypothesis_sqlalchemy/actions/workflows/ci.yml "Github Actions")
-[![](https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy/branch/master/graph/badge.svg)](https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy "Codecov")
-[![](https://img.shields.io/github/license/lycantropos/hypothesis_sqlalchemy.svg)](https://github.com/lycantropos/hypothesis_sqlalchemy/blob/master/LICENSE "License")
-[![](https://badge.fury.io/py/hypothesis-sqlalchemy.svg)](https://badge.fury.io/py/hypothesis-sqlalchemy "PyPI")
+[![Github Actions](https://github.com/lycantropos/hypothesis_sqlalchemy/workflows/CI/badge.svg)](https://github.com/lycantropos/hypothesis_sqlalchemy/actions/workflows/ci.yml "Github Actions")
+[![Codecov](https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy/branch/master/graph/badge.svg)](https://codecov.io/gh/lycantropos/hypothesis_sqlalchemy "Codecov")
+[![License](https://img.shields.io/github/license/lycantropos/hypothesis_sqlalchemy.svg)](https://github.com/lycantropos/hypothesis_sqlalchemy/blob/master/LICENSE "License")
+[![PyPI](https://badge.fury.io/py/hypothesis-sqlalchemy.svg)](https://badge.fury.io/py/hypothesis-sqlalchemy "PyPI")
 
-In what follows `python` is an alias for `python3.7` or `pypy3.7`
-or any later version (`python3.8`, `pypy3.8` and so on).
+In what follows `python` is an alias for `python3.10` or `pypy3.10`
+or any later version (`python3.11`, `pypy3.11` and so on).
 
-Installation
-------------
+## Installation
+
+### Prerequisites
 
 Install the latest `pip` & `setuptools` packages versions
+
 ```bash
 python -m pip install --upgrade pip setuptools
 ```
@@ -20,6 +21,7 @@ python -m pip install --upgrade pip setuptools
 ### User
 
 Download and install the latest stable version from `PyPI` repository
+
 ```bash
 python -m pip install --upgrade hypothesis_sqlalchemy
 ```
@@ -27,25 +29,22 @@ python -m pip install --upgrade hypothesis_sqlalchemy
 ### Developer
 
 Download the latest version from `GitHub` repository
+
 ```bash
 git clone https://github.com/lycantropos/hypothesis_sqlalchemy.git
 cd hypothesis_sqlalchemy
 ```
 
-Install dependencies
-```bash
-python -m pip install -r requirements.txt
-```
-
 Install
+
 ```bash
-python setup.py install
+python -m pip install -e '.'
 ```
 
-Usage
------
+## Usage
 
 With setup
+
 ```python
 >>> import warnings
 >>> from hypothesis.errors import NonInteractiveExampleWarning
@@ -53,11 +52,13 @@ With setup
 ... warnings.filterwarnings('ignore', category=NonInteractiveExampleWarning)
 
 ```
+
 let's take a look at what can be generated and how.
 
 ### Tables
 
 We can write a strategy that produces tables
+
 ```python
 >>> from hypothesis_sqlalchemy import scheme
 >>> from sqlalchemy.engine.default import DefaultDialect
@@ -80,6 +81,7 @@ True
 ### Records
 
 Suppose we have a table
+
 ```python
 >>> from sqlalchemy.schema import (Column,
 ...                                MetaData,
@@ -97,12 +99,15 @@ Suppose we have a table
 ...                           nullable=False))
 
 ```
+
 and we can write strategy that
+
 * produces single records (as `tuple`s)
+
     ```python
     >>> from hypothesis import strategies
     >>> from hypothesis_sqlalchemy.sample import table_records
-    >>> records = table_records(user_table, 
+    >>> records = table_records(user_table,
     ...                         email_address=strategies.emails())
     >>> record = records.example()
     >>> isinstance(record, tuple)
@@ -110,17 +115,19 @@ and we can write strategy that
     >>> len(record) == len(user_table.columns)
     True
     >>> all(column.nullable and value is None
-    ...     or isinstance(value, column.type.python_type) 
+    ...     or isinstance(value, column.type.python_type)
     ...     for value, column in zip(record, user_table.columns))
     True
-  
+
     ```
+
 * produces records `list`s (with configurable `list` size bounds)
+
     ```python
     >>> from hypothesis_sqlalchemy.sample import table_records_lists
     >>> records_lists = table_records_lists(user_table,
     ...                                     min_size=2,
-    ...                                     max_size=5, 
+    ...                                     max_size=5,
     ...                                     email_address=strategies.emails())
     >>> records_list = records_lists.example()
     >>> isinstance(records_list, list)
@@ -134,97 +141,108 @@ and we can write strategy that
 
     ```
 
-Development
------------
+## Development
 
 ### Bumping version
 
-#### Preparation
+#### Prerequisites
 
-Install
-[bump2version](https://github.com/c4urself/bump2version#installation).
+Install [bump-my-version](https://github.com/callowayproject/bump-my-version#installation).
 
-#### Pre-release
+#### Release
 
 Choose which version number category to bump following [semver
 specification](http://semver.org/).
 
 Test bumping version
+
 ```bash
-bump2version --dry-run --verbose $CATEGORY
+bump-my-version bump --dry-run --verbose $CATEGORY
 ```
 
 where `$CATEGORY` is the target version number category name, possible
 values are `patch`/`minor`/`major`.
 
 Bump version
+
 ```bash
-bump2version --verbose $CATEGORY
-```
-
-This will set version to `major.minor.patch-alpha`. 
-
-#### Release
-
-Test bumping version
-```bash
-bump2version --dry-run --verbose release
-```
-
-Bump version
-```bash
-bump2version --verbose release
+bump-my-version bump --verbose $CATEGORY
 ```
 
 This will set version to `major.minor.patch`.
 
 ### Running tests
 
-Install dependencies
+#### Plain
+
+Install with dependencies
+
 ```bash
-python -m pip install -r requirements-tests.txt
+python -m pip install -e '.[tests]'
 ```
 
-Plain
+Run
+
 ```bash
 pytest
 ```
 
-Inside `Docker` container:
-- with `CPython`
+#### `Docker` container
+
+Run
+
+* with `CPython`
+
   ```bash
   docker-compose --file docker-compose.cpython.yml up
   ```
-- with `PyPy`
+
+* with `PyPy`
+
   ```bash
   docker-compose --file docker-compose.pypy.yml up
   ```
 
-`Bash` script:
-- with `CPython`
+#### `Bash` script
+
+Run
+
+* with `CPython`
+
   ```bash
   ./run-tests.sh
   ```
+
   or
+
   ```bash
   ./run-tests.sh cpython
   ```
 
-- with `PyPy`
+* with `PyPy`
+
   ```bash
   ./run-tests.sh pypy
   ```
 
-`PowerShell` script:
-- with `CPython`
+#### `PowerShell` script
+
+Run
+
+* with `CPython`
+
   ```powershell
   .\run-tests.ps1
   ```
+
   or
+
   ```powershell
   .\run-tests.ps1 cpython
   ```
-- with `PyPy`
+
+* with `PyPy`
+
   ```powershell
   .\run-tests.ps1 pypy
   ```
