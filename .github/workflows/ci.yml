@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: 'Setup Python'
         uses: actions/setup-python@v6
         with:
@@ -78,7 +78,7 @@ jobs:
             platform: { os: 'windows-latest', python_architecture: 'x64' }
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: 'Setup Python'
         uses: actions/setup-python@v6
         with:
@@ -117,7 +117,7 @@ jobs:
     needs: pre-deploy
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: 'Setup Python'
         uses: actions/setup-python@v6
       - name: 'Install packaging tools'
