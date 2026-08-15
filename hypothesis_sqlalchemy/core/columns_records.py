@@ -12,11 +12,11 @@ from .hints import Record, Scalar, Strategy
 
 
 def instances(
-    columns: list['Column[Any]'], **fixed_columns_values: Strategy[Scalar]
+    columns: list[Column[Any]], **fixed_columns_values: Strategy[Scalar]
 ) -> Strategy[Record]:
     if fixed_columns_values:
 
-        def column_scalars(column: 'Column[Scalar]') -> Strategy[Scalar]:
+        def column_scalars(column: Column[Scalar]) -> Strategy[Scalar]:
             column_name = column.name
             return (
                 fixed_columns_values[column_name]
@@ -30,7 +30,7 @@ def instances(
 
 
 def lists(
-    columns: list['Column[Any]'],
+    columns: list[Column[Any]],
     constraints: Set[Constraint],
     *,
     min_size: int = 0,

@@ -48,7 +48,7 @@ repos:
           - "hypothesis>=6.66.0,<7.0"
           - "pytest>=9.0.1,<10.0"
           - "setuptools"
-          - "sqlalchemy>=1.4.46,<3.0"
+          - "sqlalchemy>=2.0,<3.0"
           - "types-setuptools"
   - repo: https://github.com/RobertCraigie/pyright-python
     # `v1.1.411` introduced some bug it seems
@@ -59,7 +59,7 @@ repos:
           - "hypothesis>=6.66.0,<7.0"
           - "pytest>=9.0.1,<10.0"
           - "setuptools"
-          - "sqlalchemy>=1.4.46,<3.0"
+          - "sqlalchemy>=2.0,<3.0"
           - "types-setuptools"
   - repo: https://github.com/facebook/pyrefly-pre-commit
     rev: 1.2.0.dev2
@@ -71,5 +71,5 @@ repos:
           - "hypothesis>=6.66.0,<7.0"
           - "pytest>=9.0.1,<10.0"
           - "setuptools"
-          - "sqlalchemy>=1.4.46,<3.0"
+          - "sqlalchemy>=2.0,<3.0"
           - "types-setuptools"

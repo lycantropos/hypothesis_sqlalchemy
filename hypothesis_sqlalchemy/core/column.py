@@ -19,7 +19,7 @@ def instances(
     are_auto_incremented: Strategy[bool | None] = strategies.none(),  # ruff: ignore[function-call-in-default-argument]
     are_nullable: Strategy[bool | None] = strategies.booleans(),  # ruff: ignore[function-call-in-default-argument]
     are_indexed: Strategy[bool | None] = strategies.booleans(),  # ruff: ignore[function-call-in-default-argument]
-) -> Strategy['Column[Any]']:
+) -> Strategy[Column[Any]]:
     names = to_sql_identifiers(dialect) if names is None else names
     types = column_type.instances(dialect) if types is None else types
     return strategies.builds(
@@ -34,6 +34,6 @@ def instances(
     )
 
 
-def scalars(column: 'Column[Scalar]') -> Strategy[Scalar]:
+def scalars(column: Column[Scalar]) -> Strategy[Scalar]:
     result = column_type.scalars(column.type)
     return strategies.none() | result if column.nullable else result

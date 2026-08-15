@@ -3,7 +3,7 @@ from datetime import date, datetime, time, timedelta
 from decimal import Decimal
 from enum import Enum
 from functools import partial, singledispatch
-from typing import Any, Literal
+from typing import Any, Final, Literal, TypeAlias
 from uuid import UUID
 
 from hypothesis import strategies as st
@@ -32,8 +32,16 @@ from . import enum
 from .hints import Scalar, Strategy
 from .utils import to_sql_identifiers
 
-TypeOrInstance = TypeEngine[Any] | type[TypeEngine[Any]]
-EXTRA = [Numeric, Float, Boolean, Date, DateTime, Interval, Time]
+TypeOrInstance: TypeAlias = TypeEngine[Any] | type[TypeEngine[Any]]
+EXTRA: Final[Sequence[TypeOrInstance]] = [
+    Numeric,
+    Float,
+    Boolean,
+    Date,
+    DateTime,
+    Interval,
+    Time,
+]
 
 
 def instances(

@@ -16,7 +16,7 @@ def instances(
     *,
     metadatas: Strategy[MetaData] = strategies.builds(MetaData),  # ruff: ignore[function-call-in-default-argument]
     names: Strategy[str] | None = None,
-    columns: Strategy['Column[Any]'] | None = None,
+    columns: Strategy[Column[Any]] | None = None,
     min_size: int = 0,
     max_size: int | None = None,
     extend_existing: Strategy[bool] = strategies.booleans(),  # ruff: ignore[function-call-in-default-argument]
