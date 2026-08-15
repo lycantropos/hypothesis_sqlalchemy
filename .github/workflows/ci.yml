@@ -1,4 +1,4 @@
-name: CI
+name: 'CI'
 
 on:
   push:
@@ -9,13 +9,45 @@ on:
     branches:
       - 'master'
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
+  check:
+    name: 'Check'
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout'
+        uses: actions/checkout@v6
+      - name: 'Setup Python'
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.14'
+      - name: 'Install pre-commit'
+        run: python -m pip install -U pre-commit
+      - name: 'Run pre-commit'
+        run: pre-commit run --all-files
+      - name: 'Install Python package in editable mode'
+        run: python -m pip -v install -e '.'
+      - name: 'Check Python metadata'
+        run: |
+          PROJECT_DESCRIPTION=$(python -c "import importlib.metadata;print(importlib.metadata.metadata('${REPOSITORY_NAME//-/_}')['summary'])")
+          MODULE_DOCSTRING=$(python -c "import ${REPOSITORY_NAME//-/_} as module; assert module.__doc__ is not None; print(module.__doc__)")
+          if [[ $PROJECT_DESCRIPTION != "$MODULE_DOCSTRING" ]]; then
+            echo "Python project description should be equal to module docstring, but found \"$PROJECT_DESCRIPTION\" != \"$MODULE_DOCSTRING\".";
+            exit 1;
+          fi
+        env:
+          REPOSITORY_NAME: ${{ github.event.repository.name }}
+
   test:
     name: 'Test'
     runs-on: ${{ matrix.platform.os }}
     strategy:
+      fail-fast: false
       matrix:
-        python_version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        python_version: [ '3.10', '3.11', '3.12', '3.13', '3.14' ]
         platform: [
           {
             os: 'macos-latest',
@@ -34,50 +66,28 @@ jobs:
             python_architecture: 'x86'
           },
         ]
+        exclude:
+          - python_version: '3.10'
+            platform: { os: 'macos-latest', python_architecture: 'x64' }
         include:
-          - python_version: 'pypy-3.7'
+          - python_version: 'pypy-3.11'
             platform: { os: 'macos-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.7'
+          - python_version: 'pypy-3.11'
             platform: { os: 'ubuntu-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.7'
-            platform: { os: 'windows-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.8'
-            platform: { os: 'macos-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.8'
-            platform: { os: 'ubuntu-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.8'
-            platform: { os: 'windows-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.9'
-            platform: { os: 'macos-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.9'
-            platform: { os: 'ubuntu-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.9'
+          - python_version: 'pypy-3.11'
             platform: { os: 'windows-latest', python_architecture: 'x64' }
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v3
-        with:
-          submodules: true
+        uses: actions/checkout@v6
       - name: 'Setup Python'
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python_version }}
           architecture: ${{ matrix.platform.python_architecture }}
-      - name: 'Install packaging tools'
-        run: python -m pip install -U pip setuptools
-      - name: 'Install coverage dependencies'
-        run: python -m pip install -U coverage
       - name: 'Install in editable mode'
-        run: python -m pip -v install -e .
-      - name: 'Install Mypy'
-        run: python -m pip install -U mypy
-        if: ${{ matrix.python_version != 'pypy-3.7' }}
-      - name: 'Run Mypy'
-        run: >
-          python -m mypy --ignore-missing-imports --strict ${{ github.event.repository.name }}
-        if: ${{ matrix.python_version != 'pypy-3.7' }}
-      - name: 'Install tests dependencies'
-        run: python -m pip install -r requirements-tests.txt
+        run: python -m pip -v install -e '.[tests]'
+      - name: 'Install coverage dependencies'
+        run: python -m pip install -U coverage[toml]
       - name: 'Run doctests'
         run: >
           coverage run -m doctest README.md
@@ -87,7 +97,7 @@ jobs:
       - name: 'Collect coverage'
         run: coverage xml
       - name: 'Upload coverage'
-        uses: codecov/codecov-action@v3.1.1
+        uses: codecov/codecov-action@v5
         with:
           fail_ci_if_error: false
         continue-on-error: true
@@ -107,28 +117,26 @@ jobs:
     needs: pre-deploy
     steps:
       - name: 'Checkout'
-        uses: actions/checkout@v3
-        with:
-          submodules: true
+        uses: actions/checkout@v6
       - name: 'Setup Python'
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
       - name: 'Install packaging tools'
         run: python -m pip install -U build pip setuptools wheel
       - name: 'Build'
         run: python -m build --sdist --wheel
       - name: 'Upload'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v6
         with:
           name: dist
           path: dist
 
   test-distributions:
-    name: Test distributions
+    name: 'Test distributions'
     runs-on: ${{ matrix.platform.os }}
     needs: build
     strategy:
       matrix:
-        python_version: ['3.7', '3.8', '3.9', '3.10', '3.11']
+        python_version: [ '3.10', '3.11', '3.12', '3.13', '3.14' ]
         platform: [
           {
             os: 'macos-latest',
@@ -147,52 +155,58 @@ jobs:
             python_architecture: 'x86'
           },
         ]
+        exclude:
+          - python_version: '3.10'
+            platform: { os: 'macos-latest', python_architecture: 'x64' }
         include:
-          - python_version: 'pypy-3.7'
+          - python_version: 'pypy-3.11'
             platform: { os: 'macos-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.7'
+          - python_version: 'pypy-3.11'
             platform: { os: 'ubuntu-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.7'
-            platform: { os: 'windows-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.8'
-            platform: { os: 'macos-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.8'
-            platform: { os: 'ubuntu-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.8'
-            platform: { os: 'windows-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.9'
-            platform: { os: 'macos-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.9'
-            platform: { os: 'ubuntu-latest', python_architecture: 'x64' }
-          - python_version: 'pypy-3.9'
+          - python_version: 'pypy-3.11'
             platform: { os: 'windows-latest', python_architecture: 'x64' }
     steps:
       - name: 'Setup Python'
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v6
         with:
           python-version: ${{ matrix.python_version }}
           architecture: ${{ matrix.platform.python_architecture }}
       - name: 'Download distributions'
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v7
         with:
           name: dist
           path: dist
       - name: 'Install from distributions'
-        run: python -m pip install --find-links=dist --no-deps --no-index ${{ github.event.repository.name }}
+        run: >
+          python -m pip install --find-links=dist --no-deps
+          "${REPOSITORY_NAME//-/_}"
+        env:
+          REPOSITORY_NAME: ${{ github.event.repository.name }}
 
   deploy:
-    name: 'Deploy'
+    name: 'Deploy to PyPI'
     environment: release
     needs: test-distributions
+    permissions:
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: 'Download distributions'
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v7
         with:
           name: dist
           path: dist
-      - name: 'PyPI upload'
-        uses: pypa/gh-action-pypi-publish@v1.6.4
+      - name: 'Upload to Test PyPI'
+        uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages_dir: dist
+          packages-dir: dist
+          password: ${{ secrets.TEST_PYPI_API_TOKEN }}
+          repository-url: https://test.pypi.org/legacy/
+          skip-existing: ${{ github.actor == 'dependabot[bot]' }}
+        continue-on-error: true
+      - name: 'Upload to PyPI'
+        if: github.actor != 'dependabot[bot]'
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: dist
           password: ${{ secrets.PYPI_API_TOKEN }}
