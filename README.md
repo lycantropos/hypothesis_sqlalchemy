@@ -45,11 +45,13 @@ python -m pip install -e '.'
 
 With setup
 
-```python
+```pycon
 >>> import warnings
 >>> from hypothesis.errors import NonInteractiveExampleWarning
 >>> # ignore hypothesis warnings caused by `example` method call
-... warnings.filterwarnings('ignore', category=NonInteractiveExampleWarning)
+... warnings.filterwarnings(
+...     'ignore', category=NonInteractiveExampleWarning
+... )
 
 ```
 
@@ -59,13 +61,11 @@ let's take a look at what can be generated and how.
 
 We can write a strategy that produces tables
 
-```python
+```pycon
 >>> from hypothesis_sqlalchemy import scheme
 >>> from sqlalchemy.engine.default import DefaultDialect
 >>> dialect = DefaultDialect()
->>> tables = scheme.tables(dialect,
-...                        min_size=3,
-...                        max_size=10)
+>>> tables = scheme.tables(dialect, min_size=3, max_size=10)
 >>> table = tables.example()
 >>> from sqlalchemy.schema import Table
 >>> isinstance(table, Table)
@@ -82,21 +82,18 @@ True
 
 Suppose we have a table
 
-```python
->>> from sqlalchemy.schema import (Column,
-...                                MetaData,
-...                                Table)
->>> from sqlalchemy.sql.sqltypes import (Integer,
-...                                      String)
+```pycon
+>>> from sqlalchemy.schema import Column, MetaData, Table
+>>> from sqlalchemy.sql.sqltypes import Integer, String
 >>> metadata = MetaData()
->>> user_table = Table('user', metadata,
-...                    Column('user_id', Integer,
-...                           primary_key=True),
-...                    Column('user_name', String(16),
-...                           nullable=False),
-...                    Column('email_address', String(60)),
-...                    Column('password', String(20),
-...                           nullable=False))
+>>> user_table = Table(
+...     'user',
+...     metadata,
+...     Column('user_id', Integer, primary_key=True),
+...     Column('user_name', String(16), nullable=False),
+...     Column('email_address', String(60)),
+...     Column('password', String(20), nullable=False),
+... )
 
 ```
 
@@ -104,31 +101,37 @@ and we can write strategy that
 
 * produces single records (as `tuple`s)
 
-    ```python
+    ```pycon
     >>> from hypothesis import strategies
     >>> from hypothesis_sqlalchemy.sample import table_records
-    >>> records = table_records(user_table,
-    ...                         email_address=strategies.emails())
+    >>> records = table_records(user_table, email_address=strategies.emails())
     >>> record = records.example()
     >>> isinstance(record, tuple)
     True
     >>> len(record) == len(user_table.columns)
     True
-    >>> all(column.nullable and value is None
-    ...     or isinstance(value, column.type.python_type)
-    ...     for value, column in zip(record, user_table.columns))
+    >>> all(
+    ...     (
+    ...         column.nullable
+    ...         and value is None
+    ...         or isinstance(value, column.type.python_type)
+    ...     )
+    ...     for value, column in zip(record, user_table.columns)
+    ... )
     True
 
     ```
 
 * produces records `list`s (with configurable `list` size bounds)
 
-    ```python
+    ```pycon
     >>> from hypothesis_sqlalchemy.sample import table_records_lists
-    >>> records_lists = table_records_lists(user_table,
-    ...                                     min_size=2,
-    ...                                     max_size=5,
-    ...                                     email_address=strategies.emails())
+    >>> records_lists = table_records_lists(
+    ...     user_table,
+    ...     min_size=2,
+    ...     max_size=5,
+    ...     email_address=strategies.emails(),
+    ... )
     >>> records_list = records_lists.example()
     >>> isinstance(records_list, list)
     True
