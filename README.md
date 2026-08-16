@@ -49,9 +49,7 @@ With setup
 >>> import warnings
 >>> from hypothesis.errors import NonInteractiveExampleWarning
 >>> # ignore hypothesis warnings caused by `example` method call
-... warnings.filterwarnings(
-...     'ignore', category=NonInteractiveExampleWarning
-... )
+... warnings.filterwarnings('ignore', category=NonInteractiveExampleWarning)
 
 ```
 
