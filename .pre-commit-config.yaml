@@ -73,3 +73,12 @@ repos:
           - "setuptools"
           - "sqlalchemy>=2.0,<3.0"
           - "types-setuptools"
+  - repo: https://github.com/adamchainz/blacken-docs
+    rev: "1.20.0"
+    hooks:
+      - id: blacken-docs
+        args:
+          - -S
+          - -l=79
+        additional_dependencies:
+          - "black==26.3.1"
